@@ -1,8 +1,10 @@
 package com.epam.esm.dto;
 
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class CertificateDTO {
@@ -21,6 +23,15 @@ public class CertificateDTO {
 
     private LocalDateTime lastUpdateDate;
 
+    List<TagDTO> tagsDTO;
+
+    public void setTagsDTO(List<TagDTO> tagsDTO) {
+        this.tagsDTO = tagsDTO;
+    }
+
+    public List<TagDTO> getTagsDTO() {
+        return tagsDTO;
+    }
 
     public CertificateDTO() {
     }

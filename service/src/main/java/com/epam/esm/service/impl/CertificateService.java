@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.AbstractDAO;
+import com.epam.esm.dao.impl.CertificateDAO;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
@@ -33,6 +34,10 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
     @Override
     public Collection<CertificateDTO> findAll(BigInteger id) {
         return certificateDAO.findAll(id).stream().map(converter::convert).collect(Collectors.toList());
+    }
+
+    public Collection<CertificateDTO> findAll(String tagName){
+        return ((CertificateDAO)certificateDAO).findAll(tagName).stream().map(converter::convert).collect(Collectors.toList());
     }
 
     @Override

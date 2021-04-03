@@ -22,6 +22,7 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     private final String SQL_ADD = "INSERT INTO tag() VALUE(?)";
     private final String SQL_UPDATE = "UPDATE tag SET name = ? where id=?";
     private final String SQL_DELETE = "DELETE FROM tag WHERE id=?";
+    private final String SQL_FIND_BY_NAME = SQL_FIND_ALL+" WHERE name = ?";
 
     @Autowired
     public TagDAO(JdbcTemplate jdbcTemplate) {
@@ -42,7 +43,6 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     public Tag find(BigInteger id) {
         return jdbcTemplate.query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue())
                 .stream().findAny().orElse(null);
-
     }
 
     @Override

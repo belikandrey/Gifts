@@ -1,9 +1,11 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.impl.CertificateService;
+import com.epam.esm.service.impl.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/certificates")
@@ -20,7 +23,7 @@ public class CertificateController {
     private CertificateService certificateService;
 
     @Autowired
-    public CertificateController(CertificateService certificateService) {
+    public CertificateController(CertificateService certificateService, TagService tagService) {
         this.certificateService = certificateService;
     }
 
@@ -34,6 +37,7 @@ public class CertificateController {
         }
         return new ResponseEntity<>(giftCertificates, HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> find(@PathVariable("id") BigInteger id) {

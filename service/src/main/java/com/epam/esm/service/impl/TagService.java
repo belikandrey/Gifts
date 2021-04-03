@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.AbstractDAO;
+import com.epam.esm.dao.impl.TagDAO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -42,6 +43,7 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
         final Tag tag = tagDao.find(id);
         return tag != null ? converter.convert(tag) : null;
     }
+
 
     @Override
     public TagDTO add(TagDTO tagDTO) throws ValidatorException {

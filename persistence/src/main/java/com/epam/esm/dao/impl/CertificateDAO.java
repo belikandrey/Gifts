@@ -27,7 +27,9 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
             "name=?, description=?, price=?, duration=?, create_date=?," +
             " last_update_date=? where id=?";
     private final String SQL_DELETE = "DELETE FROM certificate WHERE id=?";
-
+    private final String SQL_FIND_ALL_BY_TAG_NAME = SQL_FIND_ALL +
+            " JOIN certificate_tag ON certificate.id = certificate_tag.certificate_id" +
+            " JOIN tag ON certificate_tag.tag_id = tag.id WHERE tag.name = ?";
 
     @Autowired
     public CertificateDAO(JdbcTemplate jdbcTemplate) {
@@ -43,6 +45,11 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
     @Override
     public Collection<Certificate> findAll(BigInteger id) {
         return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_ID, new CertificateMapper(), id.longValue());
+    }
+
+
+    public Collection<Certificate> findAll(String tagName){
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_NAME, new CertificateMapper(), tagName);
     }
 
     @Override
