@@ -1,11 +1,13 @@
-package com.epam.esm.entity;
+package com.epam.esm.dto;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Certificate extends Entity<BigInteger> {
+public class CertificateDTO {
+
+    private BigInteger id;
 
     private String name;
 
@@ -19,22 +21,27 @@ public class Certificate extends Entity<BigInteger> {
 
     private LocalDateTime lastUpdateDate;
 
-    public Certificate(BigInteger id) {
-        super(id);
+
+    public CertificateDTO() {
     }
 
-    public Certificate() {
-    }
-
-    public Certificate(BigInteger id, String name, String description, BigDecimal price,
-                       int duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
-        super(id);
+    public CertificateDTO(BigInteger id, String name, String description, BigDecimal price,
+                          int duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.duration = duration;
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public BigInteger getId() {
+        return id;
+    }
+
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -89,19 +96,20 @@ public class Certificate extends Entity<BigInteger> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Certificate that = (Certificate) o;
-        return duration == that.duration && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(createDate, that.createDate) && Objects.equals(lastUpdateDate, that.lastUpdateDate);
+        CertificateDTO that = (CertificateDTO) o;
+        return duration == that.duration && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(createDate, that.createDate) && Objects.equals(lastUpdateDate, that.lastUpdateDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, price, duration, createDate, lastUpdateDate);
+        return Objects.hash(id, name, description, price, duration, createDate, lastUpdateDate);
     }
 
     @Override
     public String toString() {
-        return "GiftCertificate{" +
-                "name='" + name + '\'' +
+        return "CertificateDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", duration=" + duration +

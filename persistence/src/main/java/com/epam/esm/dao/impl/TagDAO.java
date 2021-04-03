@@ -7,17 +7,18 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.Collection;
 
 @Component
-public class TagDAO implements AbstractDAO<Tag> {
+public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     private final JdbcTemplate jdbcTemplate;
 
-    private final String SQL_GET_ALL = "SELECT * FROM tag";
-    private final String SQL_GET_ALL_BY_CERTIFICATE_ID = "SELECT * FROM tag" +
+    private final String SQL_FIND_ALL = "SELECT id, name FROM tag";
+    private final String SQL_FIND_ALL_BY_CERTIFICATE_ID = SQL_FIND_ALL +
             " JOIN certificate_tag ON tag.id = certificate_tag.tag_id" +
             " WHERE certificate_id=?";
-    private final String SQL_GET_BY_ID = "SELECT * FROM tag WHERE id = ?";
+    private final String SQL_FIND_BY_ID = SQL_FIND_ALL+" WHERE id = ?";
     private final String SQL_ADD = "INSERT INTO tag() VALUE(?)";
     private final String SQL_UPDATE = "UPDATE tag SET name = ? where id=?";
     private final String SQL_DELETE = "DELETE FROM tag WHERE id=?";
@@ -29,33 +30,33 @@ public class TagDAO implements AbstractDAO<Tag> {
 
     @Override
     public Collection<Tag> findAll() {
-        return jdbcTemplate.query(SQL_GET_ALL, new BeanPropertyRowMapper<>(Tag.class));
+        return jdbcTemplate.query(SQL_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
     }
 
     @Override
-    public Collection<Tag> findAll(int id) {
-        return jdbcTemplate.query(SQL_GET_ALL_BY_CERTIFICATE_ID, new BeanPropertyRowMapper<>(Tag.class), id);
+    public Collection<Tag> findAll(BigInteger id) {
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_CERTIFICATE_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue());
     }
 
     @Override
-    public Tag find(int id) {
-        return jdbcTemplate.query(SQL_GET_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id)
+    public Tag find(BigInteger id) {
+        return jdbcTemplate.query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue())
                 .stream().findAny().orElse(null);
 
     }
 
     @Override
-    public void add(Tag tag) {
-        jdbcTemplate.update(SQL_ADD, tag.getName());
+    public int add(Tag tag) {
+        return jdbcTemplate.update(SQL_ADD, tag.getName());
     }
 
     @Override
-    public void update(int id, Tag tag) {
-        jdbcTemplate.update(SQL_UPDATE, tag.getName(), id);
+    public int update(BigInteger id, Tag tag) {
+        return jdbcTemplate.update(SQL_UPDATE, tag.getName(), id.longValue());
     }
 
     @Override
-    public void delete(int id) {
-        jdbcTemplate.update(SQL_DELETE, id);
+    public int delete(BigInteger id) {
+        return jdbcTemplate.update(SQL_DELETE, id.longValue());
     }
 }

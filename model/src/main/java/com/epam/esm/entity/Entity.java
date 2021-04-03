@@ -1,21 +1,23 @@
 package com.epam.esm.entity;
 
-public abstract class Entity {
 
-    private int id;
+public abstract class Entity<T> {
+
+    private T id;
+
 
     public Entity() {
     }
 
-    public Entity(int id) {
+    public Entity(T id) {
         this.id = id;
     }
 
-    public int getId() {
+    public T getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(T id) {
         this.id = id;
     }
 }

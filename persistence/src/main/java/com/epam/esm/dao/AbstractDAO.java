@@ -4,16 +4,16 @@ import com.epam.esm.entity.Entity;
 
 import java.util.Collection;
 
-public interface AbstractDAO<T extends Entity> {
+public interface AbstractDAO<T extends Entity, K> {
     Collection<T> findAll();
 
-    Collection<T> findAll(int id);
+    Collection<T> findAll(K id);
 
-    T find(int id);
+    T find(K id);
 
-    void add(T t);
+    int add(T t);
 
-    void update(int id, T t);
+    int update(K id, T t);
 
-    void delete(int id);
+    int delete(K id);
 }

@@ -5,18 +5,19 @@ import com.epam.esm.exception.DaoException;
 import com.epam.esm.exception.ServiceException;
 import com.epam.esm.exception.ValidatorException;
 
+import java.math.BigInteger;
 import java.util.Collection;
 
-public interface EntityService<T extends Entity> {
+public interface EntityService<T, K> {
     Collection<T> findAll();
 
-    Collection<T> findAll(int id);
+    Collection<T> findAll(K id);
 
-    T find(int id);
+    T find(K id);
 
     T add(T t) throws ValidatorException;
 
-    void update(int id, T t) throws ValidatorException;
+    int update(K id, T t) throws ValidatorException;
 
-    void delete(int id);
+    int delete(K id);
 }

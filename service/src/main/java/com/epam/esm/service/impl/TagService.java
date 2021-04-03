@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.AbstractDAO;
+import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.EntityService;
@@ -8,49 +10,55 @@ import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
-public class TagService implements EntityService<Tag> {
+public class TagService implements EntityService<TagDTO, BigInteger> {
     private Validator<Tag> validator;
-    private AbstractDAO<Tag> tagDao;
+    private AbstractDAO<Tag, BigInteger> tagDao;
+    private Converter<Tag, TagDTO> converter;
 
     @Autowired
-    public TagService(Validator<Tag> validator, AbstractDAO<Tag> tagDao) {
+    public TagService(Validator<Tag> validator, AbstractDAO<Tag, BigInteger> tagDao, Converter<Tag, TagDTO> converter) {
         this.validator = validator;
         this.tagDao = tagDao;
+        this.converter = converter;
     }
 
     @Override
-    public Collection<Tag> findAll() {
-        return tagDao.findAll();
+    public Collection<TagDTO> findAll() {
+        return tagDao.findAll().stream().map(converter::convert).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Tag> findAll(int id) {
-        return tagDao.findAll(id);
+    public Collection<TagDTO> findAll(BigInteger id) {
+        return tagDao.findAll(id).stream().map(converter::convert).collect(Collectors.toList());
     }
 
     @Override
-    public Tag find(int id) {
-        return tagDao.find(id);
+    public TagDTO find(BigInteger id) {
+        final Tag tag = tagDao.find(id);
+        return tag != null ? converter.convert(tag) : null;
     }
 
     @Override
-    public Tag add(Tag tag) throws ValidatorException {
+    public TagDTO add(TagDTO tagDTO) throws ValidatorException {
+        Tag tag = converter.convert(tagDTO);
         validator.validate(tag);
-        tagDao.add(tag);
-        return tag;
+        return tagDao.add(tag) > 0 ? tagDTO : null;
     }
 
     @Override
-    public void update(int id, Tag tag) throws ValidatorException {
+    public int update(BigInteger id, TagDTO tagDTO) throws ValidatorException {
+        Tag tag = converter.convert(tagDTO);
         validator.validate(tag);
-        tagDao.update(id, tag);
+        return tagDao.update(id, tag);
     }
 
     @Override
-    public void delete(int id) {
-        tagDao.delete(id);
+    public int delete(BigInteger id) {
+        return tagDao.delete(id);
     }
 }
