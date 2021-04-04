@@ -3,12 +3,16 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.AbstractDAO;
 import com.epam.esm.dao.mapper.CertificateMapper;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.search.SearchQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
@@ -47,8 +51,14 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
         return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_ID, new CertificateMapper(), id.longValue());
     }
 
+    public Collection<Certificate> findAll(String tagName, String name, String description, String sortName, String sortDate) {
+        final String searchQuery = getSearchQuery(tagName, name, description, sortName, sortDate);
+        System.out.println(searchQuery);
+        return jdbcTemplate.query(searchQuery, new CertificateMapper());
+    }
 
-    public Collection<Certificate> findAll(String tagName){
+
+    public Collection<Certificate> findAll(String tagName) {
         return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_NAME, new CertificateMapper(), tagName);
     }
 
@@ -75,5 +85,15 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
     @Override
     public int delete(BigInteger id) {
         return jdbcTemplate.update(SQL_DELETE, id.longValue());
+    }
+
+    private String getSearchQuery(String tagName, String name, String description, String sortName, String sortDate) {
+        SearchQueryBuilder builder = new SearchQueryBuilder();
+        builder = tagName != null && !tagName.isEmpty() ? builder.setTagName(tagName) : builder;
+        builder = name != null && !name.isEmpty() ? builder.setName(name) : builder;
+        builder = description != null && !description.isEmpty() ? builder.setDescription(description) : builder;
+        builder = sortName != null && !sortName.isEmpty() ? builder.setSortByName(sortName) :
+                sortDate != null && !sortDate.isEmpty() ? builder.setSortByDate(sortDate) : builder;
+        return builder.build();
     }
 }

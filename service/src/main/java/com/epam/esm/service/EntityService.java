@@ -1,11 +1,7 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Entity;
-import com.epam.esm.exception.DaoException;
-import com.epam.esm.exception.ServiceException;
 import com.epam.esm.exception.ValidatorException;
 
-import java.math.BigInteger;
 import java.util.Collection;
 
 public interface EntityService<T, K> {

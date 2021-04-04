@@ -12,9 +12,6 @@ public class TagDTO {
         this.name = name;
     }
 
-    public TagDTO() {
-    }
-
     public BigInteger getId() {
         return id;
     }

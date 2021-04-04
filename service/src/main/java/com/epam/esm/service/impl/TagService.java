@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.AbstractDAO;
-import com.epam.esm.dao.impl.TagDAO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -17,9 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class TagService implements EntityService<TagDTO, BigInteger> {
-    private Validator<Tag> validator;
-    private AbstractDAO<Tag, BigInteger> tagDao;
-    private Converter<Tag, TagDTO> converter;
+    private final Validator<Tag> validator;
+    private final AbstractDAO<Tag, BigInteger> tagDao;
+    private final Converter<Tag, TagDTO> converter;
 
     @Autowired
     public TagService(Validator<Tag> validator, AbstractDAO<Tag, BigInteger> tagDao, Converter<Tag, TagDTO> converter) {

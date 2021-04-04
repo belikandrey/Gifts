@@ -1,11 +1,8 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.dto.TagDTO;
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.impl.CertificateService;
-import com.epam.esm.service.impl.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,27 +11,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/certificates")
 public class CertificateController {
 
-    private CertificateService certificateService;
+    private final CertificateService certificateService;
 
     @Autowired
-    public CertificateController(CertificateService certificateService, TagService tagService) {
+    public CertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
     }
 
     @GetMapping()
-    public ResponseEntity<?> findAll(@RequestParam(value = "tag", required = false) BigInteger id) {
-        Collection<CertificateDTO> giftCertificates;
-        if (id != null) {
-            giftCertificates = certificateService.findAll(id);
-        } else {
-            giftCertificates = certificateService.findAll();
-        }
+    public ResponseEntity<?> findAll(@RequestParam(value = "tagName", required = false) String tagName,
+                                     @RequestParam(value = "name", required = false) String name,
+                                     @RequestParam(value = "description", required = false) String description,
+                                     @RequestParam(value = "sortName", required = false) String sortName,
+                                     @RequestParam(value = "sortDate", required = false) String sortDate) {
+        Collection<CertificateDTO> giftCertificates = certificateService.findAll(tagName, name, description, sortName, sortDate);
         return new ResponseEntity<>(giftCertificates, HttpStatus.OK);
     }
 
