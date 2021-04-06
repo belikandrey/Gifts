@@ -47,13 +47,12 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
     }
 
     @Override
-    public Collection<Certificate> findAll(BigInteger id) {
-        return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_ID, new CertificateMapper(), id.longValue());
+    public Collection<Certificate> findAll(BigInteger tagId) {
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_ID, new CertificateMapper(), tagId.longValue());
     }
 
     public Collection<Certificate> findAll(String tagName, String name, String description, String sortName, String sortDate) {
         final String searchQuery = getSearchQuery(tagName, name, description, sortName, sortDate);
-        System.out.println(searchQuery);
         return jdbcTemplate.query(searchQuery, new CertificateMapper());
     }
 

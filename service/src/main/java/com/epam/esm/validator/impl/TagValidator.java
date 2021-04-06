@@ -16,14 +16,19 @@ public class TagValidator implements Validator<Tag> {
         if (tag == null) {
             throw new ValidatorException("Tag should be not null");
         }
-        if (tag.getName() == null || tag.getName().isEmpty()) {
+        validateName(tag.getName());
+    }
+
+    private void validateName(String name) throws ValidatorException {
+        if (name == null || name.isEmpty()) {
             throw new ValidatorException("Tag name should be not empty");
         }
-        if (tag.getName().length() < MIN_NAME_SIZE) {
+        if (name.length() < MIN_NAME_SIZE) {
             throw new ValidatorException("Tag name should contain at least 3 characters");
         }
-        if (tag.getName().length() > MAX_NAME_SIZE) {
+        if (name.length() > MAX_NAME_SIZE) {
             throw new ValidatorException("Tag name should contain not more than 30 characters");
         }
     }
+
 }

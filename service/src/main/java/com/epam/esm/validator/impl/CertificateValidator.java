@@ -18,23 +18,42 @@ public class CertificateValidator implements Validator<Certificate> {
         if (certificate == null) {
             throw new ValidatorException("Certificate should be not null");
         }
-        if (certificate.getName() == null || certificate.getName().isEmpty()) {
+        validateName(certificate.getName());
+        validateDescription(certificate.getDescription());
+        validateDuration(certificate.getDuration());
+        validatePrice(certificate.getPrice());
+    }
+
+    private void validateName(String name) throws ValidatorException {
+        if(name==null || name.isEmpty()){
             throw new ValidatorException("Certificate name should be not empty");
         }
-        if (certificate.getName().length() < MIN_NAME_SIZE) {
+        if(name.length()<MIN_NAME_SIZE){
             throw new ValidatorException("Certificate name should be at least 3 characters");
         }
-        if (certificate.getName().length() > MAX_NAME_SIZE) {
+        if(name.length()>MAX_NAME_SIZE){
             throw new ValidatorException("Certificate name should be not more than 30 characters");
         }
-        if (certificate.getDescription() == null || certificate.getDescription().isEmpty()) {
+    }
+
+    private void validateDescription(String description) throws ValidatorException {
+        if (description == null || description.isEmpty()) {
             throw new ValidatorException("Certificate description should be not empty");
         }
-        if (certificate.getDuration() <= 0) {
+    }
+
+    private void validateDuration(int duration) throws ValidatorException {
+        if (duration <= 0) {
             throw new ValidatorException("Certificate duration should be more than 0");
         }
-        if (certificate.getPrice().compareTo(BigDecimal.ZERO) < 0) {
-            throw new ValidatorException("Certificate price should be more than 0 or equals 0");
+    }
+
+    private void validatePrice(BigDecimal price) throws ValidatorException {
+        if(price==null){
+            throw new ValidatorException("Certificate price should be not null");
+        }
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ValidatorException("Certificate price should be more than or equals 0");
         }
     }
 }

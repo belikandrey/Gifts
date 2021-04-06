@@ -15,5 +15,5 @@ public interface EntityService<T, K> {
 
     int update(K id, T t) throws ValidatorException;
 
-    int delete(K id);
+    boolean delete(K id);
 }

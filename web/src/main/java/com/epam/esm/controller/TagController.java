@@ -23,20 +23,15 @@ public class TagController {
     }
 
     @GetMapping()
-    public ResponseEntity<Collection<TagDTO>> findAll(@RequestParam(value = "certificate", required = false) BigInteger id) {
-        Collection<TagDTO> tags;
-        if (id == null) {
-            tags = tagService.findAll();
-        } else {
-            tags = tagService.findAll(id);
-        }
+    public ResponseEntity<Collection<TagDTO>> findAll(@RequestParam(value = "certificateId", required = false) BigInteger certificateId) {
+        Collection<TagDTO> tags = certificateId==null?tagService.findAll():tagService.findAll(certificateId);
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(@PathVariable("id") BigInteger id) {
-        final TagDTO tag = tagService.find(id);
-        return tag != null && tag.getName() != null ?
+    public ResponseEntity<?> find(@PathVariable("id") BigInteger tagId) {
+        final TagDTO tag = tagService.find(tagId);
+        return tag != null ?
                 new ResponseEntity<>(tag, HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -53,20 +48,6 @@ public class TagController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
-
-        if (tagService.delete(id) > 0) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@PathVariable("id") BigInteger id, @RequestBody TagDTO tag) {
-        try {
-            tagService.update(id, tag);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ValidatorException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        return tagService.delete(id)?new ResponseEntity<>(HttpStatus.NO_CONTENT):new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

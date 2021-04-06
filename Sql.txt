@@ -1,8 +1,6 @@
 create table tag(
     id int not null primary key auto_increment,
-    name varchar(50) not null ,
-    index id_ind(id),
-    index name_ind(name)
+    name varchar(50) not null unique,
 );
 
 create table certificate(
@@ -13,10 +11,7 @@ create table certificate(
     duration int not null ,
     create_date datetime not null ,
     last_update_date datetime not null ,
-    index id_ind(id),
-    index name_ind(name),
-    index price_ind(price)
-
+    index name_ind(name)
 );
 
 

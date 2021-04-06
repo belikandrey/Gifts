@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.AbstractDAO;
+import com.epam.esm.dao.impl.TagDAO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -12,19 +13,24 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TagService implements EntityService<TagDTO, BigInteger> {
-    private final Validator<Tag> validator;
-    private final AbstractDAO<Tag, BigInteger> tagDao;
-    private final Converter<Tag, TagDTO> converter;
+
+    private Validator<Tag> validator;
+    private AbstractDAO<Tag, BigInteger> tagDao;
+    private Converter<Tag, TagDTO> converter;
 
     @Autowired
     public TagService(Validator<Tag> validator, AbstractDAO<Tag, BigInteger> tagDao, Converter<Tag, TagDTO> converter) {
         this.validator = validator;
         this.tagDao = tagDao;
         this.converter = converter;
+    }
+
+    public TagService() {
     }
 
     @Override
@@ -51,6 +57,15 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
         return tagDao.add(tag) > 0 ? tagDTO : null;
     }
 
+    public List<TagDTO> add(List<TagDTO> tagDTO, BigInteger certificateId) throws ValidatorException{
+        final List<Tag> tags = tagDTO.stream().map(converter::convert).collect(Collectors.toList());
+        for (Tag tag : tags) {
+            validator.validate(tag);
+        }
+        ((TagDAO)tagDao).add(tags, certificateId);
+        return tagDTO;
+    }
+
     @Override
     public int update(BigInteger id, TagDTO tagDTO) throws ValidatorException {
         Tag tag = converter.convert(tagDTO);
@@ -59,7 +74,8 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
     }
 
     @Override
-    public int delete(BigInteger id) {
-        return tagDao.delete(id);
+    public boolean delete(BigInteger id) {
+        return tagDao.delete(id)>0;
     }
+
 }

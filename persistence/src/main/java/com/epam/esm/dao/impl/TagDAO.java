@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class TagDAO implements AbstractDAO<Tag, BigInteger> {
@@ -22,6 +23,9 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     private final String SQL_ADD = "INSERT INTO tag() VALUE(?)";
     private final String SQL_UPDATE = "UPDATE tag SET name = ? where id=?";
     private final String SQL_DELETE = "DELETE FROM tag WHERE id=?";
+    private final String SQL_FIND_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
+    private final String SQL_ADD_TAG_CERTIFICATE = "INSERT INTO certificate_tag(certificate_id, tag_id) " +
+            "VALUES(?, ?)";
 
     @Autowired
     public TagDAO(JdbcTemplate jdbcTemplate) {
@@ -42,6 +46,22 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     public Tag find(BigInteger id) {
         return jdbcTemplate.query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue())
                 .stream().findAny().orElse(null);
+    }
+
+    public Tag find(String name){
+        return jdbcTemplate.query(SQL_FIND_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
+                .stream().findAny().orElse(null);
+    }
+
+    public void add(List<Tag> tags, BigInteger certificateId){
+        for(Tag tag:tags){
+            add(tag);
+            addCertificateTag(certificateId, find(tag.getName()).getId());
+        }
+    }
+
+    public int addCertificateTag(BigInteger certificateId, BigInteger tagId){
+        return jdbcTemplate.update(SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue());
     }
 
     @Override

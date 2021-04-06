@@ -36,12 +36,8 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
     }
 
     @Override
-    public Collection<CertificateDTO> findAll(BigInteger id) {
-        return certificateDAO.findAll(id).stream().map(converter::convert).collect(Collectors.toList());
-    }
-
-    public Collection<CertificateDTO> findAll(String tagName) {
-        return ((CertificateDAO) certificateDAO).findAll(tagName).stream().map(converter::convert).collect(Collectors.toList());
+    public Collection<CertificateDTO> findAll(BigInteger tagId) {
+        return certificateDAO.findAll(tagId).stream().map(converter::convert).collect(Collectors.toList());
     }
 
     public Collection<CertificateDTO> findAll(String tagName, String name, String description, String sortName, String sortDate) {
@@ -69,7 +65,9 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
         giftCertificate.setCreateDate(LocalDateTime.now());
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         final Certificate certificate = converter.convert(giftCertificate);
+        final List<TagDTO> tagsDTO = giftCertificate.getTagsDTO();
         validator.validate(certificate);
+        tagService.add(tagsDTO, certificate.getId());
         return certificateDAO.add(certificate) > 0 ? giftCertificate : null;
     }
 
@@ -78,11 +76,12 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         final Certificate certificate = converter.convert(giftCertificate);
         validator.validate(certificate);
+        tagService.add(giftCertificate.getTagsDTO(), id);
         return certificateDAO.update(id, certificate);
     }
 
     @Override
-    public int delete(BigInteger id) {
-        return certificateDAO.delete(id);
+    public boolean delete(BigInteger id) {
+        return certificateDAO.delete(id)>0;
     }
 }
