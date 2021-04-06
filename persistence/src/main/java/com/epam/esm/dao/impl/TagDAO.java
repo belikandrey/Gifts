@@ -15,16 +15,16 @@ import java.util.List;
 public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     private final JdbcTemplate jdbcTemplate;
 
-    private final String SQL_FIND_ALL = "SELECT id, name FROM tag";
-    private final String SQL_FIND_ALL_BY_CERTIFICATE_ID = SQL_FIND_ALL +
-            " JOIN certificate_tag ON tag.id = certificate_tag.tag_id" +
+    private final static String SQL_FIND_ALL = "SELECT id, name FROM gifts.tag";
+    private final static String SQL_FIND_ALL_BY_CERTIFICATE_ID = SQL_FIND_ALL +
+            " JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id" +
             " WHERE certificate_id=?";
-    private final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
-    private final String SQL_ADD = "INSERT INTO tag() VALUE(?)";
-    private final String SQL_UPDATE = "UPDATE tag SET name = ? where id=?";
-    private final String SQL_DELETE = "DELETE FROM tag WHERE id=?";
-    private final String SQL_FIND_BY_NAME = "SELECT id, name FROM tag WHERE name=?";
-    private final String SQL_ADD_TAG_CERTIFICATE = "INSERT INTO certificate_tag(certificate_id, tag_id) " +
+    private final static String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
+    private final static String SQL_ADD = "INSERT INTO gifts.tag(name) VALUES(?)";
+    private final static String SQL_UPDATE = "UPDATE gifts.tag SET name = ? where id=?";
+    private final static String SQL_DELETE = "DELETE FROM gifts.tag WHERE id=?";
+    private final static String SQL_FIND_BY_NAME = "SELECT id, name FROM gifts.tag WHERE name=?";
+    private final static String SQL_ADD_TAG_CERTIFICATE = "INSERT INTO gifts.certificate_tag(certificate_id, tag_id) " +
             "VALUES(?, ?)";
 
     @Autowired
@@ -38,8 +38,8 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
     }
 
     @Override
-    public Collection<Tag> findAll(BigInteger id) {
-        return jdbcTemplate.query(SQL_FIND_ALL_BY_CERTIFICATE_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue());
+    public Collection<Tag> findAll(BigInteger certificateId) {
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_CERTIFICATE_ID, new BeanPropertyRowMapper<>(Tag.class), certificateId.longValue());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
 
     @Override
     public int update(BigInteger id, Tag tag) {
-        return jdbcTemplate.update(SQL_UPDATE, tag.getName(), id.longValue());
+        throw new UnsupportedOperationException();
     }
 
     @Override

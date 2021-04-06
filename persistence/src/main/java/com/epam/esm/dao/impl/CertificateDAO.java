@@ -18,22 +18,23 @@ import java.util.List;
 public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
     private final JdbcTemplate jdbcTemplate;
 
-    private final String SQL_FIND_ALL = "SELECT id, name, description, price, duration," +
-            " create_date, last_update_date FROM certificate";
-    private final String SQL_FIND_ALL_BY_TAG_ID = SQL_FIND_ALL + " JOIN certificate_tag ON " +
-            "certificate.id = certificate_tag.certificate_id" +
-            " where certificate_tag.tag_id=?";
-    private final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id=?";
-    private final String SQL_ADD = "INSERT INTO certificate" +
+    private final static String SQL_FIND_ALL = "SELECT id, name, description, price, duration," +
+            " create_date, last_update_date FROM gifts.certificate";
+    private final static String SQL_FIND_ALL_BY_TAG_ID = SQL_FIND_ALL + " JOIN gifts.certificate_tag ON " +
+            "gifts.certificate.id = gifts.certificate_tag.certificate_id" +
+            " where gifts.certificate_tag.tag_id=?";
+    private final static String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id=?";
+    private final static String SQL_ADD = "INSERT INTO gifts.certificate" +
             "(name, description, price, duration, create_date, last_update_date)" +
             " values(?, ?, ?, ?, ?, ?)";
-    private final String SQL_UPDATE = "UPDATE certificate SET " +
+    private final static String SQL_UPDATE = "UPDATE gifts.certificate SET " +
             "name=?, description=?, price=?, duration=?, create_date=?," +
             " last_update_date=? where id=?";
-    private final String SQL_DELETE = "DELETE FROM certificate WHERE id=?";
-    private final String SQL_FIND_ALL_BY_TAG_NAME = SQL_FIND_ALL +
-            " JOIN certificate_tag ON certificate.id = certificate_tag.certificate_id" +
-            " JOIN tag ON certificate_tag.tag_id = tag.id WHERE tag.name = ?";
+    private final static String SQL_DELETE = "DELETE FROM gifts.certificate WHERE id=?";
+    private final static String SQL_FIND_ALL_BY_TAG_NAME = "SELECT certificate.id, certificate.name, description, price, duration,"+
+            " create_date, last_update_date FROM gifts.certificate" +
+            " JOIN gifts.certificate_tag ON gifts.certificate.id = gifts.certificate_tag.certificate_id" +
+            " JOIN gifts.tag ON gifts.certificate_tag.tag_id = gifts.tag.id WHERE tag.name = ?";
 
     @Autowired
     public CertificateDAO(JdbcTemplate jdbcTemplate) {
