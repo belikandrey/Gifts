@@ -9,10 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Class that interacts with the database

@@ -8,10 +8,6 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-project.dependencies{
-    compile(project(":model"))
-}
-
 dependencies {
     implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.23'

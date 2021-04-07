@@ -104,8 +104,8 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
         }
     }
 
-    private int addCertificateTag(BigInteger certificateId, BigInteger tagId) {
-        return jdbcTemplate.update(SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue());
+    private void addCertificateTag(BigInteger certificateId, BigInteger tagId) {
+        jdbcTemplate.update(SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue());
     }
 
     /**

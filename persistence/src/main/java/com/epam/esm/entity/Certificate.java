@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * @author Andrey Belik
  * @version 1.0
- * @see com.epam.esm.entity.Entity
+ * @see Entity
  */
 public class Certificate extends Entity<BigInteger> {
 
