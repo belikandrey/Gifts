@@ -1,7 +1,13 @@
 package com.epam.esm.search;
 
+/**
+ * Query builder for search by params
+ *
+ * @author Andrey Belik
+ * @version 1.0
+ */
 public class SearchQueryBuilder {
-    private static final String SQL_BASIC_QUERY = "SELECT certificate.id, certificate.name, certificate.description, " +
+    private static final String SQL_BASIC_QUERY = "SELECT DISTINCT certificate.id, certificate.name, certificate.description, " +
             "certificate.price, certificate.duration," +
             " certificate.create_date, certificate.last_update_date FROM gifts.certificate" +
             " JOIN gifts.certificate_tag ON certificate.id = certificate_tag.certificate_id" +
@@ -15,37 +21,75 @@ public class SearchQueryBuilder {
     private StringBuilder stringBuilder;
     private boolean isComposite;
 
+    /**
+     * Default constructor
+     */
     public SearchQueryBuilder() {
         stringBuilder = new StringBuilder(SQL_BASIC_QUERY);
     }
 
+    /**
+     * Method that finish building query
+     *
+     * @return query string
+     */
     public String build() {
         return stringBuilder.toString();
     }
 
+    /**
+     * Method that add tag name param in query
+     *
+     * @param tagName name of tag to find by
+     * @return {@link SearchQueryBuilder}
+     */
     public SearchQueryBuilder setTagName(String tagName) {
         final Separator separator = getSeparator();
         stringBuilder.append(separator.getValue() + SQL_SET_TAG_NAME + tagName + "' ");
         return this;
     }
 
+    /**
+     * Method that add certificate name param in query
+     *
+     * @param name certificate name to find by
+     * @return {@link SearchQueryBuilder}
+     */
     public SearchQueryBuilder setName(String name) {
         final Separator separator = getSeparator();
         stringBuilder.append(separator.getValue() + SQL_SET_NAME + name + "%' ");
         return this;
     }
 
+    /**
+     * Method that add description params in query
+     *
+     * @param description description to find by
+     * @return {@link SearchQueryBuilder}
+     */
     public SearchQueryBuilder setDescription(String description) {
         final Separator separator = getSeparator();
         stringBuilder.append(separator.getValue() + SQL_SET_DESCRIPTION + description + "%' ");
         return this;
     }
 
+    /**
+     * Method that add type of sort by name in query
+     *
+     * @param typeOfSort type of sort(asc, desc)
+     * @return {@link SearchQueryBuilder}
+     */
     public SearchQueryBuilder setSortByName(String typeOfSort) {
         stringBuilder.append(SQL_SET_SORT_BY_NAME + typeOfSort.toUpperCase());
         return this;
     }
 
+    /**
+     * Method that add type of sort by date in query
+     *
+     * @param typeOfSort type of sort(asc, desc)
+     * @return {@link SearchQueryBuilder}
+     */
     public SearchQueryBuilder setSortByDate(String typeOfSort) {
         stringBuilder.append(SQL_SET_SORT_BY_DATE + typeOfSort.toUpperCase());
         return this;

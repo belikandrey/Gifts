@@ -1,6 +1,5 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -78,12 +77,6 @@ class TagDAOTest {
     void addTest() {
         assertTrue(tagDAO.add(tag)>0);
         assertTrue(tagDAO.findAll().stream().anyMatch((p)->p.getName().equals(tag.getName())));
-    }
-
-    @Test
-    void addCertificateTagTest() {
-        assertTrue(tagDAO.addCertificateTag(CERTIFICATE_ID, SECOND_TAG_ID)>0);
-        assertTrue(tagDAO.findAll(CERTIFICATE_ID).stream().anyMatch((p)->p.getId().equals(SECOND_TAG_ID)));
     }
 
     @Test

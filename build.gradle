@@ -10,6 +10,10 @@ repositories {
     mavenCentral()
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+}
 
 dependencies {
 // https://mvnrepository.com/artifact/org.springframework/spring-core

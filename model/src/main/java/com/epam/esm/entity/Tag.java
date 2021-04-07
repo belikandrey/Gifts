@@ -3,26 +3,55 @@ package com.epam.esm.entity;
 import java.math.BigInteger;
 import java.util.Objects;
 
+/**
+ * @author Andrey Belik
+ * @version 1.0
+ * @see com.epam.esm.entity.Entity
+ */
 public class Tag extends Entity<BigInteger> {
 
     private String name;
 
+    /**
+     * Constructor
+     *
+     * @param name name of the tag
+     */
     public Tag(String name) {
         this.name = name;
     }
 
+    /**
+     * Default constructor
+     */
     public Tag() {
     }
 
+    /**
+     * Constructor
+     *
+     * @param id   id of the tag
+     * @param name name of the tag
+     */
     public Tag(BigInteger id, String name) {
         super(id);
         this.name = name;
     }
 
+    /**
+     * Name getter
+     *
+     * @return name of the tag
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Name setter
+     *
+     * @param name name of the tag
+     */
     public void setName(String name) {
         this.name = name;
     }

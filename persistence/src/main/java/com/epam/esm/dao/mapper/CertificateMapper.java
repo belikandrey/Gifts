@@ -8,7 +8,13 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/**
+ * Certificate to or from database mapper
+ *
+ * @author Andrey Belik
+ * @version 1.0
+ * @see org.springframework.jdbc.core.RowMapper
+ */
 public class CertificateMapper implements RowMapper<Certificate> {
     @Override
     public Certificate mapRow(ResultSet rs, int rowNum) throws SQLException {

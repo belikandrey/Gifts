@@ -12,6 +12,7 @@ public class CertificateValidator implements Validator<Certificate> {
 
     private final int MIN_NAME_SIZE = 3;
     private final int MAX_NAME_SIZE = 30;
+    private final int MAX_DESCRIPTION_SIZE = 150;
 
     @Override
     public void validate(Certificate certificate) throws ValidatorException {
@@ -29,16 +30,19 @@ public class CertificateValidator implements Validator<Certificate> {
             throw new ValidatorException("Certificate name should be not empty");
         }
         if(name.length()<MIN_NAME_SIZE){
-            throw new ValidatorException("Certificate name should be at least 3 characters");
+            throw new ValidatorException("Certificate name should be at least "+MIN_NAME_SIZE+" characters");
         }
         if(name.length()>MAX_NAME_SIZE){
-            throw new ValidatorException("Certificate name should be not more than 30 characters");
+            throw new ValidatorException("Certificate name should be not more than "+MAX_NAME_SIZE+" characters");
         }
     }
 
     private void validateDescription(String description) throws ValidatorException {
         if (description == null || description.isEmpty()) {
             throw new ValidatorException("Certificate description should be not empty");
+        }
+        if(description.length()>MAX_DESCRIPTION_SIZE){
+            throw new ValidatorException("Certificate description should be not more than "+MAX_DESCRIPTION_SIZE+" characters");
         }
     }
 
