@@ -7,5 +7,4 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ComponentScan("com.epam.esm")
 @Import(PersistenceSpringConfig.class)
-public class ServiceSpringConfig {
-}
+public class ServiceSpringConfig {}

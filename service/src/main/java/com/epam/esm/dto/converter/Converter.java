@@ -11,17 +11,19 @@ import com.epam.esm.entity.Entity;
  * @version 1.0
  */
 public interface Converter<T extends Entity, K> {
-    /**
-     * Convert DTO entity to entity
-     * @param dto dto entity
-     * @return entity
-     */
-    T convert(K dto);
+  /**
+   * Convert DTO entity to entity
+   *
+   * @param dto dto entity
+   * @return entity
+   */
+  T convert(K dto);
 
-    /**
-     * Convert entity to dto entity
-     * @param entity entity
-     * @return entity dto
-     */
-    K convert(T entity);
+  /**
+   * Convert entity to dto entity
+   *
+   * @param entity entity
+   * @return entity dto
+   */
+  K convert(T entity);
 }

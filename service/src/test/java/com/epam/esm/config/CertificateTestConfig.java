@@ -15,28 +15,29 @@ import static org.mockito.Mockito.mock;
 @ComponentScan("com.epam.esm")
 public class CertificateTestConfig {
 
-    @Bean
-    public CertificateService certificateService(){
-        return new CertificateService(certificateValidator(), certificateDAO(), tagServiceMock(), certificateConverter());
-    }
+  @Bean
+  public CertificateService certificateService() {
+    return new CertificateService(
+        certificateValidator(), certificateDAO(), tagServiceMock(), certificateConverter());
+  }
 
-    @Bean
-    public CertificateValidator certificateValidator(){
-        return mock(CertificateValidator.class);
-    }
+  @Bean
+  public CertificateValidator certificateValidator() {
+    return mock(CertificateValidator.class);
+  }
 
-    @Bean
-    public CertificateDAO certificateDAO(){
-        return mock(CertificateDAO.class);
-    }
+  @Bean
+  public CertificateDAO certificateDAO() {
+    return mock(CertificateDAO.class);
+  }
 
-    @Bean
-    public TagService tagServiceMock(){
-        return mock(TagService.class);
-    }
+  @Bean
+  public TagService tagServiceMock() {
+    return mock(TagService.class);
+  }
 
-    @Bean
-    public CertificateConverter certificateConverter(){
-        return mock(CertificateConverter.class);
-    }
+  @Bean
+  public CertificateConverter certificateConverter() {
+    return mock(CertificateConverter.class);
+  }
 }

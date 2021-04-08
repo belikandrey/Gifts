@@ -7,42 +7,36 @@ package com.epam.esm.entity;
  */
 public abstract class Entity<T> {
 
-    /**
-     * id for the object
-     */
-    private T id;
+  /** id for the object */
+  private T id;
 
-    /**
-     * default constructor
-     */
-    public Entity() {
-    }
+  /** default constructor */
+  public Entity() {}
 
-    /**
-     * constructor
-     *
-     * @param id - id of the entit
-     */
+  /**
+   * constructor
+   *
+   * @param id - id of the entit
+   */
+  public Entity(T id) {
+    this.id = id;
+  }
 
-    public Entity(T id) {
-        this.id = id;
-    }
+  /**
+   * Id getter
+   *
+   * @return id of the entity
+   */
+  public T getId() {
+    return id;
+  }
 
-    /**
-     * Id getter
-     *
-     * @return id of the entity
-     */
-    public T getId() {
-        return id;
-    }
-
-    /**
-     * Id setter
-     *
-     * @param id id of the entity
-     */
-    public void setId(T id) {
-        this.id = id;
-    }
+  /**
+   * Id setter
+   *
+   * @param id id of the entity
+   */
+  public void setId(T id) {
+    this.id = id;
+  }
 }
