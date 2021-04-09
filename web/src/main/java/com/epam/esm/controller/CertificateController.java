@@ -92,7 +92,7 @@ public class CertificateController {
       certificateService.add(certificate);
       return new ResponseEntity<>(certificate, HttpStatus.OK);
     } catch (ValidatorException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -120,6 +120,7 @@ public class CertificateController {
   public ResponseEntity<?> update(
       @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate) {
     try {
+      System.out.println("Update controller");
       certificateService.update(id, newCertificate);
       return new ResponseEntity<>(HttpStatus.OK);
     } catch (ValidatorException e) {

@@ -85,7 +85,7 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
     return ((CertificateDAO) certificateDAO)
         .findAll(tagName, name, description, sortName, sortDate).stream()
             .map(converter::convert)
-            .peek(p -> p.setTagsDTO((Set<TagDTO>) tagService.findAll(p.getId())))
+            .peek(p -> p.setTags((Set<TagDTO>) tagService.findAll(p.getId())))
             .collect(Collectors.toList());
   }
 
@@ -120,10 +120,10 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
    */
   @Override
   public CertificateDTO add(CertificateDTO giftCertificate) throws ValidatorException {
-    giftCertificate.setCreateDate(LocalDateTime.now());
+    giftCertificate.setCreationDate(LocalDateTime.now());
     giftCertificate.setLastUpdateDate(LocalDateTime.now());
     final Certificate certificate = converter.convert(giftCertificate);
-    final Set<TagDTO> tagsDTO = giftCertificate.getTagsDTO();
+    final Set<TagDTO> tagsDTO = giftCertificate.getTags();
     validator.validate(certificate);
     if (tagsDTO != null) {
       tagService.add(tagsDTO, certificate.getId());
@@ -145,7 +145,7 @@ public class CertificateService implements EntityService<CertificateDTO, BigInte
     giftCertificate.setLastUpdateDate(LocalDateTime.now());
     final Certificate certificate = converter.convert(giftCertificate);
     validator.validate(certificate);
-    final Set<TagDTO> tagsDTO = giftCertificate.getTagsDTO();
+    final Set<TagDTO> tagsDTO = giftCertificate.getTags();
     if (tagsDTO != null) {
       tagService.add(tagsDTO, certificateId);
     }

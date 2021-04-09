@@ -1,5 +1,11 @@
 package com.epam.esm.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -19,11 +25,17 @@ public class CertificateDTO {
 
   private int duration;
 
-  private LocalDateTime createDate;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  private LocalDateTime creationDate;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastUpdateDate;
 
-  private Set<TagDTO> tagsDTO;
+  private Set<TagDTO> tags;
 
   /** Default constructor */
   public CertificateDTO() {}
@@ -36,7 +48,7 @@ public class CertificateDTO {
    * @param description description of the certificate DTO
    * @param price price of the certificate DTO
    * @param duration duration of the certificate DTO
-   * @param createDate create date of the certificate DTO
+   * @param creationDate create date of the certificate DTO
    * @param lastUpdateDate last update date of the certificate DTO
    */
   public CertificateDTO(
@@ -45,24 +57,24 @@ public class CertificateDTO {
       String description,
       BigDecimal price,
       int duration,
-      LocalDateTime createDate,
+      LocalDateTime creationDate,
       LocalDateTime lastUpdateDate) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.price = price;
     this.duration = duration;
-    this.createDate = createDate;
+    this.creationDate = creationDate;
     this.lastUpdateDate = lastUpdateDate;
   }
 
   /**
    * Tags DTO setter
    *
-   * @param tagsDTO {@link java.util.Set} of {@link TagDTO}
+   * @param tags {@link java.util.Set} of {@link TagDTO}
    */
-  public void setTagsDTO(Set<TagDTO> tagsDTO) {
-    this.tagsDTO = tagsDTO;
+  public void setTags(Set<TagDTO> tags) {
+    this.tags = tags;
   }
 
   /**
@@ -70,8 +82,8 @@ public class CertificateDTO {
    *
    * @return {@link java.util.Set} of {@link TagDTO}
    */
-  public Set<TagDTO> getTagsDTO() {
-    return tagsDTO;
+  public Set<TagDTO> getTags() {
+    return tags;
   }
 
   /**
@@ -169,8 +181,8 @@ public class CertificateDTO {
    *
    * @return create date of the certificate DTO
    */
-  public LocalDateTime getCreateDate() {
-    return createDate;
+  public LocalDateTime getCreationDate() {
+    return creationDate;
   }
 
   /**
@@ -178,8 +190,8 @@ public class CertificateDTO {
    *
    * @param createDate create date of the certificate DTO
    */
-  public void setCreateDate(LocalDateTime createDate) {
-    this.createDate = createDate;
+  public void setCreationDate(LocalDateTime createDate) {
+    this.creationDate = createDate;
   }
 
   /**
@@ -210,13 +222,13 @@ public class CertificateDTO {
         && Objects.equals(name, that.name)
         && Objects.equals(description, that.description)
         && Objects.equals(price, that.price)
-        && Objects.equals(createDate, that.createDate)
+        && Objects.equals(creationDate, that.creationDate)
         && Objects.equals(lastUpdateDate, that.lastUpdateDate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description, price, duration, createDate, lastUpdateDate);
+    return Objects.hash(id, name, description, price, duration, creationDate, lastUpdateDate);
   }
 
   @Override
@@ -234,8 +246,8 @@ public class CertificateDTO {
         + price
         + ", duration="
         + duration
-        + ", createDate="
-        + createDate
+        + ", creationDate="
+        + creationDate
         + ", lastUpdateDate="
         + lastUpdateDate
         + '}';

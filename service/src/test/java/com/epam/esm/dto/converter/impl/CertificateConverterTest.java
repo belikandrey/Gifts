@@ -39,7 +39,7 @@ class CertificateConverterTest {
     assertEquals(certificate.getDescription(), certificateDTO.getDescription());
     assertEquals(certificate.getPrice(), certificateDTO.getPrice());
     assertEquals(certificate.getDuration(), certificateDTO.getDuration());
-    assertEquals(certificate.getCreateDate(), certificateDTO.getCreateDate());
+    assertEquals(certificate.getCreateDate(), certificateDTO.getCreationDate());
     assertEquals(certificate.getLastUpdateDate(), certificateDTO.getLastUpdateDate());
   }
 
@@ -54,7 +54,7 @@ class CertificateConverterTest {
     assertEquals(certificate.getDescription(), certificateDTO.getDescription());
     assertEquals(certificate.getPrice(), certificateDTO.getPrice());
     assertEquals(certificate.getDuration(), certificateDTO.getDuration());
-    assertEquals(certificate.getCreateDate(), certificateDTO.getCreateDate());
+    assertEquals(certificate.getCreateDate(), certificateDTO.getCreationDate());
     assertEquals(certificate.getLastUpdateDate(), certificateDTO.getLastUpdateDate());
   }
 }

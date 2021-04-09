@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,7 +55,7 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    */
   @Override
   public Collection<TagDTO> findAll() {
-    return tagDao.findAll().stream().map(converter::convert).collect(Collectors.toList());
+    return tagDao.findAll().stream().map(converter::convert).collect(Collectors.toSet());
   }
 
   /**
@@ -69,7 +68,7 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
   public Collection<TagDTO> findAll(BigInteger certificateId) {
     return tagDao.findAll(certificateId).stream()
         .map(converter::convert)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -101,13 +100,13 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
   /**
    * Add tag for certificate method
    *
-   * @param tagDTO {@link java.util.List} of tags
+   * @param tagDTO {@link java.util.Set} of tags
    * @param certificateId id of certificate
-   * @return {@link java.util.List} of added tags
+   * @return {@link java.util.Set} of added tags
    * @throws ValidatorException if any tag is invalid
    */
   public Set<TagDTO> add(Set<TagDTO> tagDTO, BigInteger certificateId) throws ValidatorException {
-    final List<Tag> tags = tagDTO.stream().map(converter::convert).collect(Collectors.toList());
+    final Set<Tag> tags = tagDTO.stream().map(converter::convert).collect(Collectors.toSet());
     for (Tag tag : tags) {
       validator.validate(tag);
     }

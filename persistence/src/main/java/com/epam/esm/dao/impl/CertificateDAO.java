@@ -36,7 +36,7 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
           + " values(?, ?, ?, ?, ?, ?)";
   private static final String SQL_UPDATE =
       "UPDATE gifts.certificate SET "
-          + "name=?, description=?, price=?, duration=?, create_date=?,"
+          + "name=?, description=?, price=?, duration=?,"
           + " last_update_date=? where id=?";
   private static final String SQL_DELETE = "DELETE FROM gifts.certificate WHERE id=?";
   private static final String SQL_FIND_ALL_BY_TAG_NAME =
@@ -149,7 +149,6 @@ public class CertificateDAO implements AbstractDAO<Certificate, BigInteger> {
         certificate.getDescription(),
         certificate.getPrice(),
         certificate.getDuration(),
-        certificate.getCreateDate(),
         certificate.getLastUpdateDate(),
         id.longValue());
   }

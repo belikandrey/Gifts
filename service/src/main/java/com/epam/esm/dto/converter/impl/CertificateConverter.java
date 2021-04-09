@@ -27,7 +27,7 @@ public class CertificateConverter implements Converter<Certificate, CertificateD
         dto.getDescription(),
         dto.getPrice(),
         dto.getDuration(),
-        dto.getCreateDate(),
+        dto.getCreationDate(),
         dto.getLastUpdateDate());
   }
 

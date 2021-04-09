@@ -1,7 +1,9 @@
 package com.epam.esm.config;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+@Configuration
 public class SpringMVCDispatcherServlet
     extends AbstractAnnotationConfigDispatcherServletInitializer {
   @Override
@@ -11,7 +13,7 @@ public class SpringMVCDispatcherServlet
 
   @Override
   protected Class<?>[] getServletConfigClasses() {
-    return new Class[] {PersistenceSpringConfig.class};
+    return new Class[] {SpringConfig.class};
   }
 
   @Override

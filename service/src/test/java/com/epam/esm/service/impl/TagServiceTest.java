@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,20 +47,22 @@ class TagServiceTest {
   private static final int DAO_UPDATE_RETURN_VALUE = 3;
   private static final int DAO_UPDATE_BAD_RETURN_VALUE = 0;
 
-  // Mock of TagDAO returns tags list. Expected collection of tagDTO with same id/name
+  // Mock of TagDAO returns tags list. Expected collection of tagDTO
   @Test
   public void findAllTest() {
-    final List<Tag> tags = List.of(new Tag(FIRST_ID, FIRST_NAME), new Tag(SECOND_ID, SECOND_NAME));
+    final Tag firstTag = new Tag(FIRST_ID, FIRST_NAME);
+    final Tag secondTag = new Tag(SECOND_ID, SECOND_NAME);
+    final Set<Tag> tags = Set.of(firstTag, secondTag);
     when(tagDAO.findAll()).thenReturn(tags);
-    when(converter.convert(any(Tag.class))).thenReturn(new TagDTO(FIRST_ID, FIRST_NAME));
+    when(converter.convert(firstTag)).thenReturn(new TagDTO(FIRST_ID, FIRST_NAME));
+    when(converter.convert(secondTag)).thenReturn(new TagDTO(SECOND_ID, SECOND_NAME));
     final Collection<TagDTO> tagsDTO = tagService.findAll();
     assertNotNull(tagsDTO);
     assertFalse(tagsDTO.isEmpty());
-    final long count =
-        tagsDTO.stream()
-            .filter((p) -> p.getName().equals(FIRST_NAME) || p.getName().equals(SECOND_NAME))
+    final long count = tagsDTO.stream()
+            .filter((p)->p.getName().equals(firstTag.getName()) || p.getName().equals(secondTag.getName()))
             .count();
-    assertEquals(count, 2);
+    assertEquals(2, count);
   }
 
   // Given certificate ID. Mock of TagDAO returns tags list for this certificate. Expected tagDTO
@@ -67,9 +70,12 @@ class TagServiceTest {
   // with same id/name
   @Test
   public void findAllByCertificateIdTest() {
-    final List<Tag> tags = List.of(new Tag(FIRST_NAME), new Tag(SECOND_NAME));
+    final Tag firstTag = new Tag(FIRST_NAME);
+    final Tag secondTag = new Tag(SECOND_NAME);
+    final Set<Tag> tags = Set.of(firstTag,secondTag);
     when(tagDAO.findAll(CERTIFICATE_ID)).thenReturn(tags);
-    when(converter.convert(any(Tag.class))).thenReturn(new TagDTO(FIRST_ID, FIRST_NAME));
+    when(converter.convert(firstTag)).thenReturn(new TagDTO(FIRST_ID, FIRST_NAME));
+    when(converter.convert(secondTag)).thenReturn(new TagDTO(SECOND_ID, SECOND_NAME));
     final Collection<TagDTO> tagsDTO = tagService.findAll(CERTIFICATE_ID);
     assertNotNull(tagsDTO);
     assertFalse(tagsDTO.isEmpty());
@@ -77,7 +83,7 @@ class TagServiceTest {
         tagsDTO.stream()
             .filter((p) -> p.getName().equals(FIRST_NAME) || p.getName().equals(SECOND_NAME))
             .count();
-    assertEquals(count, 2);
+    assertEquals(2, count);
   }
 
   // Given tagID. Mock of tagDAO returns tags list with tagID. Expected tagDTO collection with same

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class that interacts with the database
@@ -21,7 +22,7 @@ import java.util.List;
 public class TagDAO implements AbstractDAO<Tag, BigInteger> {
   private final JdbcTemplate jdbcTemplate;
 
-  private static final String SQL_FIND_ALL = "SELECT id, name FROM gifts.tag";
+  private static final String SQL_FIND_ALL = "SELECT id, name FROM gifts.tag order by id";
   private static final String SQL_FIND_ALL_BY_CERTIFICATE_ID =
       SQL_FIND_ALL
           + " JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
@@ -99,10 +100,10 @@ public class TagDAO implements AbstractDAO<Tag, BigInteger> {
   /**
    * Add tags for certificate in database method
    *
-   * @param tags {@link java.util.List} of tags
+   * @param tags {@link java.util.Set} of tags
    * @param certificateId certificate id
    */
-  public void add(List<Tag> tags, BigInteger certificateId) {
+  public void add(Set<Tag> tags, BigInteger certificateId) {
     for (Tag tag : tags) {
       add(tag);
       addCertificateTag(certificateId, find(tag.getName()).getId());
