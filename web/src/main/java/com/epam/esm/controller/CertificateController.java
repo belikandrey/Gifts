@@ -1,9 +1,12 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.exception.EntityAlreadyExistException;
+import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.EntityService;
-import com.epam.esm.service.impl.CertificateService;
+import com.epam.esm.service.impl.CertificateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +34,7 @@ import java.util.Collection;
 @RequestMapping("/certificates")
 public class CertificateController {
 
-  private final EntityService<CertificateDTO, BigInteger> certificateService;
+  private final CertificateService certificateService;
 
   /**
    * Constructor
@@ -39,7 +42,7 @@ public class CertificateController {
    * @param certificateService {@link com.epam.esm.service.EntityService}
    */
   @Autowired
-  public CertificateController(EntityService<CertificateDTO, BigInteger> certificateService) {
+  public CertificateController(CertificateService certificateService) {
     this.certificateService = certificateService;
   }
 
@@ -61,8 +64,7 @@ public class CertificateController {
       @RequestParam(value = "sortName", required = false) String sortName,
       @RequestParam(value = "sortDate", required = false) String sortDate) {
     Collection<CertificateDTO> giftCertificates =
-        ((CertificateService) certificateService)
-            .findAll(tagName, name, description, sortName, sortDate);
+        certificateService.findAll(tagName, name, description, sortName, sortDate);
     return new ResponseEntity<>(giftCertificates, HttpStatus.OK);
   }
 
@@ -73,11 +75,9 @@ public class CertificateController {
    * @return response entity
    */
   @GetMapping("/{id}")
-  public ResponseEntity<?> find(@PathVariable("id") BigInteger id) {
-    final CertificateDTO certificate = certificateService.find(id);
-    return certificate != null
-        ? new ResponseEntity<>(certificate, HttpStatus.OK)
-        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  public ResponseEntity<?> find(@PathVariable("id") BigInteger id) throws EntityNotFoundException {
+    final CertificateDTO certificate = certificateService.findById(id);
+    return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 
   /**
@@ -87,13 +87,10 @@ public class CertificateController {
    * @return response entity
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> create(@RequestBody CertificateDTO certificate) {
-    try {
-      certificateService.add(certificate);
-      return new ResponseEntity<>(certificate, HttpStatus.OK);
-    } catch (ValidatorException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+  public ResponseEntity<?> create(@RequestBody CertificateDTO certificate)
+      throws EntityAlreadyExistException, ValidatorException {
+    certificate = certificateService.add(certificate);
+    return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 
   /**
@@ -103,10 +100,10 @@ public class CertificateController {
    * @return response entity
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
-    return certificateService.delete(id)
-        ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+  public ResponseEntity<?> delete(@PathVariable("id") BigInteger id)
+      throws EntityNotFoundException {
+    certificateService.delete(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   /**
@@ -118,13 +115,9 @@ public class CertificateController {
    */
   @PutMapping("/{id}")
   public ResponseEntity<?> update(
-      @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate) {
-    try {
-      System.out.println("Update controller");
-      certificateService.update(id, newCertificate);
-      return new ResponseEntity<>(HttpStatus.OK);
-    } catch (ValidatorException e) {
-      return new ResponseEntity<>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+      @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
+      throws ValidatorException, EntityNotFoundException {
+    certificateService.update(id, newCertificate);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class CertificateDTO {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastUpdateDate;
 
-  private Set<TagDTO> tags;
+  private Set<TagDTO> tags = new HashSet<>();
 
   /** Default constructor */
   public CertificateDTO() {}

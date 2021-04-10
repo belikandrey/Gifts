@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SearchQueryBuilderTest {
 
-  private SearchQueryBuilder queryBuilder;
+  private CertificateSearchQueryBuilder queryBuilder;
   private static final String SQL_SET_TAG_NAME = " tag.name = '";
   private static final String SQL_SET_NAME = " certificate.name LIKE '%";
   private static final String SQL_SET_DESCRIPTION = " certificate.description LIKE '%";
@@ -19,7 +19,7 @@ class SearchQueryBuilderTest {
 
   @BeforeEach
   public void init() {
-    queryBuilder = new SearchQueryBuilder();
+    queryBuilder = new CertificateSearchQueryBuilder();
   }
 
   @Test
@@ -31,7 +31,7 @@ class SearchQueryBuilderTest {
 
   @Test
   public void setTagNameAfterNameTest() {
-    final SearchQueryBuilder builderWithName = queryBuilder.setName(NAME);
+    final CertificateSearchQueryBuilder builderWithName = queryBuilder.setName(NAME);
     assertTrue(builderWithName.build().contains("WHERE" + SQL_SET_NAME + NAME));
     final String queryWithNameAndTagName = builderWithName.setTagName(TAG_NAME).build();
     assertTrue(queryWithNameAndTagName.contains("AND" + SQL_SET_TAG_NAME + TAG_NAME));

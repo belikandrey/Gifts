@@ -1,18 +1,21 @@
 package com.epam.esm.search;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Query builder for search by params
  *
  * @author Andrey Belik
  * @version 1.0
  */
-public class SearchQueryBuilder {
+@Component
+public class CertificateSearchQueryBuilder {
   private static final String SQL_BASIC_QUERY =
       "SELECT DISTINCT certificate.id, certificate.name, certificate.description, "
           + "certificate.price, certificate.duration,"
           + " certificate.create_date, certificate.last_update_date FROM gifts.certificate"
-          + " JOIN gifts.certificate_tag ON certificate.id = certificate_tag.certificate_id"
-          + " JOIN gifts.tag ON certificate_tag.tag_id = tag.id ";
+          + " LEFT JOIN gifts.certificate_tag ON certificate.id = certificate_tag.certificate_id"
+          + " LEFT JOIN gifts.tag ON certificate_tag.tag_id = tag.id ";
   private static final String SQL_SET_TAG_NAME = " tag.name = '";
   private static final String SQL_SET_NAME = " certificate.name LIKE '%";
   private static final String SQL_SET_DESCRIPTION = " certificate.description LIKE '%";
@@ -23,7 +26,7 @@ public class SearchQueryBuilder {
   private boolean isComposite;
 
   /** Default constructor */
-  public SearchQueryBuilder() {
+  public CertificateSearchQueryBuilder() {
     stringBuilder = new StringBuilder(SQL_BASIC_QUERY);
   }
 
@@ -40,9 +43,9 @@ public class SearchQueryBuilder {
    * Method that add tag name param in query
    *
    * @param tagName name of tag to find by
-   * @return {@link SearchQueryBuilder}
+   * @return {@link CertificateSearchQueryBuilder}
    */
-  public SearchQueryBuilder setTagName(String tagName) {
+  public CertificateSearchQueryBuilder setTagName(String tagName) {
     final Separator separator = getSeparator();
     stringBuilder.append(separator.getValue() + SQL_SET_TAG_NAME + tagName + "' ");
     return this;
@@ -52,9 +55,9 @@ public class SearchQueryBuilder {
    * Method that add certificate name param in query
    *
    * @param name certificate name to find by
-   * @return {@link SearchQueryBuilder}
+   * @return {@link CertificateSearchQueryBuilder}
    */
-  public SearchQueryBuilder setName(String name) {
+  public CertificateSearchQueryBuilder setName(String name) {
     final Separator separator = getSeparator();
     stringBuilder.append(separator.getValue() + SQL_SET_NAME + name + "%' ");
     return this;
@@ -64,9 +67,9 @@ public class SearchQueryBuilder {
    * Method that add description params in query
    *
    * @param description description to find by
-   * @return {@link SearchQueryBuilder}
+   * @return {@link CertificateSearchQueryBuilder}
    */
-  public SearchQueryBuilder setDescription(String description) {
+  public CertificateSearchQueryBuilder setDescription(String description) {
     final Separator separator = getSeparator();
     stringBuilder.append(separator.getValue() + SQL_SET_DESCRIPTION + description + "%' ");
     return this;
@@ -76,9 +79,9 @@ public class SearchQueryBuilder {
    * Method that add type of sort by name in query
    *
    * @param typeOfSort type of sort(asc, desc)
-   * @return {@link SearchQueryBuilder}
+   * @return {@link CertificateSearchQueryBuilder}
    */
-  public SearchQueryBuilder setSortByName(String typeOfSort) {
+  public CertificateSearchQueryBuilder setSortByName(String typeOfSort) {
     stringBuilder.append(SQL_SET_SORT_BY_NAME + typeOfSort.toUpperCase());
     return this;
   }
@@ -87,9 +90,9 @@ public class SearchQueryBuilder {
    * Method that add type of sort by date in query
    *
    * @param typeOfSort type of sort(asc, desc)
-   * @return {@link SearchQueryBuilder}
+   * @return {@link CertificateSearchQueryBuilder}
    */
-  public SearchQueryBuilder setSortByDate(String typeOfSort) {
+  public CertificateSearchQueryBuilder setSortByDate(String typeOfSort) {
     stringBuilder.append(SQL_SET_SORT_BY_DATE + typeOfSort.toUpperCase());
     return this;
   }

@@ -1,9 +1,9 @@
 package com.epam.esm.config;
 
-import com.epam.esm.dao.impl.CertificateDAO;
+import com.epam.esm.dao.impl.CertificateDAOImpl;
 import com.epam.esm.dto.converter.impl.CertificateConverter;
-import com.epam.esm.service.impl.CertificateService;
-import com.epam.esm.service.impl.TagService;
+import com.epam.esm.service.impl.CertificateServiceImpl;
+import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.validator.impl.CertificateValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,10 +14,10 @@ import static org.mockito.Mockito.mock;
 @Configuration
 @ComponentScan("com.epam.esm")
 public class CertificateTestConfig {
-
+/*
   @Bean
-  public CertificateService certificateService() {
-    return new CertificateService(
+  public CertificateServiceImpl certificateService() {
+    return new CertificateServiceImpl(
         certificateValidator(), certificateDAO(), tagServiceMock(), certificateConverter());
   }
 
@@ -27,17 +27,17 @@ public class CertificateTestConfig {
   }
 
   @Bean
-  public CertificateDAO certificateDAO() {
-    return mock(CertificateDAO.class);
+  public CertificateDAOImpl certificateDAO() {
+    return mock(CertificateDAOImpl.class);
   }
 
   @Bean
-  public TagService tagServiceMock() {
-    return mock(TagService.class);
+  public TagServiceImpl tagServiceMock() {
+    return mock(TagServiceImpl.class);
   }
 
   @Bean
   public CertificateConverter certificateConverter() {
     return mock(CertificateConverter.class);
-  }
+  }*/
 }

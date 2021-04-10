@@ -1,11 +1,11 @@
 package com.epam.esm.config;
 
-import com.epam.esm.dao.impl.CertificateDAO;
-import com.epam.esm.dao.impl.TagDAO;
+import com.epam.esm.dao.impl.CertificateDAOImpl;
+import com.epam.esm.dao.impl.TagDAOImpl;
 import com.epam.esm.dto.converter.impl.CertificateConverter;
 import com.epam.esm.dto.converter.impl.TagConverter;
-import com.epam.esm.service.impl.CertificateService;
-import com.epam.esm.service.impl.TagService;
+import com.epam.esm.service.impl.CertificateServiceImpl;
+import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.validator.impl.CertificateValidator;
 import com.epam.esm.validator.impl.TagValidator;
 import static org.mockito.Mockito.mock;
@@ -16,15 +16,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan("com.epam.esm")
 public class TestConfig {
-
+/*
   @Bean
-  public TagService tagService() {
-    return new TagService(tagValidator(), tagDAO(), tagConverter());
+  public TagServiceImpl tagService() {
+    return new TagServiceImpl(tagValidator(), tagDAO(), tagConverter());
   }
 
   @Bean
-  public TagDAO tagDAO() {
-    return mock(TagDAO.class);
+  public TagDAOImpl tagDAO() {
+    return mock(TagDAOImpl.class);
   }
 
   @Bean
@@ -38,8 +38,8 @@ public class TestConfig {
   }
 
   @Bean
-  public CertificateService certificateService() {
-    return new CertificateService(
+  public CertificateServiceImpl certificateService() {
+    return new CertificateServiceImpl(
         certificateValidator(), certificateDAO(), tagServiceMock(), certificateConverter());
   }
 
@@ -49,17 +49,17 @@ public class TestConfig {
   }
 
   @Bean
-  public CertificateDAO certificateDAO() {
-    return mock(CertificateDAO.class);
+  public CertificateDAOImpl certificateDAO() {
+    return mock(CertificateDAOImpl.class);
   }
 
   @Bean
-  public TagService tagServiceMock() {
-    return mock(TagService.class);
+  public TagServiceImpl tagServiceMock() {
+    return mock(TagServiceImpl.class);
   }
 
   @Bean
   public CertificateConverter certificateConverter() {
     return mock(CertificateConverter.class);
-  }
+  }*/
 }

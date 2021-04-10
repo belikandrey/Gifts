@@ -1,12 +1,16 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.AbstractDAO;
-import com.epam.esm.dao.impl.TagDAO;
+import com.epam.esm.dao.TagDAO;
+import com.epam.esm.dao.impl.TagDAOImpl;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.EntityAlreadyExistException;
+import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.EntityService;
+import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +26,10 @@ import java.util.stream.Collectors;
  * @author Andrey Belik
  */
 @Service
-public class TagService implements EntityService<TagDTO, BigInteger> {
+public class TagServiceImpl implements TagService {
 
   private Validator<Tag> validator;
-  private AbstractDAO<Tag, BigInteger> tagDao;
+  private TagDAO tagDao;
   private Converter<Tag, TagDTO> converter;
 
   /**
@@ -36,17 +40,14 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    * @param converter {@link com.epam.esm.dto.converter.Converter}
    */
   @Autowired
-  public TagService(
-      Validator<Tag> validator,
-      AbstractDAO<Tag, BigInteger> tagDao,
-      Converter<Tag, TagDTO> converter) {
+  public TagServiceImpl(Validator<Tag> validator, TagDAO tagDao, Converter<Tag, TagDTO> converter) {
     this.validator = validator;
     this.tagDao = tagDao;
     this.converter = converter;
   }
 
   /** Default constructor */
-  public TagService() {}
+  public TagServiceImpl() {}
 
   /**
    * Find all tags method
@@ -64,13 +65,13 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    * @param certificateId certificate id
    * @return {@link java.util.Collection} of tags
    */
-  @Override
-  public Collection<TagDTO> findAll(BigInteger certificateId) {
-    return tagDao.findAll(certificateId).stream()
-        .map(converter::convert)
-        .collect(Collectors.toSet());
-  }
-
+  /* @Override
+    public Collection<TagDTO> findAll(BigInteger certificateId) {
+      return tagDao.findAll(certificateId).stream()
+          .map(converter::convert)
+          .collect(Collectors.toSet());
+    }
+  */
   /**
    * Find by id method
    *
@@ -78,9 +79,9 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    * @return tag or null if tag not found
    */
   @Override
-  public TagDTO find(BigInteger id) {
-    final Tag tag = tagDao.find(id);
-    return tag != null ? converter.convert(tag) : null;
+  public TagDTO findById(BigInteger id) throws EntityNotFoundException {
+    final Tag tag = tagDao.findById(id);
+    return converter.convert(tag);
   }
 
   /**
@@ -91,27 +92,10 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    * @throws ValidatorException if tag is invalid
    */
   @Override
-  public TagDTO add(TagDTO tagDTO) throws ValidatorException {
+  public TagDTO add(TagDTO tagDTO) throws ValidatorException, EntityAlreadyExistException {
     Tag tag = converter.convert(tagDTO);
     validator.validate(tag);
-    return tagDao.add(tag) > 0 ? tagDTO : null;
-  }
-
-  /**
-   * Add tag for certificate method
-   *
-   * @param tagDTO {@link java.util.Set} of tags
-   * @param certificateId id of certificate
-   * @return {@link java.util.Set} of added tags
-   * @throws ValidatorException if any tag is invalid
-   */
-  public Set<TagDTO> add(Set<TagDTO> tagDTO, BigInteger certificateId) throws ValidatorException {
-    final Set<Tag> tags = tagDTO.stream().map(converter::convert).collect(Collectors.toSet());
-    for (Tag tag : tags) {
-      validator.validate(tag);
-    }
-    ((TagDAO) tagDao).add(tags, certificateId);
-    return tagDTO;
+    return converter.convert(tagDao.add(tag));
   }
 
   /**
@@ -123,10 +107,8 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    * @throws ValidatorException if tag is invalid
    */
   @Override
-  public int update(BigInteger id, TagDTO tagDTO) throws ValidatorException {
-    Tag tag = converter.convert(tagDTO);
-    validator.validate(tag);
-    return tagDao.update(id, tag);
+  public void update(BigInteger id, TagDTO tagDTO) throws EntityNotFoundException {
+    tagDao.update(id, converter.convert(tagDTO));
   }
 
   /**
@@ -136,7 +118,7 @@ public class TagService implements EntityService<TagDTO, BigInteger> {
    * @return true if tag deleted, false in another way
    */
   @Override
-  public boolean delete(BigInteger id) {
-    return tagDao.delete(id) > 0;
+  public void delete(BigInteger id) throws EntityNotFoundException {
+    tagDao.delete(id);
   }
 }

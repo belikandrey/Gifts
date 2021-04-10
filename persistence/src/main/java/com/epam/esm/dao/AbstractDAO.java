@@ -1,6 +1,9 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.criteria.SearchCriteria;
 import com.epam.esm.entity.Entity;
+import com.epam.esm.exception.EntityAlreadyExistException;
+import com.epam.esm.exception.EntityNotFoundException;
 
 import java.util.Collection;
 
@@ -15,27 +18,12 @@ import java.util.Collection;
 public interface AbstractDAO<T extends Entity, K> {
 
   /**
-   * Find all entities method
-   *
-   * @return {@link java.util.Collection} of entities
-   */
-  Collection<T> findAll();
-
-  /**
-   * Find all entity by another entity id method
-   *
-   * @param id another entity id(f.e. tag id when searching certificate)
-   * @return {@link java.util.Collection} of entities
-   */
-  Collection<T> findAll(K id);
-
-  /**
    * Find entity by id method
    *
    * @param id id of the entity
    * @return entity or null if entity doesn't exists
    */
-  T find(K id);
+  T findById(K id) throws EntityNotFoundException;
 
   /**
    * Add entity method
@@ -43,7 +31,7 @@ public interface AbstractDAO<T extends Entity, K> {
    * @param t entity to add
    * @return count of added rows
    */
-  int add(T t);
+  T add(T t) throws EntityAlreadyExistException;
 
   /**
    * Update entity method
@@ -52,7 +40,7 @@ public interface AbstractDAO<T extends Entity, K> {
    * @param t entity to update
    * @return count of updated rows
    */
-  int update(K id, T t);
+  void update(K id, T t) throws EntityNotFoundException;
 
   /**
    * Delete entity method
@@ -60,5 +48,5 @@ public interface AbstractDAO<T extends Entity, K> {
    * @param id id of the entity to delete
    * @return count of deleted rows
    */
-  int delete(K id);
+  void delete(K id) throws EntityNotFoundException;
 }
