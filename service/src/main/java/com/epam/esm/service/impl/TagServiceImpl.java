@@ -59,6 +59,18 @@ public class TagServiceImpl implements TagService {
     return tagDao.findAll().stream().map(converter::convert).collect(Collectors.toSet());
   }
 
+  @Override
+  public Set<TagDTO> findTagsByCertificateId(BigInteger id) {
+    return tagDao.findTagsByCertificateId(id).stream()
+        .map(converter::convert)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public TagDTO findByName(String name) throws EntityNotFoundException {
+    return converter.convert(tagDao.findTagByName(name));
+  }
+
   /**
    * Find all tags by certificate id
    *
@@ -92,6 +104,7 @@ public class TagServiceImpl implements TagService {
    * @throws ValidatorException if tag is invalid
    */
   @Override
+  // TODO if tag exists in DB, return this tag
   public TagDTO add(TagDTO tagDTO) throws ValidatorException, EntityAlreadyExistException {
     Tag tag = converter.convert(tagDTO);
     validator.validate(tag);

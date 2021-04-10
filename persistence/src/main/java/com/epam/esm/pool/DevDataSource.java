@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-@Component
-//@Profile("dev")
+
 public class DevDataSource implements com.epam.esm.pool.DataSource {
 
     public DataSource dataSource() {

@@ -11,6 +11,7 @@ import java.util.Set;
 public interface CertificateDAO extends AbstractDAO<Certificate, BigInteger> {
     Collection<Certificate> findByCriteria(SearchCriteria criteria);
 
-    Set<Tag> findTagsByCertificateId(BigInteger certificateId);
-    Certificate addCertificateWithTags(Certificate certificate, Collection<Tag> tags);
+    void addCertificateTag(BigInteger certificateId, BigInteger tagId);
+    //TODO implements in service
+    //Certificate addCertificateWithTags(Certificate certificate, Collection<Tag> tags);
 }

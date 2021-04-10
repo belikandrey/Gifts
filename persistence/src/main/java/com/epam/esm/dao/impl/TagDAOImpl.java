@@ -17,8 +17,10 @@ import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Class that interacts with the database
@@ -42,6 +44,11 @@ public class TagDAOImpl implements TagDAO {
   private static final String SQL_ADD_TAG_CERTIFICATE =
       "INSERT INTO gifts.certificate_tag(certificate_id, tag_id) " + "VALUES(?, ?)";
   private static final String SQL_FIND_LAST_UPDATE_ID = "SELECT LAST_INSERT_ID() AS id";
+  private static final String SQL_FIND_TAG_BY_NAME =
+          "SELECT id, name FROM gifts.tag WHERE name = ?";
+  private static final String SQL_FIND_TAGS_BY_CERTIFICATE_ID =
+          "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
+                  + " WHERE certificate_id=?";
 
   /**
    * Constructor
@@ -146,7 +153,24 @@ public class TagDAOImpl implements TagDAO {
   }
 
   @Override
+  public Tag findTagByName(String name) throws EntityNotFoundException {
+    return jdbcTemplate
+            .query(SQL_FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
+            .stream()
+            .findAny().orElseThrow(()->new EntityNotFoundException("Tag with name "+name+" not found"));
+  }
+
+  @Override
   public Collection<Tag> findAll() {
     return jdbcTemplate.query(SQL_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
+  }
+
+  @Override
+  public Set<Tag> findTagsByCertificateId(BigInteger certificateId) {
+    return new HashSet<>(
+            jdbcTemplate.query(
+                    SQL_FIND_TAGS_BY_CERTIFICATE_ID,
+                    new BeanPropertyRowMapper<>(Tag.class),
+                    certificateId));
   }
 }

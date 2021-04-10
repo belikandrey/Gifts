@@ -58,7 +58,6 @@ public class CertificateDAOImpl implements CertificateDAO {
           + " create_date, last_update_date FROM gifts.certificate"
           + " JOIN gifts.certificate_tag ON gifts.certificate.id = gifts.certificate_tag.certificate_id"
           + " JOIN gifts.tag ON gifts.certificate_tag.tag_id = gifts.tag.id WHERE tag.name = ?";
-  private static final String SQL_SELECT_LAST_INSERT_INDEX = "SELECT LAST_INSERT_ID() AS id";
   private static final String SQL_ADD_TAG = "INSERT INTO gifts.tag(name) values(?)";
   private static final String SQL_FIND_TAG_BY_NAME =
       "SELECT id, name FROM gifts.tag WHERE name = ?";
@@ -79,64 +78,12 @@ public class CertificateDAOImpl implements CertificateDAO {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  /**
-   * Find all tags method method
-   *
-   * @return {@link java.util.Collection} of certificates
-   */
-  // @Override
-  // public Collection<Certificate> findAll() {
-  // return jdbcTemplate.query(SQL_FIND_ALL, new CertificateMapper());
-  // }
-
-  /**
-   * Find all certificates by tag id method
-   *
-   * @param tagId id of the tag for find
-   * @return {@link java.util.Collection} of certificates
-   */
-  // @Override
-  // public Collection<Certificate> findAll(BigInteger tagId) {
-  // return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_ID, new CertificateMapper(), tagId.longValue());
-  // }
-
-  /**
-   * Find all certificates by params
-   *
-   * @param tagName name of the tag
-   * @param name part of name of the certificate
-   * @param description part of description of the certificate
-   * @param sortName sort by name type(asc, desc)
-   * @param sortDate sort by date type(asc, desc)
-   * @return {@link java.util.Collection} of certificates by params
-   * @see com.epam.esm.search.CertificateSearchQueryBuilder
-   */
-  // public Collection<Certificate> findAll(
-  //   String tagName, String name, String description, String sortName, String sortDate) {
-  // final String searchQuery = getSearchQuery(tagName, name, description, sortName, sortDate);
-  // return jdbcTemplate.query(searchQuery, new CertificateMapper());
-  // }
-
-  /**
-   * Find certificates by tag name method
-   *
-   * <p>// * @param tagName name of tag
-   *
-   * @return {@link java.util.Collection} of certificates
-   */
-  // public Collection<Certificate> findAll(String tagName) {
-  // return jdbcTemplate.query(SQL_FIND_ALL_BY_TAG_NAME, new CertificateMapper(), tagName);
-  // }
-
   @Override
   public Collection<Certificate> findByCriteria(SearchCriteria criteria) {
     final String query = criteria.getQuery();
-    System.out.println("IN DAO : " + query);
-    final List<Certificate> query1 = jdbcTemplate.query(query, new CertificateMapper());
-    System.out.println(query1);
-    return query1;
+    return jdbcTemplate.query(query, new CertificateMapper());
   }
-
+/*
   @Override
   @Transactional
   public Certificate addCertificateWithTags(Certificate certificate, Collection<Tag> tags) {
@@ -157,9 +104,10 @@ public class CertificateDAOImpl implements CertificateDAO {
       }
     }
     return addedCertificate;
-  }
+  }*/
 
-  private void addCertificateTag(BigInteger certificateId, BigInteger tagId) {
+  @Override
+  public void addCertificateTag(BigInteger certificateId, BigInteger tagId) {
     jdbcTemplate.update(SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue());
   }
   /**
@@ -176,14 +124,6 @@ public class CertificateDAOImpl implements CertificateDAO {
             () -> new EntityNotFoundException("Certificate with id : " + id + " not found"));
   }
 
-  @Override
-  public Set<Tag> findTagsByCertificateId(BigInteger certificateId) {
-    return new HashSet<>(
-        jdbcTemplate.query(
-            SQL_FIND_TAGS_BY_CERTIFICATE_ID,
-            new BeanPropertyRowMapper<>(Tag.class),
-            certificateId));
-  }
 
   /**
    * Add certificate in database method
@@ -245,7 +185,8 @@ public class CertificateDAOImpl implements CertificateDAO {
       throw new EntityNotFoundException("Certificate with id : " + id + " not found");
     }
   }
-
+/*
+//TODO Implement this logic in service
   private BigInteger addTag(Tag tag) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
@@ -268,5 +209,5 @@ public class CertificateDAOImpl implements CertificateDAO {
         .query(SQL_FIND_TAG_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id)
         .stream()
         .findAny();
-  }
+  }*/
 }
