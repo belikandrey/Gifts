@@ -18,7 +18,7 @@ public class Certificate extends Entity<BigInteger> {
 
   private BigDecimal price;
 
-  private int duration;
+  private Integer duration;
 
   private LocalDateTime createDate;
 
@@ -52,7 +52,7 @@ public class Certificate extends Entity<BigInteger> {
       String name,
       String description,
       BigDecimal price,
-      int duration,
+      Integer duration,
       LocalDateTime createDate,
       LocalDateTime lastUpdateDate) {
     super(id);
@@ -123,7 +123,7 @@ public class Certificate extends Entity<BigInteger> {
    *
    * @return duration of the certificate
    */
-  public int getDuration() {
+  public Integer getDuration() {
     return duration;
   }
 
@@ -132,7 +132,7 @@ public class Certificate extends Entity<BigInteger> {
    *
    * @param duration duration of the certificate
    */
-  public void setDuration(int duration) {
+  public void setDuration(Integer duration) {
     this.duration = duration;
   }
 

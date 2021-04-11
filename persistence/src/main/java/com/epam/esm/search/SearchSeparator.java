@@ -1,16 +1,16 @@
 package com.epam.esm.search;
 
-public enum Separator {
+public enum SearchSeparator {
   AND("AND"),
   WHERE("WHERE");
 
   private String separator;
 
-  Separator(String separator) {
+  SearchSeparator(String separator) {
     this.separator = separator;
   }
 
-  public static Separator getSeparator(boolean isComposite) {
+  public static SearchSeparator getSeparator(boolean isComposite) {
     return isComposite ? AND : WHERE;
   }
 

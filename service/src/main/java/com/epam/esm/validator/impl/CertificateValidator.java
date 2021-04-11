@@ -51,8 +51,8 @@ public class CertificateValidator implements Validator<Certificate> {
     }
   }
 
-  private void validateDuration(int duration) throws ValidatorException {
-    if (duration <= 0) {
+  private void validateDuration(Integer duration) throws ValidatorException {
+    if (duration==null || duration <= 0) {
       throw new ValidatorException("Certificate duration should be more than 0");
     }
   }

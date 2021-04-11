@@ -2,16 +2,32 @@ package com.epam.esm.dao;
 
 import com.epam.esm.dao.criteria.SearchCriteria;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Set;
 
+/**
+ * Base Certificate DAO interface
+ *
+ * @see com.epam.esm.dao.AbstractDAO
+ * @version 1.0
+ * @author Andrey Belik
+ */
 public interface CertificateDAO extends AbstractDAO<Certificate, BigInteger> {
-    Collection<Certificate> findByCriteria(SearchCriteria criteria);
+  /**
+   * Find by {@link SearchCriteria} method
+   *
+   * @param criteria {@link SearchCriteria} for searching by
+   * @return {@link Collection} of certificates
+   */
+  Collection<Certificate> findByCriteria(SearchCriteria criteria);
 
-    void addCertificateTag(BigInteger certificateId, BigInteger tagId);
-    //TODO implements in service
-    //Certificate addCertificateWithTags(Certificate certificate, Collection<Tag> tags);
+  /**
+   * Add certificate id and tag id method
+   *
+   * @param certificateId id of certificate
+   * @param tagId id of tag
+   * @return true if added, false in another way
+   */
+  boolean addCertificateTag(BigInteger certificateId, BigInteger tagId);
 }

@@ -1,11 +1,8 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.criteria.SearchCriteria;
 import com.epam.esm.entity.Entity;
-import com.epam.esm.exception.EntityAlreadyExistException;
-import com.epam.esm.exception.EntityNotFoundException;
 
-import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Base DAO interface
@@ -21,32 +18,32 @@ public interface AbstractDAO<T extends Entity, K> {
    * Find entity by id method
    *
    * @param id id of the entity
-   * @return entity or null if entity doesn't exists
+   * @return {@link Optional} of entity
    */
-  T findById(K id) throws EntityNotFoundException;
+  Optional<T> findById(K id);
 
   /**
    * Add entity method
    *
    * @param t entity to add
-   * @return count of added rows
+   * @return added entity
    */
-  T add(T t) throws EntityAlreadyExistException;
+  T add(T t);
 
   /**
    * Update entity method
    *
    * @param id id of the entity to update
    * @param t entity to update
-   * @return count of updated rows
+   * @return true if updated, false in another way
    */
-  void update(K id, T t) throws EntityNotFoundException;
+  boolean update(K id, T t);
 
   /**
    * Delete entity method
    *
    * @param id id of the entity to delete
-   * @return count of deleted rows
+   * @return true if deleted, false in another way
    */
-  void delete(K id) throws EntityNotFoundException;
+  boolean delete(K id);
 }

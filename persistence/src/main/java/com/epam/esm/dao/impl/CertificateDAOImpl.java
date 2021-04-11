@@ -4,14 +4,11 @@ import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.criteria.SearchCriteria;
 import com.epam.esm.dao.mapper.CertificateMapper;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Class that interacts with the database
@@ -31,18 +25,13 @@ import java.util.Set;
  * @author Andrey Belik
  * @version 1.0
  */
-@Component
+@Repository
 public class CertificateDAOImpl implements CertificateDAO {
   private final JdbcTemplate jdbcTemplate;
 
   private static final String SQL_FIND_ALL =
       "SELECT id, name, description, price, duration,"
           + " create_date, last_update_date FROM gifts.certificate";
-  private static final String SQL_FIND_ALL_BY_TAG_ID =
-      SQL_FIND_ALL
-          + " JOIN gifts.certificate_tag ON "
-          + "gifts.certificate.id = gifts.certificate_tag.certificate_id"
-          + " where gifts.certificate_tag.tag_id=?";
   private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id=?";
   private static final String SQL_ADD_CERTIFICATE =
       "INSERT INTO gifts.certificate"
@@ -53,20 +42,8 @@ public class CertificateDAOImpl implements CertificateDAO {
           + "name=?, description=?, price=?, duration=?,"
           + " last_update_date=? where id=?";
   private static final String SQL_DELETE = "DELETE FROM gifts.certificate WHERE id=?";
-  private static final String SQL_FIND_ALL_BY_TAG_NAME =
-      "SELECT certificate.id, certificate.name, description, price, duration,"
-          + " create_date, last_update_date FROM gifts.certificate"
-          + " JOIN gifts.certificate_tag ON gifts.certificate.id = gifts.certificate_tag.certificate_id"
-          + " JOIN gifts.tag ON gifts.certificate_tag.tag_id = gifts.tag.id WHERE tag.name = ?";
-  private static final String SQL_ADD_TAG = "INSERT INTO gifts.tag(name) values(?)";
-  private static final String SQL_FIND_TAG_BY_NAME =
-      "SELECT id, name FROM gifts.tag WHERE name = ?";
-  private static final String SQL_FIND_TAG_BY_ID = "SELECT id, name FROM gifts.tag WHERE id=?";
   private static final String SQL_ADD_TAG_CERTIFICATE =
       "INSERT INTO gifts.certificate_tag(certificate_id, tag_id) VALUES(?, ?)";
-  private static final String SQL_FIND_TAGS_BY_CERTIFICATE_ID =
-      "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
-          + " WHERE certificate_id=?";
 
   /**
    * Constructor
@@ -78,60 +55,50 @@ public class CertificateDAOImpl implements CertificateDAO {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  /**
+   * Find by criteria method
+   *
+   * @param criteria {@link SearchCriteria} for searching by
+   * @return {@link Collection} of certificates
+   */
   @Override
   public Collection<Certificate> findByCriteria(SearchCriteria criteria) {
     final String query = criteria.getQuery();
     return jdbcTemplate.query(query, new CertificateMapper());
   }
-/*
-  @Override
-  @Transactional
-  public Certificate addCertificateWithTags(Certificate certificate, Collection<Tag> tags) {
-    final Certificate addedCertificate = add(certificate);
-    for (Tag tag : tags) {
-      Optional<Tag> tagFromDb = Optional.empty();
-      if (tag.getId() != null) {
-        tagFromDb = getTagById(tag.getId());
-      }
-      if (tagFromDb.isEmpty()) {
-        tagFromDb = getTagByName(tag);
-      }
-      if (tagFromDb.isPresent()) {
-        addCertificateTag(addedCertificate.getId(), tagFromDb.get().getId());
-      } else {
-        final BigInteger tagId = addTag(tag);
-        addCertificateTag(addedCertificate.getId(), tagId);
-      }
-    }
-    return addedCertificate;
-  }*/
 
+  /**
+   * Add certificate id and tag id in database
+   *
+   * @param certificateId id of certificate
+   * @param tagId id of tag
+   * @return true if added, false in another way
+   */
   @Override
-  public void addCertificateTag(BigInteger certificateId, BigInteger tagId) {
-    jdbcTemplate.update(SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue());
+  public boolean addCertificateTag(BigInteger certificateId, BigInteger tagId) {
+    return jdbcTemplate.update(
+            SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue())
+        > 0;
   }
   /**
    * Find certificate by id method
    *
    * @param id id of the certificate
-   * @return certificate or null if certificate not found
+   * @return {@link Optional} of certificate
    */
   @Override
-  public Certificate findById(BigInteger id) throws EntityNotFoundException {
-    return jdbcTemplate.query(SQL_FIND_BY_ID, new CertificateMapper(), id).stream()
-        .findAny()
-        .orElseThrow(
-            () -> new EntityNotFoundException("Certificate with id : " + id + " not found"));
+  public Optional<Certificate> findById(BigInteger id) {
+    return jdbcTemplate.query(SQL_FIND_BY_ID, new CertificateMapper(), id).stream().findAny();
   }
-
 
   /**
    * Add certificate in database method
    *
    * @param certificate certificate entity
-   * @return count of added rows
+   * @return added certificate
    */
   @Override
+  @Transactional(propagation = Propagation.REQUIRED)
   public Certificate add(Certificate certificate) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(
@@ -154,60 +121,31 @@ public class CertificateDAOImpl implements CertificateDAO {
   /**
    * Update certificate by id method
    *
-   * @param id id of the certificate to update //* @param certificate certificate to update
-   * @return count of added rows
+   * @param id id of the certificate to update
+   * @param certificate certificate to update
+   * @return true if updated, false in another way
    */
   @Override
-  public void update(BigInteger id, Certificate certificate) throws EntityNotFoundException {
-    final int result =
-        jdbcTemplate.update(
+  public boolean update(BigInteger id, Certificate certificate) {
+    return jdbcTemplate.update(
             SQL_UPDATE,
             certificate.getName(),
             certificate.getDescription(),
             certificate.getPrice(),
             certificate.getDuration(),
             certificate.getLastUpdateDate(),
-            id.longValue());
-    if (result <= 0) {
-      throw new EntityNotFoundException("Certificate with id : " + id + " not founnd");
-    }
+            id.longValue())
+        > 0;
   }
 
   /**
    * Delete certificate by id method
    *
    * @param id id of the certificate to delete
-   * @return count of deleted rows
+   * @return true if deleted, false in another way
    */
   @Override
-  public void delete(BigInteger id) throws EntityNotFoundException {
-    if (jdbcTemplate.update(SQL_DELETE, id.longValue()) <= 0) {
-      throw new EntityNotFoundException("Certificate with id : " + id + " not found");
-    }
+  public boolean delete(BigInteger id) {
+    return jdbcTemplate.update(SQL_DELETE, id.longValue()) > 0;
   }
-/*
-//TODO Implement this logic in service
-  private BigInteger addTag(Tag tag) {
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-    jdbcTemplate.update(con -> {
-      final PreparedStatement st = con.prepareStatement(SQL_ADD_TAG, Statement.RETURN_GENERATED_KEYS);
-      st.setString(1, tag.getName());
-      return st;
-    }, keyHolder);
-    return BigInteger.valueOf(keyHolder.getKey().longValue());
-  }
-
-  private Optional<Tag> getTagByName(Tag tag) {
-    return jdbcTemplate
-        .query(SQL_FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tag.getName())
-        .stream()
-        .findAny();
-  }
-
-  private Optional<Tag> getTagById(BigInteger id) {
-    return jdbcTemplate
-        .query(SQL_FIND_TAG_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id)
-        .stream()
-        .findAny();
-  }*/
 }

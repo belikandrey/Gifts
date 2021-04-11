@@ -46,8 +46,8 @@ public class CertificateSearchQueryBuilder {
    * @return {@link CertificateSearchQueryBuilder}
    */
   public CertificateSearchQueryBuilder setTagName(String tagName) {
-    final Separator separator = getSeparator();
-    stringBuilder.append(separator.getValue() + SQL_SET_TAG_NAME + tagName + "' ");
+    final SearchSeparator separator = getSeparator();
+    stringBuilder.append(separator.getValue()).append(SQL_SET_TAG_NAME).append(tagName).append("' ");
     return this;
   }
 
@@ -58,8 +58,8 @@ public class CertificateSearchQueryBuilder {
    * @return {@link CertificateSearchQueryBuilder}
    */
   public CertificateSearchQueryBuilder setName(String name) {
-    final Separator separator = getSeparator();
-    stringBuilder.append(separator.getValue() + SQL_SET_NAME + name + "%' ");
+    final SearchSeparator separator = getSeparator();
+    stringBuilder.append(separator.getValue()).append(SQL_SET_NAME).append(name).append("%' ");
     return this;
   }
 
@@ -70,8 +70,8 @@ public class CertificateSearchQueryBuilder {
    * @return {@link CertificateSearchQueryBuilder}
    */
   public CertificateSearchQueryBuilder setDescription(String description) {
-    final Separator separator = getSeparator();
-    stringBuilder.append(separator.getValue() + SQL_SET_DESCRIPTION + description + "%' ");
+    final SearchSeparator separator = getSeparator();
+    stringBuilder.append(separator.getValue()).append(SQL_SET_DESCRIPTION).append(description).append("%' ");
     return this;
   }
 
@@ -82,7 +82,7 @@ public class CertificateSearchQueryBuilder {
    * @return {@link CertificateSearchQueryBuilder}
    */
   public CertificateSearchQueryBuilder setSortByName(String typeOfSort) {
-    stringBuilder.append(SQL_SET_SORT_BY_NAME + typeOfSort.toUpperCase());
+    stringBuilder.append(SQL_SET_SORT_BY_NAME).append(typeOfSort.toUpperCase());
     return this;
   }
 
@@ -93,12 +93,16 @@ public class CertificateSearchQueryBuilder {
    * @return {@link CertificateSearchQueryBuilder}
    */
   public CertificateSearchQueryBuilder setSortByDate(String typeOfSort) {
-    stringBuilder.append(SQL_SET_SORT_BY_DATE + typeOfSort.toUpperCase());
+    stringBuilder.append(SQL_SET_SORT_BY_DATE).append(typeOfSort.toUpperCase());
     return this;
   }
 
-  private final Separator getSeparator() {
-    final Separator separator = Separator.getSeparator(isComposite);
+  /**
+   * Get search separator method
+   * @return {@link SearchSeparator} entity
+   */
+  private SearchSeparator getSeparator() {
+    final SearchSeparator separator = SearchSeparator.getSeparator(isComposite);
     isComposite = true;
     return separator;
   }

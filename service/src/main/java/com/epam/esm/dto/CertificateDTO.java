@@ -1,11 +1,7 @@
 package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -24,16 +20,14 @@ public class CertificateDTO {
 
   private BigDecimal price;
 
-  private int duration;
+  private Integer duration;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime creationDate;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime lastUpdateDate;
 
   private Set<TagDTO> tags = new HashSet<>();
@@ -57,7 +51,7 @@ public class CertificateDTO {
       String name,
       String description,
       BigDecimal price,
-      int duration,
+      Integer duration,
       LocalDateTime creationDate,
       LocalDateTime lastUpdateDate) {
     this.id = id;
@@ -164,7 +158,7 @@ public class CertificateDTO {
    *
    * @return duration of the certificate DTO
    */
-  public int getDuration() {
+  public Integer getDuration() {
     return duration;
   }
 
@@ -173,7 +167,7 @@ public class CertificateDTO {
    *
    * @param duration duration of the certificate DTO
    */
-  public void setDuration(int duration) {
+  public void setDuration(Integer duration) {
     this.duration = duration;
   }
 

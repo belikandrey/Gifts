@@ -4,7 +4,6 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.EntityAlreadyExistException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
-import com.epam.esm.service.EntityService;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;

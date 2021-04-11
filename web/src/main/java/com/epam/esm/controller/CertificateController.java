@@ -5,8 +5,6 @@ import com.epam.esm.exception.EntityAlreadyExistException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.EntityService;
-import com.epam.esm.service.impl.CertificateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

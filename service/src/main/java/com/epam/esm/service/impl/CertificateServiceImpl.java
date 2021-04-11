@@ -1,24 +1,19 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.AbstractDAO;
 import com.epam.esm.dao.CertificateDAO;
-import com.epam.esm.dao.criteria.SearchCriteria;
 import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
-import com.epam.esm.dao.impl.CertificateDAOImpl;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EntityAlreadyExistException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.EntityService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
@@ -48,8 +43,8 @@ public class CertificateServiceImpl implements CertificateService {
    *
    * @param validator {@link com.epam.esm.validator.Validator}
    * @param certificateDAO {@link com.epam.esm.dao.AbstractDAO}
-   * @param converter {@link com.epam.esm.dto.converter.Converter} //* @param tagService {@link
-   *     TagServiceImpl}
+   * @param converter {@link com.epam.esm.dto.converter.Converter}
+   * @param tagService {@link TagService}
    */
   @Autowired
   public CertificateServiceImpl(
@@ -62,19 +57,6 @@ public class CertificateServiceImpl implements CertificateService {
     this.converter = converter;
     this.tagService = tagService;
   }
-
-  /**
-   * Find all certificates by tag id method
-   *
-   * @param tagId tag id
-   * @return {@link java.util.Collection} of certificates
-   */
-  /*@Override
-  public Collection<CertificateDTO> findAll(BigInteger tagId) {
-    return certificateDAO.findAll(tagId).stream()
-        .map(converter::convert)
-        .collect(Collectors.toList());
-  }*/
 
   /**
    * Find all certificates by params
@@ -106,26 +88,20 @@ public class CertificateServiceImpl implements CertificateService {
     return certificates;
   }
 
-
-  /**
-   * Find all certificates method
-   *
-   * @return {@link java.util.Collection} of certificates
-   */
-  /*@Override
-    public Collection<CertificateDTO> findAll() {
-      return certificateDAO.findAll().stream().map(converter::convert).collect(Collectors.toList());
-    }
-  */
   /**
    * Find certificate by id method
    *
    * @param id id of certificate
-   * @return certificate or null if certificate not found
+   * @return certificate
+   * @throws EntityNotFoundException if cerificate with this id not found
    */
   @Override
-  public CertificateDTO findById(BigInteger id) throws EntityNotFoundException {
-    final Certificate certificate = certificateDAO.findById(id);
+  public CertificateDTO findById(BigInteger id) {
+    final Optional<Certificate> certificateById = certificateDAO.findById(id);
+    if (certificateById.isEmpty()) {
+      throw new EntityNotFoundException("Certificate with id : " + id + " not found");
+    }
+    final Certificate certificate = certificateById.get();
     final Set<TagDTO> tags = tagService.findTagsByCertificateId(id);
     final CertificateDTO certificateDTO = converter.convert(certificate);
     certificateDTO.setTags(tags);
@@ -135,71 +111,62 @@ public class CertificateServiceImpl implements CertificateService {
   /**
    * Add certificate, also add tags for this certificate
    *
-   * <p>//* @param giftCertificate certificate for add
-   *
-   * @return certificate or null if not added
+   * @param newCertificateDTO certificate for add
+   * @return added certificate
    * @throws ValidatorException if certificate is invalid
    */
   @Override
-  @Transactional
-  public CertificateDTO add(CertificateDTO certificateDTO)
-      throws ValidatorException, EntityAlreadyExistException {
-    Certificate certificate = converter.convert(certificateDTO);
+  @Transactional(rollbackFor = ValidatorException.class, propagation = Propagation.REQUIRES_NEW)
+  public CertificateDTO add(CertificateDTO newCertificateDTO) throws ValidatorException {
+    Certificate certificate = converter.convert(newCertificateDTO);
     certificate.setCreateDate(LocalDateTime.now());
     certificate.setLastUpdateDate(LocalDateTime.now());
     validator.validate(certificate);
-    CertificateDTO certificateFromDao = converter.convert(certificateDAO.add(certificate));
-    /*final Set<Tag> tags =
-        certificateDTO.getTags().stream().map(tagConverter::convert).collect(Collectors.toSet());
-    for (Tag tag : tags) {
-      if (tag.getId() == null && (tag.getName() != null && !tag.getName().isEmpty())) {
-        tagValidator.validate(tag);
-      }
-    }
-    final CertificateDTO certificateFromDao = addCertificateWithTags(certificateDTO);
-    final Set<TagDTO> tagsFromDb =
-        certificateDAO.findTagsByCertificateId(certificateFromDao.getId()).stream()
-            .map(tagConverter::convert)
-            .collect(Collectors.toSet());
-    certificateFromDao.setTags(tagsFromDb);*/
-    final Set<TagDTO> tags = certificateDTO.getTags();
-    Set<TagDTO> tagsFromDao = new HashSet<>();
+    final CertificateDTO addedCertificateDTO = converter.convert(certificateDAO.add(certificate));
+    final Set<TagDTO> tags = newCertificateDTO.getTags();
+    addedCertificateDTO.setTags(getTagsForNewCertificate(addedCertificateDTO.getId(), tags));
+    return addedCertificateDTO;
+  }
+
+  private Set<TagDTO> getTagsForNewCertificate(BigInteger certificateId, Set<TagDTO> tags)
+      throws ValidatorException {
+    Set<TagDTO> tagsFromDb = new HashSet<>();
     for (TagDTO tag : tags) {
-      TagDTO tagDTO = null;
-      try {
-        tagDTO =
+      TagDTO tagFromDB;
+      if (tagService.isAlreadyExists(tag)) {
+        tagFromDB =
             tag.getId() != null
                 ? tagService.findById(tag.getId())
-                : tag.getName() != null ? tagService.findByName(tag.getName()) : null;
-      } catch (EntityNotFoundException e) {
+                : tagService.findByName(tag.getName());
+      } else {
+        tagFromDB = tagService.add(tag);
       }
-      if(tagDTO==null){
-        tagDTO = tagService.add(tag);
-      }
-      tagsFromDao.add(tagDTO);
-      certificateDAO.addCertificateTag(certificateFromDao.getId(), tagDTO.getId());
+      certificateDAO.addCertificateTag(certificateId, tagFromDB.getId());
+      tagsFromDb.add(tagFromDB);
     }
-    certificateFromDao.setTags(tagsFromDao);
-    return certificateFromDao;
+    return tagsFromDb;
   }
+  // TODO read about transactions
 
   /**
    * Update certificate method
    *
    * @param certificateId id of certificate for update
    * @param giftCertificate certificate for update
-   * @return count of updated rows
    * @throws ValidatorException if certificate is invalid
+   * @throws EntityNotFoundException if certificate with this id not found
    */
   @Override
   public void update(BigInteger certificateId, CertificateDTO giftCertificate)
-      throws ValidatorException, EntityNotFoundException {
-    giftCertificate.setLastUpdateDate(LocalDateTime.now());
+      throws ValidatorException {
     final Certificate certificateForUpdate = converter.convert(giftCertificate);
     final CertificateDTO certificateDTO = findById(certificateId);
     final Certificate certificate = fillForInsert(certificateForUpdate, certificateDTO);
     validator.validate(certificate);
-    certificateDAO.update(certificateId, certificate);
+    certificate.setLastUpdateDate(LocalDateTime.now());
+    if (!certificateDAO.update(certificateId, certificate)) {
+      throw new EntityNotFoundException("Certificate with id : " + certificateId + " not found");
+    }
   }
 
   private Certificate fillForInsert(
@@ -207,6 +174,7 @@ public class CertificateServiceImpl implements CertificateService {
     if (certificateForUpdate.getName() == null || certificateForUpdate.getName().isEmpty()) {
       certificateForUpdate.setName(certificateFromDb.getName());
     }
+    // TODO implement functional interface
     if (certificateForUpdate.getDescription() == null
         || certificateForUpdate.getDescription().isEmpty()) {
       certificateForUpdate.setDescription(certificateFromDb.getDescription());
@@ -214,7 +182,7 @@ public class CertificateServiceImpl implements CertificateService {
     if (certificateForUpdate.getPrice() == null) {
       certificateForUpdate.setPrice(certificateFromDb.getPrice());
     }
-    if (certificateForUpdate.getDuration() == 0) {
+    if (certificateForUpdate.getDuration() == null) {
       certificateForUpdate.setDuration(certificateFromDb.getDuration());
     }
     return certificateForUpdate;
@@ -224,10 +192,12 @@ public class CertificateServiceImpl implements CertificateService {
    * Delete certificate by id method
    *
    * @param id id of certificate for delete
-   * @return true if certificate deleted, false in another way
+   * @throws EntityNotFoundException if certificate with this id not found
    */
   @Override
-  public void delete(BigInteger id) throws EntityNotFoundException {
-    certificateDAO.delete(id);
+  public void delete(BigInteger id) {
+    if (!certificateDAO.delete(id)) {
+      throw new EntityNotFoundException("Certificate with id : " + id + " not found");
+    }
   }
 }

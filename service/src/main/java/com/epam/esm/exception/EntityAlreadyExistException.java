@@ -1,6 +1,6 @@
 package com.epam.esm.exception;
 
-public class EntityAlreadyExistException extends Exception {
+public class EntityAlreadyExistException extends RuntimeException {
     public EntityAlreadyExistException() {
     }
 

@@ -1,7 +1,16 @@
 package com.epam.esm.dao.criteria;
 
-import java.util.Map;
-
+/**
+ * Basic interface of criteria for creating search query
+ *
+ * @version 1.0
+ * @author Andery Belik
+ */
 public interface SearchCriteria {
-    String getQuery();
+  /**
+   * Method for create and return query
+   *
+   * @return string query
+   */
+  String getQuery();
 }

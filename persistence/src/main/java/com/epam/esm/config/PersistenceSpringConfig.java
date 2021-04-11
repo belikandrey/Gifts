@@ -1,8 +1,7 @@
 package com.epam.esm.config;
 
-import com.epam.esm.pool.DataSource;
-import com.epam.esm.pool.ProdDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,19 +10,34 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.xml.crypto.Data;
+import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm")
 public class PersistenceSpringConfig {
 
-  //@Autowired
-  //private static DataSource dataSource;
-
   @Bean
-  public static JdbcTemplate getTemplate() {
-    return new JdbcTemplate(ProdDataSource.getDataSource());
+  public JdbcTemplate getTemplate(DataSource dataSource) {
+    return new JdbcTemplate(dataSource);
   }
 
+  @Bean
+  @Profile("dev")
+  public DataSource dataSource() {
+    return new EmbeddedDatabaseBuilder()
+            .setType(EmbeddedDatabaseType.H2)
+            .addScript("sql/init_h2.sql")
+            .build();
+  }
 
+  @Bean
+  @Profile("prod")
+  public DataSource hikariDataSource(){
+    return new HikariDataSource(hikariConfig());
+  }
+
+  @Bean
+  public HikariConfig hikariConfig(){
+    return new HikariConfig("/db.properties");
+  }
 }

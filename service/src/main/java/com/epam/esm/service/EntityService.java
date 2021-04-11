@@ -18,9 +18,9 @@ public interface EntityService<T, K> {
    * Find entity by id method
    *
    * @param id id of entity
-   * @return entity or null if entity doesn't exist
+   * @return entity
    */
-  T findById(K id) throws EntityNotFoundException;
+  T findById(K id);
 
   /**
    * Add entity method
@@ -29,23 +29,21 @@ public interface EntityService<T, K> {
    * @return added entity
    * @throws ValidatorException if entity is invalid
    */
-  T add(T t) throws ValidatorException, EntityAlreadyExistException;
+  T add(T t) throws ValidatorException;
 
   /**
    * Update entity method
    *
    * @param id id of entity for update
    * @param t entity for update
-   * @return count of updated rows
    * @throws ValidatorException if entity is invalid
    */
-  void update(K id, T t) throws ValidatorException, EntityNotFoundException;
+  void update(K id, T t) throws ValidatorException;
 
   /**
    * Delete entity by id method
    *
    * @param id id of entity for delete
-   * @return true if entity deleted, false in another way
    */
-  void delete(K id) throws EntityNotFoundException;
+  void delete(K id);
 }

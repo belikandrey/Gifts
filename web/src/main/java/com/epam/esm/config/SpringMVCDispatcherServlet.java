@@ -24,8 +24,9 @@ public class SpringMVCDispatcherServlet
     return new String[] {"/"};
   }
 
-  /*@Override
+  @Override
   public void onStartup(ServletContext servletContext) throws ServletException {
-    servletContext.setInitParameter("spring.profiles.active", "prod");
-  }*/
+    super.onStartup(servletContext);
+    servletContext.setInitParameter("spring.profiles.active", "dev");
+  }
 }

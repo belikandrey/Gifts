@@ -2,23 +2,18 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.EmptyKeyHolderException;
-import com.epam.esm.exception.EntityAlreadyExistException;
-import com.epam.esm.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,27 +23,20 @@ import java.util.Set;
  * @author Andrey Belik
  * @version 1.0
  */
-@Component
+@Repository
 public class TagDAOImpl implements TagDAO {
   private final JdbcTemplate jdbcTemplate;
 
   private static final String SQL_FIND_ALL = "SELECT id, name FROM gifts.tag";
-  private static final String SQL_FIND_ALL_BY_CERTIFICATE_ID =
-      SQL_FIND_ALL
-          + " JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
-          + " WHERE certificate_id=?";
   private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
   private static final String SQL_ADD = "INSERT INTO gifts.tag(name) VALUES(?)";
   private static final String SQL_DELETE = "DELETE FROM gifts.tag WHERE id=?";
   private static final String SQL_FIND_BY_NAME = "SELECT id, name FROM gifts.tag WHERE name=?";
-  private static final String SQL_ADD_TAG_CERTIFICATE =
-      "INSERT INTO gifts.certificate_tag(certificate_id, tag_id) " + "VALUES(?, ?)";
-  private static final String SQL_FIND_LAST_UPDATE_ID = "SELECT LAST_INSERT_ID() AS id";
   private static final String SQL_FIND_TAG_BY_NAME =
-          "SELECT id, name FROM gifts.tag WHERE name = ?";
+      "SELECT id, name FROM gifts.tag WHERE name = ?";
   private static final String SQL_FIND_TAGS_BY_CERTIFICATE_ID =
-          "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
-                  + " WHERE certificate_id=?";
+      "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
+          + " WHERE certificate_id=?";
 
   /**
    * Constructor
@@ -59,50 +47,32 @@ public class TagDAOImpl implements TagDAO {
   public TagDAOImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
   }
-  /*
-  /**
-   * Add tags for certificate in database method
-   *
-   * @param tags {@link java.util.Set} of tags
-   * @param certificateId certificate id
-   */
-  /*public void add(Set<Tag> tags, BigInteger certificateId) {
-    for (Tag tag : tags) {
-      add(tag);
-      addCertificateTag(certificateId, find(tag.getName()).getId());
-    }
-  }
-
-  private void addCertificateTag(BigInteger certificateId, BigInteger tagId) {
-    jdbcTemplate.update(SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue());
-  }*/
 
   /**
    * Find tag by id method
    *
    * @param id id of the tag
-   * @return tag or null if tag not found
+   * @return {@link Optional} of tag
    */
   @Override
-  public Tag findById(BigInteger id) throws EntityNotFoundException {
+  public Optional<Tag> findById(BigInteger id) {
     return jdbcTemplate
         .query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue())
         .stream()
-        .findAny()
-        .orElseThrow(() -> new EntityNotFoundException("Tag with id : " + id + " not found"));
+        .findAny();
   }
 
   /**
    * Add tag in database method
    *
    * @param tag tag for add
-   * @return count of added rows
+   * @return null if tag exists, tag in another way
    */
   @Override
-  public Tag add(Tag tag) throws EntityAlreadyExistException {
+  public Tag add(Tag tag) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     if (isAlreadyExist(tag)) {
-      throw new EntityAlreadyExistException("Tag with name : " + tag.getName() + " already exist");
+      return null;
     }
     jdbcTemplate.update(
         connection -> {
@@ -120,12 +90,12 @@ public class TagDAOImpl implements TagDAO {
   /**
    * Update tag by id method
    *
-   * @param id id of the tag to update
-   * @param tag tag to update
-   * @return count of added rows
+   * <p>Unsupported
+   *
+   * @throws UnsupportedOperationException in any way
    */
   @Override
-  public void update(BigInteger id, Tag tag) {
+  public boolean update(BigInteger id, Tag tag) {
     throw new UnsupportedOperationException();
   }
 
@@ -133,44 +103,75 @@ public class TagDAOImpl implements TagDAO {
    * Delete tag by id method
    *
    * @param id id of the tag to delete
-   * @return count of deleted rows
+   * @return true if deleted, false in another way
    */
   @Override
-  public void delete(BigInteger id) throws EntityNotFoundException {
-    if (jdbcTemplate.update(SQL_DELETE, id.longValue()) <= 0) {
-      throw new EntityNotFoundException("Tag with id " + id + " not found");
-    }
+  public boolean delete(BigInteger id) {
+    return jdbcTemplate.update(SQL_DELETE, id.longValue()) > 0;
   }
 
+  /**
+   * Check is tag already exist method
+   *
+   * @param tag tag for check
+   * @return true if exist, false in another way
+   */
   @Override
   public boolean isAlreadyExist(Tag tag) {
-    final Optional<Tag> tagOptional =
-        jdbcTemplate
-            .query(SQL_FIND_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tag.getName())
-            .stream()
-            .findAny();
-    return tagOptional.isPresent() ? true : false;
+    Optional<Tag> tagOptional = Optional.empty();
+    if (tag.getId() != null) {
+      tagOptional =
+          jdbcTemplate
+              .query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), tag.getId())
+              .stream()
+              .findAny();
+    }
+    if (tagOptional.isEmpty() && tag.getName() != null) {
+      tagOptional =
+          jdbcTemplate
+              .query(SQL_FIND_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tag.getName())
+              .stream()
+              .findAny();
+    }
+    return tagOptional.isPresent();
   }
 
+  /**
+   * Find tag by name method
+   *
+   * @param name name of tag
+   * @return {@link Optional} of tag
+   */
   @Override
-  public Tag findTagByName(String name) throws EntityNotFoundException {
+  public Optional<Tag> findTagByName(String name) {
     return jdbcTemplate
-            .query(SQL_FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
-            .stream()
-            .findAny().orElseThrow(()->new EntityNotFoundException("Tag with name "+name+" not found"));
+        .query(SQL_FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
+        .stream()
+        .findAny();
   }
 
+  /**
+   * Find all tags method
+   *
+   * @return {@link Collection} of tags
+   */
   @Override
   public Collection<Tag> findAll() {
     return jdbcTemplate.query(SQL_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
   }
 
+  /**
+   * Find tags by certificate id method
+   *
+   * @param certificateId id of certificate
+   * @return {@link Set} of tags
+   */
   @Override
   public Set<Tag> findTagsByCertificateId(BigInteger certificateId) {
     return new HashSet<>(
-            jdbcTemplate.query(
-                    SQL_FIND_TAGS_BY_CERTIFICATE_ID,
-                    new BeanPropertyRowMapper<>(Tag.class),
-                    certificateId));
+        jdbcTemplate.query(
+            SQL_FIND_TAGS_BY_CERTIFICATE_ID,
+            new BeanPropertyRowMapper<>(Tag.class),
+            certificateId));
   }
 }
