@@ -3,8 +3,8 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -26,14 +26,13 @@ import java.util.Set;
 @Repository
 public class TagDAOImpl implements TagDAO {
   private final JdbcTemplate jdbcTemplate;
+  private final RowMapper<Tag> rowMapper;
 
   private static final String SQL_FIND_ALL = "SELECT id, name FROM gifts.tag";
   private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
   private static final String SQL_ADD = "INSERT INTO gifts.tag(name) VALUES(?)";
   private static final String SQL_DELETE = "DELETE FROM gifts.tag WHERE id=?";
-  private static final String SQL_FIND_BY_NAME = "SELECT id, name FROM gifts.tag WHERE name=?";
-  private static final String SQL_FIND_TAG_BY_NAME =
-      "SELECT id, name FROM gifts.tag WHERE name = ?";
+  private static final String SQL_FIND_BY_NAME = "SELECT id, name FROM gifts.tag WHERE name = ?";
   private static final String SQL_FIND_TAGS_BY_CERTIFICATE_ID =
       "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
           + " WHERE certificate_id=?";
@@ -42,10 +41,12 @@ public class TagDAOImpl implements TagDAO {
    * Constructor
    *
    * @param jdbcTemplate {@link org.springframework.jdbc.core.JdbcTemplate}
+   * @param rowMapper {@link RowMapper}
    */
   @Autowired
-  public TagDAOImpl(JdbcTemplate jdbcTemplate) {
+  public TagDAOImpl(JdbcTemplate jdbcTemplate, RowMapper<Tag> rowMapper) {
     this.jdbcTemplate = jdbcTemplate;
+    this.rowMapper = rowMapper;
   }
 
   /**
@@ -56,10 +57,7 @@ public class TagDAOImpl implements TagDAO {
    */
   @Override
   public Optional<Tag> findById(BigInteger id) {
-    return jdbcTemplate
-        .query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), id.longValue())
-        .stream()
-        .findAny();
+    return jdbcTemplate.query(SQL_FIND_BY_ID, rowMapper, id.longValue()).stream().findAny();
   }
 
   /**
@@ -119,20 +117,9 @@ public class TagDAOImpl implements TagDAO {
   @Override
   public boolean isAlreadyExist(Tag tag) {
     Optional<Tag> tagOptional = Optional.empty();
-    if (tag.getId() != null) {
-      tagOptional =
-          jdbcTemplate
-              .query(SQL_FIND_BY_ID, new BeanPropertyRowMapper<>(Tag.class), tag.getId())
-              .stream()
-              .findAny();
-    }
-    if (tagOptional.isEmpty() && tag.getName() != null) {
-      tagOptional =
-          jdbcTemplate
-              .query(SQL_FIND_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), tag.getName())
-              .stream()
-              .findAny();
-    }
+    tagOptional = tag.getId() != null ? findById(tag.getId()) : tagOptional;
+    tagOptional =
+        tagOptional.isEmpty() && tag.getName() != null ? findTagByName(tag.getName()) : tagOptional;
     return tagOptional.isPresent();
   }
 
@@ -144,10 +131,7 @@ public class TagDAOImpl implements TagDAO {
    */
   @Override
   public Optional<Tag> findTagByName(String name) {
-    return jdbcTemplate
-        .query(SQL_FIND_TAG_BY_NAME, new BeanPropertyRowMapper<>(Tag.class), name)
-        .stream()
-        .findAny();
+    return jdbcTemplate.query(SQL_FIND_BY_NAME, rowMapper, name).stream().findAny();
   }
 
   /**
@@ -157,7 +141,7 @@ public class TagDAOImpl implements TagDAO {
    */
   @Override
   public Collection<Tag> findAll() {
-    return jdbcTemplate.query(SQL_FIND_ALL, new BeanPropertyRowMapper<>(Tag.class));
+    return jdbcTemplate.query(SQL_FIND_ALL, rowMapper);
   }
 
   /**
@@ -169,9 +153,6 @@ public class TagDAOImpl implements TagDAO {
   @Override
   public Set<Tag> findTagsByCertificateId(BigInteger certificateId) {
     return new HashSet<>(
-        jdbcTemplate.query(
-            SQL_FIND_TAGS_BY_CERTIFICATE_ID,
-            new BeanPropertyRowMapper<>(Tag.class),
-            certificateId));
+        jdbcTemplate.query(SQL_FIND_TAGS_BY_CERTIFICATE_ID, rowMapper, certificateId));
   }
 }

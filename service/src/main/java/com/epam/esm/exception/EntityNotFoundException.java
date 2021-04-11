@@ -1,14 +1,28 @@
 package com.epam.esm.exception;
 
-public class EntityNotFoundException extends RuntimeException{
-    public EntityNotFoundException() {
-    }
 
+/**
+ * Entity not found exception. Throws if object not found
+ *
+ * @author Andrey Belik
+ * @version 1.0
+ */
+public class EntityNotFoundException extends RuntimeException{
+    /**
+     * Constructor
+     *
+     * @param message message of the exception
+     */
     public EntityNotFoundException(String message) {
         super(message);
     }
 
-    public EntityNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * Constructor
+     *
+     * @param cause another exception
+     */
+    public EntityNotFoundException(Throwable cause) {
+        super(cause);
     }
 }

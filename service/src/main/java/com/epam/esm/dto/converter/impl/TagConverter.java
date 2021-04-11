@@ -16,8 +16,8 @@ public class TagConverter implements Converter<Tag, TagDTO> {
   /**
    * Convert tag DTO to tag
    *
-   * @param dto {@link com.epam.esm.dto.TagDTO} to convert
-   * @return {@link com.epam.esm.entity.Tag} after convert
+   * @param dto {@link TagDTO} to convert
+   * @return {@link Tag} after convert
    */
   @Override
   public Tag convert(TagDTO dto) {
@@ -27,8 +27,8 @@ public class TagConverter implements Converter<Tag, TagDTO> {
   /**
    * Convert tag to tag DTO
    *
-   * @param tag {@link com.epam.esm.entity.Tag} to convert
-   * @return {@link com.epam.esm.dto.TagDTO} after convert
+   * @param tag {@link Tag} to convert
+   * @return {@link TagDTO} after convert
    */
   @Override
   public TagDTO convert(Tag tag) {

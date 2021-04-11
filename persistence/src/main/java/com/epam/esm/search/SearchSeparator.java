@@ -4,7 +4,7 @@ public enum SearchSeparator {
   AND("AND"),
   WHERE("WHERE");
 
-  private String separator;
+  private final String separator;
 
   SearchSeparator(String separator) {
     this.separator = separator;

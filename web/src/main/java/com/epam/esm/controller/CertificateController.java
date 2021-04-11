@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.exception.EntityAlreadyExistException;
-import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +71,7 @@ public class CertificateController {
    * @return response entity
    */
   @GetMapping("/{id}")
-  public ResponseEntity<?> find(@PathVariable("id") BigInteger id) throws EntityNotFoundException {
+  public ResponseEntity<?> find(@PathVariable("id") BigInteger id) {
     final CertificateDTO certificate = certificateService.findById(id);
     return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
@@ -86,7 +84,7 @@ public class CertificateController {
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> create(@RequestBody CertificateDTO certificate)
-      throws EntityAlreadyExistException, ValidatorException {
+      throws ValidatorException {
     certificate = certificateService.add(certificate);
     return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
@@ -98,8 +96,7 @@ public class CertificateController {
    * @return response entity
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable("id") BigInteger id)
-      throws EntityNotFoundException {
+  public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
     certificateService.delete(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
@@ -114,7 +111,7 @@ public class CertificateController {
   @PutMapping("/{id}")
   public ResponseEntity<?> update(
       @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
-      throws ValidatorException, EntityNotFoundException {
+      throws ValidatorException {
     certificateService.update(id, newCertificate);
     return new ResponseEntity<>(HttpStatus.OK);
   }

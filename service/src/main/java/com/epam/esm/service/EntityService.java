@@ -1,10 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.EntityAlreadyExistException;
-import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
-
-import java.util.Collection;
 
 /**
  * Base service interface

@@ -16,7 +16,7 @@ public abstract class Entity<T> {
   /**
    * constructor
    *
-   * @param id - id of the entit
+   * @param id - id of the entity
    */
   public Entity(T id) {
     this.id = id;

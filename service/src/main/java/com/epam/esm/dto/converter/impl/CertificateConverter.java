@@ -16,8 +16,8 @@ public class CertificateConverter implements Converter<Certificate, CertificateD
   /**
    * Convert certificate DTO to certificate
    *
-   * @param dto {@link com.epam.esm.dto.CertificateDTO} to convert
-   * @return {@link com.epam.esm.entity.Certificate} after convert
+   * @param dto {@link CertificateDTO} to convert
+   * @return {@link Certificate} after convert
    */
   @Override
   public Certificate convert(CertificateDTO dto) {
@@ -34,8 +34,8 @@ public class CertificateConverter implements Converter<Certificate, CertificateD
   /**
    * Convert certificate to certificate DTO
    *
-   * @param certificate {@link com.epam.esm.entity.Certificate} to convert
-   * @return {@link com.epam.esm.dto.CertificateDTO} after convert
+   * @param certificate {@link Certificate} to convert
+   * @return {@link CertificateDTO} after convert
    */
   @Override
   public CertificateDTO convert(Certificate certificate) {

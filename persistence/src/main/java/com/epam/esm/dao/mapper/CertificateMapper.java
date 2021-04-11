@@ -2,6 +2,7 @@ package com.epam.esm.dao.mapper;
 
 import com.epam.esm.entity.Certificate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
  * @version 1.0
  * @see org.springframework.jdbc.core.RowMapper
  */
+@Component
 public class CertificateMapper implements RowMapper<Certificate> {
   @Override
   public Certificate mapRow(ResultSet rs, int rowNum) throws SQLException {

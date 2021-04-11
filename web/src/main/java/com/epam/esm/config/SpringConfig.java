@@ -8,5 +8,5 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @ComponentScan("com.epam.esm")
 @EnableWebMvc
-@Import(ServiceSpringConfig.class)
+@Import(PersistenceSpringConfig.class)
 public class SpringConfig {}

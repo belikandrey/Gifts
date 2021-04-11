@@ -11,8 +11,6 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -77,7 +75,7 @@ public class TagServiceImpl implements TagService {
    *
    * @param name name of tag
    * @return tag
-   * @throws EntityNotFoundException if entity with this name not found
+   * @exception EntityNotFoundException if entity with this name not found
    */
   @Override
   public TagDTO findByName(String name) {
@@ -105,10 +103,10 @@ public class TagServiceImpl implements TagService {
    *
    * @param id id of tag
    * @return tag
-   * @throws EntityNotFoundException if entity with this id not found
+   * @exception EntityNotFoundException if entity with this id not found
    */
   @Override
-  public TagDTO findById(BigInteger id) throws EntityNotFoundException {
+  public TagDTO findById(BigInteger id) {
     final Optional<Tag> tag = tagDao.findById(id);
     if (tag.isEmpty()) {
       throw new EntityNotFoundException("Tag with id : " + id + " not found");
@@ -122,10 +120,9 @@ public class TagServiceImpl implements TagService {
    * @param tagDTO tag to add
    * @return added tag
    * @throws ValidatorException if tag is invalid
-   * @throws EntityAlreadyExistException if entity with this name already exist
+   * @exception EntityAlreadyExistException if entity with this name already exist
    */
   @Override
-  @Transactional(propagation = Propagation.REQUIRED)
   public TagDTO add(TagDTO tagDTO) throws ValidatorException {
     Tag tag = converter.convert(tagDTO);
     validator.validate(tag);
@@ -155,10 +152,10 @@ public class TagServiceImpl implements TagService {
    * Delete tag by id method
    *
    * @param id id of entity for delete
-   * @throws EntityNotFoundException if tag with this id not found
+   * @exception EntityNotFoundException if tag with this id not found
    */
   @Override
-  public void delete(BigInteger id){
+  public void delete(BigInteger id) {
     if (!tagDao.delete(id)) {
       throw new EntityNotFoundException("Tag with id : " + id + " not found");
     }

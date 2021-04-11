@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
@@ -28,7 +26,7 @@ import java.util.Optional;
 @Repository
 public class CertificateDAOImpl implements CertificateDAO {
   private final JdbcTemplate jdbcTemplate;
-
+  private final CertificateMapper certificateMapper;
   private static final String SQL_FIND_ALL =
       "SELECT id, name, description, price, duration,"
           + " create_date, last_update_date FROM gifts.certificate";
@@ -49,10 +47,12 @@ public class CertificateDAOImpl implements CertificateDAO {
    * Constructor
    *
    * @param jdbcTemplate {@link org.springframework.jdbc.core.JdbcTemplate}
+   * @param certificateMapper {@link CertificateMapper}
    */
   @Autowired
-  public CertificateDAOImpl(JdbcTemplate jdbcTemplate) {
+  public CertificateDAOImpl(JdbcTemplate jdbcTemplate, CertificateMapper certificateMapper) {
     this.jdbcTemplate = jdbcTemplate;
+    this.certificateMapper = certificateMapper;
   }
 
   /**
@@ -64,7 +64,7 @@ public class CertificateDAOImpl implements CertificateDAO {
   @Override
   public Collection<Certificate> findByCriteria(SearchCriteria criteria) {
     final String query = criteria.getQuery();
-    return jdbcTemplate.query(query, new CertificateMapper());
+    return jdbcTemplate.query(query, certificateMapper);
   }
 
   /**
@@ -88,7 +88,7 @@ public class CertificateDAOImpl implements CertificateDAO {
    */
   @Override
   public Optional<Certificate> findById(BigInteger id) {
-    return jdbcTemplate.query(SQL_FIND_BY_ID, new CertificateMapper(), id).stream().findAny();
+    return jdbcTemplate.query(SQL_FIND_BY_ID, certificateMapper, id).stream().findAny();
   }
 
   /**
@@ -98,12 +98,11 @@ public class CertificateDAOImpl implements CertificateDAO {
    * @return added certificate
    */
   @Override
-  @Transactional(propagation = Propagation.REQUIRED)
   public Certificate add(Certificate certificate) {
     KeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(
         con -> {
-          final PreparedStatement st =
+          PreparedStatement st =
               con.prepareStatement(SQL_ADD_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
           st.setString(1, certificate.getName());
           st.setString(2, certificate.getDescription());

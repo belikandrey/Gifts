@@ -22,7 +22,7 @@ public class CertificateSearchQueryBuilder {
   private static final String SQL_SET_SORT_BY_NAME = " ORDER BY certificate.name ";
   private static final String SQL_SET_SORT_BY_DATE = " ORDER BY certificate.create_date ";
 
-  private StringBuilder stringBuilder;
+  private final StringBuilder stringBuilder;
   private boolean isComposite;
 
   /** Default constructor */
@@ -47,7 +47,11 @@ public class CertificateSearchQueryBuilder {
    */
   public CertificateSearchQueryBuilder setTagName(String tagName) {
     final SearchSeparator separator = getSeparator();
-    stringBuilder.append(separator.getValue()).append(SQL_SET_TAG_NAME).append(tagName).append("' ");
+    stringBuilder
+        .append(separator.getValue())
+        .append(SQL_SET_TAG_NAME)
+        .append(tagName)
+        .append("' ");
     return this;
   }
 
@@ -71,7 +75,11 @@ public class CertificateSearchQueryBuilder {
    */
   public CertificateSearchQueryBuilder setDescription(String description) {
     final SearchSeparator separator = getSeparator();
-    stringBuilder.append(separator.getValue()).append(SQL_SET_DESCRIPTION).append(description).append("%' ");
+    stringBuilder
+        .append(separator.getValue())
+        .append(SQL_SET_DESCRIPTION)
+        .append(description)
+        .append("%' ");
     return this;
   }
 
@@ -99,6 +107,7 @@ public class CertificateSearchQueryBuilder {
 
   /**
    * Get search separator method
+   *
    * @return {@link SearchSeparator} entity
    */
   private SearchSeparator getSeparator() {

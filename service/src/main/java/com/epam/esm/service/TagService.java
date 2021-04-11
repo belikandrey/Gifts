@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.exception.EntityNotFoundException;
 
 import java.math.BigInteger;
 import java.util.Collection;

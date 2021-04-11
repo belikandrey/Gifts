@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.exception.EntityAlreadyExistException;
-import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +42,8 @@ public class TagController {
   /**
    * Find all tags method
    *
-   //* @param certificateId certificate id
+   * <p>//* @param certificateId certificate id
+   *
    * @return the response entity
    */
   @GetMapping()
@@ -60,8 +59,7 @@ public class TagController {
    * @return response entity
    */
   @GetMapping("/{id}")
-  public ResponseEntity<?> find(@PathVariable("id") BigInteger tagId)
-      throws EntityNotFoundException {
+  public ResponseEntity<?> find(@PathVariable("id") BigInteger tagId) {
     final TagDTO tag = tagService.findById(tagId);
     return new ResponseEntity<>(tag, HttpStatus.OK);
   }
@@ -73,7 +71,7 @@ public class TagController {
    * @return response entity
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> create(@RequestBody TagDTO tag) throws EntityAlreadyExistException, ValidatorException {
+  public ResponseEntity<?> create(@RequestBody TagDTO tag) throws ValidatorException {
     tag = tagService.add(tag);
     return new ResponseEntity<>(tag, HttpStatus.OK);
   }
@@ -85,7 +83,7 @@ public class TagController {
    * @return response entity
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) throws EntityNotFoundException {
+  public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
     tagService.delete(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
