@@ -3,7 +3,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.config.TestConfig;
 import com.epam.esm.dao.impl.CertificateDAOImpl;
 import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.impl.CertificateConverter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.ValidatorException;
@@ -20,12 +19,12 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -33,7 +32,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
 class CertificateServiceTest {
-/*
+
   @Autowired private CertificateServiceImpl certificateService;
 
   @Autowired private CertificateDAOImpl certificateDAO;
@@ -69,79 +68,46 @@ class CertificateServiceTest {
   public void findAllTest() {
     final List<Certificate> certificates = List.of(firstCertificate, secondCertificate);
     when(certificateConverter.convert(any(Certificate.class))).thenReturn(new CertificateDTO());
-    when(certificateDAO.findAll()).thenReturn(certificates);
-    final Collection<CertificateDTO> certificateDTOS = certificateService.findAll();
+    when(certificateDAO.findByCriteria(any())).thenReturn(certificates);
+    final Collection<CertificateDTO> certificateDTOS =
+        certificateService.findAll(TAG_NAME, FIRST_NAME, DESCRIPTION, null, "asc");
     assertNotNull(certificateDTOS);
     assertFalse(certificateDTOS.isEmpty());
     final long count = certificateDTOS.size();
     assertEquals(count, 2);
   }
 
-  // Mock of certificate dao return list of certificates by id. Expected list of certificates
-  @Test
-  public void findAllByTagIdTest() {
-    final List<Certificate> certificates = List.of(firstCertificate, secondCertificate);
-    when(certificateConverter.convert(any(Certificate.class))).thenReturn(new CertificateDTO());
-    when(certificateDAO.findAll(any(BigInteger.class))).thenReturn(certificates);
-    final Collection<CertificateDTO> certificateDTOS = certificateService.findAll(FIRST_ID);
-    assertNotNull(certificateDTOS);
-    assertFalse(certificateDTOS.isEmpty());
-    final int count = certificateDTOS.size();
-    assertEquals(count, 2);
-  }
-
-  // Mock of certificate dao return list of certificates by params. Expected collection of
-  // certificate dto
-  @Test
-  public void findAllWithTagsByParamsTest() {
-    final List<Certificate> certificates = List.of(firstCertificate, secondCertificate);
-    when(tagService.findAll(FIRST_ID)).thenReturn(Set.of(new TagDTO(BigInteger.ONE, TAG_NAME)));
-    when(certificateDAO.findAll(FIRST_NAME, TAG_NAME, DESCRIPTION, "ASC", null))
-        .thenReturn(certificates);
-    when(certificateConverter.convert(any(Certificate.class)))
-        .thenReturn(
-            new CertificateDTO(
-                FIRST_ID, FIRST_NAME, DESCRIPTION, PRICE, DURATION, CREATE_DATE, LAST_UPDATE_DATE));
-    final Collection<CertificateDTO> certificateDTOS =
-        certificateService.findAll(FIRST_NAME, TAG_NAME, DESCRIPTION, "ASC", null);
-    assertNotNull(certificateDTOS);
-    assertFalse(certificateDTOS.isEmpty());
-    assertEquals(certificates.size(), certificateDTOS.size());
-  }
-
-  // Mock of certificate dao return one certificate. Expected one certificate dto
   @Test
   public void findByIdTest() {
-    when(certificateDAO.find(any(BigInteger.class))).thenReturn(firstCertificate);
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.of(firstCertificate));
     when(certificateConverter.convert(any(Certificate.class))).thenReturn(new CertificateDTO());
-    final CertificateDTO certificateDTO = certificateService.find(FIRST_ID);
+    final CertificateDTO certificateDTO = certificateService.findById(FIRST_ID);
     assertNotNull(certificateDTO);
   }
 
-  // Mock of certificate dao return positive update value. Expected true
-  @Test
-  public void deleteTest() {
-    when(certificateDAO.delete(any())).thenReturn(DAO_UPDATE_RETURN_VALUE);
-    assertTrue(certificateService.delete(any()));
-  }
-
-  // Mock of certificate dao return positive update value. Expected similar value
-  @Test
-  public void updateTest() throws ValidatorException {
-    when(certificateConverter.convert(any(CertificateDTO.class))).thenReturn(new Certificate());
-    doNothing().when(certificateValidator).validate(any(Certificate.class));
-    when(certificateDAO.update(any(), any())).thenReturn(DAO_UPDATE_RETURN_VALUE);
-    assertEquals(
-        certificateService.update(any(BigInteger.class), new CertificateDTO()),
-        DAO_UPDATE_RETURN_VALUE);
-  }
-
-  // Mock of certificate dao return positive number. Expected not null certificate dto
   @Test
   public void addTest() throws ValidatorException {
     when(certificateConverter.convert(any(CertificateDTO.class))).thenReturn(new Certificate());
-    when(certificateDAO.add(any(Certificate.class))).thenReturn(DAO_UPDATE_RETURN_VALUE);
+    when(certificateConverter.convert(any(Certificate.class))).thenReturn(new CertificateDTO());
+    when(certificateDAO.add(any(Certificate.class))).thenReturn(new Certificate());
+    doNothing().when(certificateValidator).validate(any());
     final CertificateDTO added = certificateService.add(new CertificateDTO());
     assertNotNull(added);
-  }*/
+  }
+
+  @Test
+  public void updateTest() throws ValidatorException {
+    when(certificateConverter.convert(any(CertificateDTO.class))).thenReturn(new Certificate());
+    doNothing().when(certificateValidator).validate(new Certificate());
+    when(certificateDAO.update(any(), any())).thenReturn(true);
+    when(certificateDAO.findById(any())).thenReturn(Optional.of(new Certificate()));
+    when(certificateConverter.convert(any(Certificate.class))).thenReturn(new CertificateDTO());
+    assertDoesNotThrow(() -> certificateService.update(BigInteger.TEN, new CertificateDTO()));
+  }
+
+  @Test
+  public void deleteTest() {
+    when(certificateDAO.delete(any())).thenReturn(true);
+    assertDoesNotThrow(() -> certificateService.delete(any()));
+  }
 }

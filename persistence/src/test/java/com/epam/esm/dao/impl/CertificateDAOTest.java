@@ -1,5 +1,7 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
+import com.epam.esm.dao.mapper.CertificateMapper;
 import com.epam.esm.entity.Certificate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,20 +12,24 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CertificateDAOTest {
-  /*private static JdbcTemplate jdbcTemplate;
+  private static JdbcTemplate jdbcTemplate;
+  private static CertificateMapper certificateMapper = new CertificateMapper();
   private static CertificateDAOImpl certificateDAO;
   private static EmbeddedDatabase embeddedDatabase;
   private static final String CERTIFICATE_NAME = "Cars.by";
-  private static final BigInteger TAG_ID = BigInteger.ONE;
   private static final String TAG_NAME = "#cool";
   private static final BigInteger CERTIFICATE_ID = BigInteger.TWO;
   private static final BigInteger SECOND_CERTIFICATE_ID = BigInteger.TWO;
@@ -51,59 +57,47 @@ class CertificateDAOTest {
   @BeforeAll
   public static void init() {
     jdbcTemplate = new JdbcTemplate(dataSource());
-    certificateDAO = new CertificateDAOImpl(jdbcTemplate);
+    certificateDAO = new CertificateDAOImpl(jdbcTemplate, certificateMapper);
   }
 
   @Test
-  void findAllTest() {
-    final Collection<Certificate> certificates = certificateDAO.findAll();
-    assertNotNull(certificates);
-    assertFalse(certificates.isEmpty());
-    assertTrue(certificates.stream().anyMatch((p) -> p.getName().equals(CERTIFICATE_NAME)));
+  void updateTest() {
+    assertTrue(certificateDAO.update(SECOND_CERTIFICATE_ID, certificate));
   }
 
   @Test
-  void findAllByTagNameTest() {
-    final Collection<Certificate> certificates = certificateDAO.findAll(TAG_NAME);
-    assertNotNull(certificates);
-    assertFalse(certificates.isEmpty());
-    assertTrue(certificates.stream().anyMatch((p) -> p.getName().equals(CERTIFICATE_NAME)));
+  void deleteTest() {
+    assertTrue(certificateDAO.delete(THIRD_CERTIFICATE_ID));
   }
 
   @Test
-  void findAllByTagIdTest() {
-    final Collection<Certificate> certificates = certificateDAO.findAll(TAG_ID);
-    assertNotNull(certificates);
-    assertFalse(certificates.isEmpty());
-    assertEquals(certificates.size(), 2);
-    assertTrue(certificates.stream().anyMatch((p) -> p.getName().equals(CERTIFICATE_NAME)));
+  void addTest() {
+    final Certificate addedCertificate = certificateDAO.add(certificate);
+    assertEquals(addedCertificate.getName(), certificate.getName());
+    assertEquals(addedCertificate.getDescription(), certificate.getDescription());
+    assertEquals(addedCertificate.getDuration(), certificate.getDuration());
+    assertEquals(addedCertificate.getPrice(), certificate.getPrice());
   }
 
   @Test
-  void find() {
-    final Certificate certificate = certificateDAO.find(CERTIFICATE_ID);
+  void findByIdTest() {
+    final Certificate certificate = certificateDAO.findById(SECOND_CERTIFICATE_ID).orElse(null);
     assertNotNull(certificate);
-    assertEquals(certificate.getId(), CERTIFICATE_ID);
-    assertEquals(certificate.getName(), CERTIFICATE_NAME);
+    assertEquals(certificate.getId(), SECOND_CERTIFICATE_ID);
   }
 
   @Test
-  void add() {
-    assertTrue(certificateDAO.add(certificate) > 0);
-  }
-
-  @Test
-  void update() {
-    assertTrue(certificateDAO.update(SECOND_CERTIFICATE_ID, certificate) > 0);
-  }
-
-  @Test
-  void delete() {
-    assertTrue(certificateDAO.delete(THIRD_CERTIFICATE_ID) > 0);
+  void findByCriteria() {
+    Map<String, String> params = new HashMap<>();
+    params.put("tagName", TAG_NAME);
+    final Collection<Certificate> certificates =
+        certificateDAO.findByCriteria(new CertificateSearchCriteria(params));
+    assertNotNull(certificates);
+    assertFalse(certificates.isEmpty());
   }
 
   @AfterAll
   static void clean() {
     embeddedDatabase.shutdown();
-  }*/
+  }
 }
