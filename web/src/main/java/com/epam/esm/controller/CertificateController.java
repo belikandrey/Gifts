@@ -81,6 +81,7 @@ public class CertificateController {
    *
    * @param certificate certificate for create
    * @return response entity
+   * @throws ValidatorException if entity is invalid
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> create(@RequestBody CertificateDTO certificate)
@@ -107,6 +108,7 @@ public class CertificateController {
    * @param id id of certificate to be updated
    * @param newCertificate certificate for update
    * @return response entity
+   * @throws ValidatorException if entity is invalid
    */
   @PutMapping("/{id}")
   public ResponseEntity<?> update(

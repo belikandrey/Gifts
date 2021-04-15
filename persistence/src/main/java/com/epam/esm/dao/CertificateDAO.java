@@ -30,4 +30,6 @@ public interface CertificateDAO extends AbstractDAO<Certificate, BigInteger> {
    * @return true if added, false in another way
    */
   boolean addCertificateTag(BigInteger certificateId, BigInteger tagId);
+
+    boolean deleteCertificateTag(BigInteger certificateId, BigInteger tagId);
 }

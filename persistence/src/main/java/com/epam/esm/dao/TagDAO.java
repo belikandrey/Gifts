@@ -44,4 +44,6 @@ public interface TagDAO extends AbstractDAO<Tag, BigInteger> {
    * @return {@link Optional} of tag
    */
   Optional<Tag> findTagByName(String name);
+
+    Integer countTagsFromCertificateTag(BigInteger tagId);
 }

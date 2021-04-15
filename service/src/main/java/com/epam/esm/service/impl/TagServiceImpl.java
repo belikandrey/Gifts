@@ -6,6 +6,7 @@ import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityAlreadyExistException;
 import com.epam.esm.exception.EntityNotFoundException;
+import com.epam.esm.exception.EntityUsedException;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
@@ -153,11 +154,20 @@ public class TagServiceImpl implements TagService {
    *
    * @param id id of entity for delete
    * @exception EntityNotFoundException if tag with this id not found
+   * @exception EntityUsedException if tag is used in certificates
    */
   @Override
   public void delete(BigInteger id) {
+    if (isTagUsed(id)) {
+      throw new EntityUsedException(
+          "Can not delete tag with id : " + id + ". Tag is used in certificates");
+    }
     if (!tagDao.delete(id)) {
       throw new EntityNotFoundException("Tag with id : " + id + " not found");
     }
+  }
+
+  private boolean isTagUsed(BigInteger tagId) {
+    return tagDao.countTagsFromCertificateTag(tagId) > 0;
   }
 }

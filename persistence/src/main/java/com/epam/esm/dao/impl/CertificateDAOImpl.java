@@ -42,6 +42,8 @@ public class CertificateDAOImpl implements CertificateDAO {
   private static final String SQL_DELETE = "DELETE FROM gifts.certificate WHERE id=?";
   private static final String SQL_ADD_TAG_CERTIFICATE =
       "INSERT INTO gifts.certificate_tag(certificate_id, tag_id) VALUES(?, ?)";
+  private static final String SQL_DELETE_TAG_CERTIFICATE =
+      "DELETE FROM gifts.certificate_tag WHERE certificate_id=? AND tag_id=?";
 
   /**
    * Constructor
@@ -78,6 +80,13 @@ public class CertificateDAOImpl implements CertificateDAO {
   public boolean addCertificateTag(BigInteger certificateId, BigInteger tagId) {
     return jdbcTemplate.update(
             SQL_ADD_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue())
+        > 0;
+  }
+
+  @Override
+  public boolean deleteCertificateTag(BigInteger certificateId, BigInteger tagId) {
+    return jdbcTemplate.update(
+            SQL_DELETE_TAG_CERTIFICATE, certificateId.longValue(), tagId.longValue())
         > 0;
   }
   /**

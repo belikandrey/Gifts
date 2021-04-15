@@ -145,6 +145,7 @@ public class CertificateServiceImpl implements CertificateService {
     return tagsFromDb;
   }
 
+  //TODO new logic
   private TagDTO findOrAddTag(TagDTO tag) throws ValidatorException {
     TagDTO tagFromDB;
     if (tagService.isAlreadyExists(tag)) {
@@ -153,6 +154,9 @@ public class CertificateServiceImpl implements CertificateService {
               ? tagService.findById(tag.getId())
               : tagService.findByName(tag.getName());
     } else {
+      if(tag.getName()==null || tag.getName().isEmpty()){
+        throw new ValidatorException("Tag with id "+tag.getId()+" not found");
+      }
       tagFromDB = tagService.add(tag);
     }
     return tagFromDB;
@@ -179,12 +183,17 @@ public class CertificateServiceImpl implements CertificateService {
       throw new EntityNotFoundException("Certificate with id : " + certificateId + " not found");
     }
     Set<TagDTO> tagsForAdd = new HashSet<>();
+    deleteTagsForCertificate(certificateId, certificateDTO.getTags());
     for (TagDTO tagDTO : giftCertificate.getTags()) {
       if (!isContainsTag(tagDTO, certificateDTO.getTags())) {
         tagsForAdd.add(tagDTO);
       }
     }
     getTagsForCertificate(certificateId, tagsForAdd);
+  }
+
+  private void deleteTagsForCertificate(BigInteger certificateId, Set<TagDTO> tags) {
+    tags.forEach((p)->certificateDAO.deleteCertificateTag(certificateId, p.getId()));
   }
 
   private boolean isContainsTag(TagDTO tag, Set<TagDTO> tags) {

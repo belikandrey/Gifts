@@ -69,6 +69,7 @@ public class TagController {
    *
    * @param tag tag for create
    * @return response entity
+   * @throws ValidatorException if entity is invalid
    */
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> create(@RequestBody TagDTO tag) throws ValidatorException {

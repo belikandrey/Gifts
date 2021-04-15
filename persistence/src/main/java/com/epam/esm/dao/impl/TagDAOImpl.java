@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
@@ -36,6 +38,10 @@ public class TagDAOImpl implements TagDAO {
   private static final String SQL_FIND_TAGS_BY_CERTIFICATE_ID =
       "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
           + " WHERE certificate_id=?";
+  private static final String SQL_COUNT_TAGS_FROM_CERTIFICATE_TAG =
+      "SELECT COUNT(tag_id) AS count FROM gifts.certificate_tag "
+          + "JOIN gifts.tag ON tag.id = certificate_tag.tag_id "
+          + "WHERE tag_id = ?";
 
   /**
    * Constructor
@@ -154,5 +160,14 @@ public class TagDAOImpl implements TagDAO {
   public Set<Tag> findTagsByCertificateId(BigInteger certificateId) {
     return new HashSet<>(
         jdbcTemplate.query(SQL_FIND_TAGS_BY_CERTIFICATE_ID, rowMapper, certificateId));
+  }
+
+  @Override
+  public Integer countTagsFromCertificateTag(BigInteger tagId) {
+    return jdbcTemplate
+        .query(
+            SQL_COUNT_TAGS_FROM_CERTIFICATE_TAG,
+                (rs, rowNum) -> rs.getInt("count"), tagId)
+        .get(0);
   }
 }
