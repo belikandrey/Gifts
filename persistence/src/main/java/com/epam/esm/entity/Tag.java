@@ -1,16 +1,42 @@
 package com.epam.esm.entity;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * @author Andrey Belik
  * @version 1.0
- * @see Entity
+ * @see
  */
-public class Tag extends Entity<BigInteger> {
+@Entity
+@Table(name = "tag")
+public class Tag {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private BigInteger id;
+
+  @Column(name = "name")
   private String name;
+
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(
+      name = "certificate_tag",
+      joinColumns = @JoinColumn(name = "tag_id"),
+      inverseJoinColumns = @JoinColumn(name = "certificate_id"))
+  private List<Certificate> certificate;
 
   /**
    * Constructor
@@ -31,8 +57,24 @@ public class Tag extends Entity<BigInteger> {
    * @param name name of the tag
    */
   public Tag(BigInteger id, String name) {
-    super(id);
+    this.id = id;
     this.name = name;
+  }
+
+  public List<Certificate> getCertificate() {
+    return certificate;
+  }
+
+  public void setCertificate(List<Certificate> certificate) {
+    this.certificate = certificate;
+  }
+
+  public BigInteger getId() {
+    return id;
+  }
+
+  public void setId(BigInteger id) {
+    this.id = id;
   }
 
   /**

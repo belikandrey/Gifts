@@ -1,28 +1,59 @@
 package com.epam.esm.entity;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Andrey Belik
  * @version 1.0
- * @see Entity
+ * @see
  */
-public class Certificate extends Entity<BigInteger> {
+@Entity
+@Table(name = "certificate")
+public class Certificate {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private BigInteger id;
+
+  @Column(name = "name")
   private String name;
 
+  @Column(name = "description")
   private String description;
 
+  @Column(name = "price")
   private BigDecimal price;
 
+  @Column(name = "duration")
   private Integer duration;
 
+  @Column(name = "createDate")
   private LocalDateTime createDate;
 
+  @Column(name = "lastUpdateDate")
   private LocalDateTime lastUpdateDate;
+
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(
+      name = "certificate_tag",
+      joinColumns = @JoinColumn(name = "certificate_id"),
+      inverseJoinColumns = @JoinColumn(name = "tag_id"))
+  private Set<Tag> tags;
 
   /**
    * Constructor
@@ -30,7 +61,7 @@ public class Certificate extends Entity<BigInteger> {
    * @param id id of the certificate
    */
   public Certificate(BigInteger id) {
-    super(id);
+    this.id = id;
   }
 
   /** Default constructor */
@@ -55,7 +86,7 @@ public class Certificate extends Entity<BigInteger> {
       Integer duration,
       LocalDateTime createDate,
       LocalDateTime lastUpdateDate) {
-    super(id);
+    this.id = id;
     this.name = name;
     this.description = description;
     this.price = price;
@@ -73,6 +104,14 @@ public class Certificate extends Entity<BigInteger> {
     return name;
   }
 
+  public BigInteger getId() {
+    return id;
+  }
+
+  public void setId(BigInteger id) {
+    this.id = id;
+  }
+
   /**
    * Name setter
    *
@@ -80,6 +119,14 @@ public class Certificate extends Entity<BigInteger> {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
+
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
   }
 
   /**

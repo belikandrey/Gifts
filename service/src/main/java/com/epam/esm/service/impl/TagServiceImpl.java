@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
+import com.epam.esm.dao1.TagRepository;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -28,20 +29,28 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
   private Validator<Tag> validator;
-  private TagDAO tagDao;
   private Converter<Tag, TagDTO> converter;
+  private TagRepository tagRepository;
 
   /**
    * Constructor
    *
    * @param validator {@link com.epam.esm.validator.Validator}
-   * @param tagDao {@link com.epam.esm.dao.AbstractDAO}
+   * @param {@link com.epam.esm.dao.AbstractDAO}
    * @param converter {@link com.epam.esm.dto.converter.Converter}
    */
+  //  @Autowired
+  //  public TagServiceImpl(Validator<Tag> validator, TagDAO tagDao, Converter<Tag, TagDTO>
+  // converter) {
+  //    this.validator = validator;
+  //    this.tagDao = tagDao;
+  //    this.converter = converter;
+  //  }
   @Autowired
-  public TagServiceImpl(Validator<Tag> validator, TagDAO tagDao, Converter<Tag, TagDTO> converter) {
+  public TagServiceImpl(
+      Validator<Tag> validator, TagRepository tagRepository, Converter<Tag, TagDTO> converter) {
     this.validator = validator;
-    this.tagDao = tagDao;
+    this.tagRepository = tagRepository;
     this.converter = converter;
   }
 
@@ -53,9 +62,17 @@ public class TagServiceImpl implements TagService {
    *
    * @return {@link java.util.Collection} of tags
    */
+  /*@Override
+  @Transactional
+  public Collection<TagDTO> findAll() {
+    return tagDao.findAll().stream().map(converter::convertToDto).collect(Collectors.toSet());
+  }*/
+
   @Override
   public Collection<TagDTO> findAll() {
-    return tagDao.findAll().stream().map(converter::convert).collect(Collectors.toSet());
+    return tagRepository.findAll().stream()
+        .map(converter::convertToDto)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -66,8 +83,11 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public Set<TagDTO> findTagsByCertificateId(BigInteger certificateId) {
-    return tagDao.findTagsByCertificateId(certificateId).stream()
-        .map(converter::convert)
+    //    return tagDao.findTagsByCertificateId(certificateId).stream()
+    //        .map(converter::convertToDto)
+    //        .collect(Collectors.toSet());
+    return tagRepository.findTagsByCertificateId(certificateId).stream()
+        .map(converter::convertToDto)
         .collect(Collectors.toSet());
   }
 
@@ -80,11 +100,12 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public TagDTO findByName(String name) {
-    final Optional<Tag> tag = tagDao.findTagByName(name);
+    /*final Optional<Tag> tag = tagDao.findTagByName(name);
     if (tag.isEmpty()) {
       throw new EntityNotFoundException("Tag with name : " + name + " not found");
     }
-    return converter.convert(tag.get());
+    return converter.convertToDto(tag.get());*/
+    return converter.convertToDto(tagRepository.findTagByName(name));
   }
 
   /**
@@ -95,8 +116,9 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public boolean isAlreadyExists(TagDTO tagDTO) {
-    final Tag tag = converter.convert(tagDTO);
-    return tagDao.isAlreadyExist(tag);
+    // final Tag tag = converter.convertToEntity(tagDTO);
+    // return tagDao.isAlreadyExist(tag);
+    return tagRepository.existsTagByIdOrName(tagDTO.getId(), tagDTO.getName());
   }
 
   /**
@@ -108,11 +130,12 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public TagDTO findById(BigInteger id) {
-    final Optional<Tag> tag = tagDao.findById(id);
+    //    final Optional<Tag> tag = tagDao.findById(id);
+    final Optional<Tag> tag = tagRepository.findById(id);
     if (tag.isEmpty()) {
       throw new EntityNotFoundException("Tag with id : " + id + " not found");
     }
-    return converter.convert(tag.get());
+    return converter.convertToDto(tag.get());
   }
 
   /**
@@ -125,14 +148,11 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public TagDTO add(TagDTO tagDTO) throws ValidatorException {
-    Tag tag = converter.convert(tagDTO);
+    Tag tag = converter.convertToEntity(tagDTO);
     validator.validate(tag);
-    final Tag addedTag = tagDao.add(tag);
-    if (addedTag == null) {
-      throw new EntityAlreadyExistException(
-          "Tag with name : " + tagDTO.getName() + " already exist");
-    }
-    return converter.convert(addedTag);
+    //    final Tag addedTag = tagDao.add(tag);
+    final Tag addedTag = tagRepository.save(tag);
+    return converter.convertToDto(addedTag);
   }
 
   /**
@@ -144,9 +164,8 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public void update(BigInteger id, TagDTO tagDTO) throws ValidatorException {
-    final Tag tag = converter.convert(tagDTO);
-    validator.validate(tag);
-    tagDao.update(id, tag);
+    throw new UnsupportedOperationException();
+    //tagDao.update(id, tag);
   }
 
   /**
@@ -162,12 +181,14 @@ public class TagServiceImpl implements TagService {
       throw new EntityUsedException(
           "Can not delete tag with id : " + id + ". Tag is used in certificates");
     }
-    if (!tagDao.delete(id)) {
-      throw new EntityNotFoundException("Tag with id : " + id + " not found");
-    }
+    tagRepository.deleteById(id);
   }
 
   private boolean isTagUsed(BigInteger tagId) {
-    return tagDao.countTagsFromCertificateTag(tagId) > 0;
+    final Optional<Tag> byId = tagRepository.findById(tagId);
+    if(byId.isEmpty()){
+      throw new EntityNotFoundException("Tag with id : " + tagId + " not found");
+    }
+    return byId.get().getCertificate().size()>0;
   }
 }

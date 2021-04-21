@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class CertificateConverterTest {
-
+/*
   private static CertificateConverter converter;
   private static final BigInteger ID = BigInteger.ONE;
   private static final String NAME = "Apple.com";
@@ -56,5 +56,5 @@ class CertificateConverterTest {
     assertEquals(certificate.getDuration(), certificateDTO.getDuration());
     assertEquals(certificate.getCreateDate(), certificateDTO.getCreationDate());
     assertEquals(certificate.getLastUpdateDate(), certificateDTO.getLastUpdateDate());
-  }
+  }*/
 }

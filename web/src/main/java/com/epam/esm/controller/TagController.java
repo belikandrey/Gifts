@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Rest controller for tags
@@ -87,5 +88,11 @@ public class TagController {
   public ResponseEntity<?> delete(@PathVariable("id") BigInteger id) {
     tagService.delete(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @GetMapping("/cert/{id}")
+  public ResponseEntity<?> findByCertId(@PathVariable int id) {
+    final Set<TagDTO> tags = tagService.findTagsByCertificateId(BigInteger.valueOf(id));
+    return new ResponseEntity<>(tags, HttpStatus.OK);
   }
 }

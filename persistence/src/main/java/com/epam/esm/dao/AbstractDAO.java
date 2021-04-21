@@ -1,18 +1,16 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.entity.Entity;
-
 import java.util.Optional;
 
 /**
  * Base DAO interface
  *
- * @param <T> class that extends {@link com.epam.esm.entity.Entity}
+ * @param <T> class that extends {@link com.epam.esm.entity}
  * @param <K> transfer object of the T
  * @author Andrey Belik
  * @version 1.0
  */
-public interface AbstractDAO<T extends Entity, K> {
+public interface AbstractDAO<T, K> {
 
   /**
    * Find entity by id method

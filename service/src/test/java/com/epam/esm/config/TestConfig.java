@@ -9,18 +9,19 @@ import com.epam.esm.service.impl.TagServiceImpl;
 import com.epam.esm.validator.impl.CertificateValidator;
 import com.epam.esm.validator.impl.TagValidator;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import static org.mockito.Mockito.mock;
 
 @Configuration
 public class TestConfig {
+/*
 
   @Bean
   public TagServiceImpl tagService() {
     return new TagServiceImpl(tagValidator(), tagDAO(), tagConverter());
   }
+*/
 
   @Bean
   public TagDAOImpl tagDAO() {
@@ -40,7 +41,7 @@ public class TestConfig {
   @Bean
   public CertificateServiceImpl certificateService() {
     return new CertificateServiceImpl(
-        certificateValidator(), certificateDAO(), certificateConverter(), tagServiceMock());
+        certificateValidator(), certificateDAO(), certificateConverter(), tagServiceMock() ,null, null);
   }
 
   @Bean
