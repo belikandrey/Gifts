@@ -34,8 +34,6 @@ public interface EntityService<T, K> {
    * @param t entity for update
    * @throws ValidatorException if entity is invalid
    */
-  void update(K id, T t) throws ValidatorException;
-
   /**
    * Delete entity by id method
    *

@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -110,11 +111,20 @@ public class CertificateController {
    * @return response entity
    * @throws ValidatorException if entity is invalid
    */
-  @PutMapping("/{id}")
+  @PatchMapping("/{id}")
   public ResponseEntity<?> update(
-      @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
-      throws ValidatorException {
-    certificateService.update(id, newCertificate);
+          @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
+          throws ValidatorException {
+    certificateService.update(id, newCertificate, false);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> updateAllFields(
+          @PathVariable("id") BigInteger id, @RequestBody CertificateDTO certificateDTO)
+          throws ValidatorException {
+    certificateService.update(id, certificateDTO, true);
+    final CertificateDTO certificate = certificateService.findById(id);
+    return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -44,5 +45,14 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     String message = exception.getMessage();
     return handleExceptionInternal(
         exception, message, new HttpHeaders(), HttpStatus.CONFLICT, request);
+  }
+
+
+  @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+  protected ResponseEntity<?> handleBadId(
+          MethodArgumentTypeMismatchException exception, WebRequest request) {
+    String message = "Id should be convertible into number";
+    return handleExceptionInternal(
+            exception, message, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 }

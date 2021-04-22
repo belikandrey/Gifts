@@ -39,7 +39,7 @@ class TagDAOTest {
 //    embeddedDatabase =
 //        new EmbeddedDatabaseBuilder()
 //            .setType(EmbeddedDatabaseType.H2)
-//            .addScript("sql/init_h2.sql")
+//            .addScript("sql/data-h2.sql")
 //            .build();
 //    return embeddedDatabase;
 //  }

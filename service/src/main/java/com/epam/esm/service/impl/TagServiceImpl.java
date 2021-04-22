@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao1.TagRepository;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -30,7 +29,8 @@ public class TagServiceImpl implements TagService {
 
   private Validator<Tag> validator;
   private Converter<Tag, TagDTO> converter;
-  private TagRepository tagRepository;
+  private TagDAO tagRepository;
+  //private TagRepository tagRepository;
 
   /**
    * Constructor
@@ -48,7 +48,7 @@ public class TagServiceImpl implements TagService {
   //  }
   @Autowired
   public TagServiceImpl(
-      Validator<Tag> validator, TagRepository tagRepository, Converter<Tag, TagDTO> converter) {
+      Validator<Tag> validator, TagDAO tagRepository, Converter<Tag, TagDTO> converter) {
     this.validator = validator;
     this.tagRepository = tagRepository;
     this.converter = converter;
@@ -105,7 +105,8 @@ public class TagServiceImpl implements TagService {
       throw new EntityNotFoundException("Tag with name : " + name + " not found");
     }
     return converter.convertToDto(tag.get());*/
-    return converter.convertToDto(tagRepository.findTagByName(name));
+    //return converter.convertToDto(tagRepository.findTagByName(name));
+    return null;
   }
 
   /**
@@ -118,7 +119,8 @@ public class TagServiceImpl implements TagService {
   public boolean isAlreadyExists(TagDTO tagDTO) {
     // final Tag tag = converter.convertToEntity(tagDTO);
     // return tagDao.isAlreadyExist(tag);
-    return tagRepository.existsTagByIdOrName(tagDTO.getId(), tagDTO.getName());
+    //return tagRepository.existsTagByIdOrName(tagDTO.getId(), tagDTO.getName());
+    return false;
   }
 
   /**
@@ -150,9 +152,11 @@ public class TagServiceImpl implements TagService {
   public TagDTO add(TagDTO tagDTO) throws ValidatorException {
     Tag tag = converter.convertToEntity(tagDTO);
     validator.validate(tag);
+    final Tag added = tagRepository.add(tag);
     //    final Tag addedTag = tagDao.add(tag);
-    final Tag addedTag = tagRepository.save(tag);
-    return converter.convertToDto(addedTag);
+    //final Tag addedTag = tagRepository.save(tag);
+    //return converter.convertToDto(addedTag);
+    return converter.convertToDto(added);
   }
 
   /**
@@ -181,7 +185,7 @@ public class TagServiceImpl implements TagService {
       throw new EntityUsedException(
           "Can not delete tag with id : " + id + ". Tag is used in certificates");
     }
-    tagRepository.deleteById(id);
+    //tagRepository.deleteById(id);
   }
 
   private boolean isTagUsed(BigInteger tagId) {

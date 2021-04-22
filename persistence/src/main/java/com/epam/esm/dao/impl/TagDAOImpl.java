@@ -2,16 +2,14 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,29 +30,34 @@ public class TagDAOImpl implements TagDAO {
 //    Session session = entityManager.unwrap(Session.class);
 //    Query query = session.createQuery("from com.epam.esm.entity.Tag");
 //    final List<Tag> tags = query.getResultList();
+    //entityManager.getTransaction().begin();
     final Query query = entityManager.createQuery("from Tag");
-    final List<Tag> resultList = query.getResultList();
-    return resultList;
+    return query.getResultList();
   }
 
   @Override
   public Optional<Tag> findById(BigInteger id) {
-    return null;
+    return Optional.ofNullable(entityManager.find(Tag.class, id));
   }
 
   @Override
+  @Transactional
   public Tag add(Tag tag) {
-    return null;
+    entityManager.persist(tag);
+    return tag;
   }
 
   @Override
-  public boolean update(BigInteger id, Tag tag) {
-    return false;
+  public Tag update(BigInteger id, Tag tag) {
+    tag.setId(id);
+    return entityManager.merge(tag);
   }
 
   @Override
   public boolean delete(BigInteger id) {
-    return false;
+    final Tag tag = entityManager.find(Tag.class, id);
+    entityManager.remove(tag);
+    return true;
   }
 
 

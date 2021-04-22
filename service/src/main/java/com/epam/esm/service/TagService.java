@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.TagDTO;
+import com.epam.esm.exception.ValidatorException;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -37,6 +38,8 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
    */
   TagDTO findByName(String name);
 
+
+  void update(BigInteger id, TagDTO t) throws ValidatorException;
   /**
    * Check is tag is already exist
    *

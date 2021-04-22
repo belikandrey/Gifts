@@ -1,11 +1,5 @@
 SET MODE MySQL;
 
-drop schema if exists gifts;
-
-create schema if not exists gifts;
-
-use gifts;
-
 create table tag(
                     id int not null primary key auto_increment,
                     name varchar(50) not null unique ,
@@ -48,7 +42,7 @@ insert into tag(name) values ('#smile');
 insert into tag(name) values ('#family');
 
 insert into certificate(name, description, price, duration, create_date, last_update_date)
-VALUES ('Relax.by', 'Certificate for one trip with family', 10000, 150, timestamp '2021-03-31 22:11',timestamp '2021-03-31 22:11');
+VALUES ('Relax.by', 'Certificate for one trip with family', 10000, 150, timestamp '2021-11-11 11:11',timestamp '2021-03-31 22:11');
 insert into certificate(name, description, price, duration, create_date, last_update_date)
 VALUES ('Cars.by', 'Certificate for one car Kia Rio', 25000, 20, timestamp '2021-03-31 20:11', timestamp '2021-03-31 00:11');
 insert into certificate(name, description, price, duration, create_date, last_update_date)

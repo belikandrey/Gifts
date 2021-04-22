@@ -1,5 +1,7 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.entity.Tag;
+
 import java.util.Optional;
 
 /**
@@ -35,7 +37,7 @@ public interface AbstractDAO<T, K> {
    * @param t entity to update
    * @return true if updated, false in another way
    */
-  boolean update(K id, T t);
+  T update(K id, T t);
 
   /**
    * Delete entity method

@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.exception.ValidatorException;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -25,4 +26,6 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
    */
   Collection<CertificateDTO> findAll(
       String tagName, String name, String description, String sortName, String sortDate);
+
+  void update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
 }

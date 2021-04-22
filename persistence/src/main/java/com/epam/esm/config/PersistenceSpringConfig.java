@@ -22,25 +22,17 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan(basePackages = "com.epam.esm")
 @EnableTransactionManagement
-@EnableJpaRepositories("com.epam.esm.dao1")
+//@EnableJpaRepositories("com.epam.esm.dao1")
 public class PersistenceSpringConfig {
-
-  @Bean
-  public PlatformTransactionManager transactionManager(DataSource dataSource){
-    return new DataSourceTransactionManager(dataSource);
-  }
-
-  @Bean
-  public JdbcTemplate getTemplate(DataSource dataSource) {
-    return new JdbcTemplate(dataSource);
-  }
 
   @Bean
   @Profile("dev")
   public DataSource dataSource() {
     return new EmbeddedDatabaseBuilder()
             .setType(EmbeddedDatabaseType.H2)
-            .addScript("sql/init_h2.sql")
+            .setName("gifts")
+            .setCommentPrefix("gifts.")
+            .addScript("/sql/init_h2.sql")
             .build();
   }
 

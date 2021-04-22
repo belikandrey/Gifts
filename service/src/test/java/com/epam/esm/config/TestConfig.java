@@ -41,7 +41,7 @@ public class TestConfig {
   @Bean
   public CertificateServiceImpl certificateService() {
     return new CertificateServiceImpl(
-        certificateValidator(), certificateDAO(), certificateConverter(), tagServiceMock() ,null, null);
+        certificateValidator(), certificateDAO(), certificateConverter(), tagServiceMock(), null);
   }
 
   @Bean

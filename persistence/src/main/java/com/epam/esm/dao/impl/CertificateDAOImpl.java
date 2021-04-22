@@ -2,15 +2,11 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.criteria.SearchCriteria;
-import com.epam.esm.dao.mapper.CertificateMapper;
 import com.epam.esm.entity.Certificate;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -34,8 +30,8 @@ public class CertificateDAOImpl implements CertificateDAO {
   }
 
   @Override
-  public boolean update(BigInteger id, Certificate certificate) {
-    return false;
+  public Certificate update(BigInteger id, Certificate certificate) {
+    return null;
   }
 
   @Override
