@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
@@ -10,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
@@ -35,20 +39,33 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> find(@PathVariable("id") BigInteger userId) {
+    public ResponseEntity<?> findUserById(@PathVariable("id") BigInteger userId) {
         final User user = userService.findById(userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/orders")
-    public ResponseEntity<?> findAllOrders(@PathVariable("id") BigInteger id){
-        final List<Order> orders = orderService.findAll();
+    public ResponseEntity<?> findAllUserOrders(@PathVariable("id") BigInteger id){
+        final List<Order> orders = orderService.findAllByUserId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @GetMapping("/{user_id}/orders/{id}")
-    public ResponseEntity<?> findByOrderId(@PathVariable("user_id") BigInteger userId, @PathVariable("id") BigInteger orderId){
-        final Order order = orderService.findById(orderId);
+    @PostMapping("/{id}/orders")
+    public ResponseEntity<?> createOrder(@PathVariable BigInteger id, @RequestBody List<CertificateDTO> certificates){
+        Order order = orderService.create(id, certificates);
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+    //TODO
+    @GetMapping("/{id}/tags")
+    public ResponseEntity<?> findMostPopularTag(@PathVariable BigInteger id){
+        return null;
+    }
+
+    //TODO
+    @GetMapping("/{user_id}/orders/{order_id}")
+    public ResponseEntity<?> findUserOrderById(@PathVariable("user_id") BigInteger userId, @PathVariable("order_id") BigInteger orderId){
+        Order order = orderService.findByIdAndUserId(orderId, userId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }
