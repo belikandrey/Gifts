@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ValidatorException;
 
@@ -20,7 +21,7 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
    *
    * @return {@link Collection} of {@link TagDTO}
    */
-  Collection<TagDTO> findAll();
+  Collection<TagDTO> findAll(Pageable pageable);
 
   /**
    * Find all tags by certificate id method

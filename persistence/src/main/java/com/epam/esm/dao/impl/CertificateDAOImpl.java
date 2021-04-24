@@ -2,6 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.criteria.SearchCriteria;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,12 @@ public class CertificateDAOImpl implements CertificateDAO {
   }
 
   @Override
-  public Collection<Certificate> findByCriteria(SearchCriteria criteria) {
-    return entityManager.createNativeQuery(criteria.getQuery(), Certificate.class).getResultList();
+  public Collection<Certificate> findByCriteria(SearchCriteria criteria, Pageable pageable) {
+    return entityManager
+        .createNativeQuery(criteria.getQuery(), Certificate.class)
+        .setFirstResult((pageable.getPage() - 1) * pageable.getSize())
+        .setMaxResults(pageable.getSize())
+        .getResultList();
   }
 
   @Override

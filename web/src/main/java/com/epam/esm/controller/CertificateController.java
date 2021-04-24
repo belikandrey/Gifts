@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.CertificateService;
@@ -59,9 +60,12 @@ public class CertificateController {
       @RequestParam(value = "name", required = false) String name,
       @RequestParam(value = "description", required = false) String description,
       @RequestParam(value = "sortName", required = false) String sortName,
-      @RequestParam(value = "sortDate", required = false) String sortDate) {
+      @RequestParam(value = "sortDate", required = false) String sortDate,
+      @RequestParam(name = "page", defaultValue = "1", required = false) int page,
+      @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
+    Pageable pageable = new Pageable(size, page);
     Collection<CertificateDTO> giftCertificates =
-        certificateService.findAll(tagName, name, description, sortName, sortDate);
+        certificateService.findAll(tagName, name, description, sortName, sortDate, pageable);
     return new ResponseEntity<>(giftCertificates, HttpStatus.OK);
   }
 

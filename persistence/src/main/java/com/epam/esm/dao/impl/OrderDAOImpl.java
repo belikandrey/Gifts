@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.OrderDAO;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
@@ -50,17 +51,19 @@ public class OrderDAOImpl implements OrderDAO {
   }
 
   @Override
-  public List<Order> findAllByUserId(BigInteger id) {
+  public List<Order> findAllByUserId(BigInteger id, Pageable pageable) {
     return entityManager
         .createQuery("from Order where user_id=:user_id", Order.class)
         .setParameter("user_id", id)
+        .setFirstResult((pageable.getPage() - 1) * pageable.getSize())
+        .setMaxResults(pageable.getSize())
         .getResultList();
   }
 
   @Override
   public Order create(User user, List<Certificate> certificates) {
     BigDecimal price = BigDecimal.ZERO;
-    for(Certificate certificate : certificates){
+    for (Certificate certificate : certificates) {
       price = price.add(certificate.getPrice());
     }
     System.out.println(entityManager);

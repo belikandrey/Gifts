@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.OrderDAO;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
@@ -104,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<Order> findAllByUserId(BigInteger id) {
-    return orderDAO.findAllByUserId(id);
+  public List<Order> findAllByUserId(BigInteger id, Pageable pageable) {
+    return orderDAO.findAllByUserId(id, pageable);
   }
 }

@@ -1,5 +1,6 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Tag;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -19,7 +20,7 @@ public interface TagDAO extends AbstractDAO<Tag, BigInteger> {
    *
    * @return {@link Collection} of tags
    */
-  Collection<Tag> findAll();
+  Collection<Tag> findAll(Pageable pageable);
 
   /**
    * Find all tags by certificate id method

@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -58,8 +59,8 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Collection<TagDTO> findAll() {
-    return tagRepository.findAll().stream()
+  public Collection<TagDTO> findAll(Pageable pageable) {
+    return tagRepository.findAll(pageable).stream()
         .map(converter::convertToDto)
         .collect(Collectors.toSet());
   }

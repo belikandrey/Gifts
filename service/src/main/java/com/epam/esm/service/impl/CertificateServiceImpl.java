@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
@@ -70,15 +71,16 @@ public class CertificateServiceImpl implements CertificateService {
    * @param description part of description of certificate
    * @param sortName type of sort by name(asc, desc)
    * @param sortDate type of sort by date(asc, desc)
+   * @param pageable
    * @return {@link java.util.Collection} of certificates
    */
   @Override
   @Transactional(readOnly = true)
   public Collection<CertificateDTO> findAll(
-      String tagName, String name, String description, String sortName, String sortDate) {
+          String tagName, String name, String description, String sortName, String sortDate, Pageable pageable) {
     Map<String, String> params = fillMapWithParams(tagName, name, description, sortName, sortDate);
     final List<CertificateDTO> certificates =
-        certificateDAO.findByCriteria(new CertificateSearchCriteria(params)).stream()
+        certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream()
             .map(converter::convertToDto)
             .collect(Collectors.toList());
     return certificates;

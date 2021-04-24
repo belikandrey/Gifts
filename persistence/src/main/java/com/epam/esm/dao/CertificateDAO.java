@@ -1,6 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.dao.criteria.SearchCriteria;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Certificate;
 
 import java.math.BigInteger;
@@ -18,9 +19,10 @@ public interface CertificateDAO extends AbstractDAO<Certificate, BigInteger> {
    * Find by {@link SearchCriteria} method
    *
    * @param criteria {@link SearchCriteria} for searching by
+   * @param pageable
    * @return {@link Collection} of certificates
    */
-  Collection<Certificate> findByCriteria(SearchCriteria criteria);
+  Collection<Certificate> findByCriteria(SearchCriteria criteria, Pageable pageable);
 
   /**
    * Add certificate id and tag id method

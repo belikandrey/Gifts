@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDAO;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
@@ -46,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return userDAO.findAll();
+    public List<User> findAll(Pageable pageable) {
+        return userDAO.findAll(pageable);
     }
 }

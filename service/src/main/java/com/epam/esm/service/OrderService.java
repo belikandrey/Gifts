@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.entity.Order;
 
@@ -13,5 +14,5 @@ public interface OrderService extends EntityService<Order, BigInteger> {
 
     Order findByIdAndUserId(BigInteger orderId, BigInteger userId);
 
-    List<Order> findAllByUserId(BigInteger id);
+    List<Order> findAllByUserId(BigInteger id, Pageable pageable);
 }

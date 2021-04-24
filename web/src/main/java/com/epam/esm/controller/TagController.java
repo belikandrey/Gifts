@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.TagService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
@@ -47,8 +49,11 @@ public class TagController {
    * @return the response entity
    */
   @GetMapping()
-  public ResponseEntity<Collection<TagDTO>> findAll() {
-    Collection<TagDTO> tags = tagService.findAll();
+  public ResponseEntity<Collection<TagDTO>> findAll(
+      @RequestParam(name = "page", defaultValue = "1", required = false) int page,
+      @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
+    Pageable pageable = new Pageable(size, page);
+    Collection<TagDTO> tags = tagService.findAll(pageable);
     return new ResponseEntity<>(tags, HttpStatus.OK);
   }
 

@@ -1,8 +1,10 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDAO;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,8 +32,11 @@ public class TagDAOImpl implements TagDAO {
   }
 
   @Override
-  public Collection<Tag> findAll() {
-    final Query query = entityManager.createQuery("from Tag");
+  public Collection<Tag> findAll(Pageable pageable) {
+    final Query query = entityManager
+            .createQuery("from Tag", Tag.class)
+            .setFirstResult((pageable.getPage() - 1) * pageable.getSize())
+            .setMaxResults(pageable.getSize());
     return query.getResultList();
   }
 
