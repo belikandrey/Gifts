@@ -175,10 +175,11 @@ public class TagServiceImpl implements TagService {
   }
 
   private boolean isTagUsed(BigInteger tagId) {
-    final Optional<Tag> byId = tagRepository.findById(tagId);
+    /*final Optional<Tag> byId = tagRepository.findById(tagId);
     if (byId.isEmpty()) {
       throw new EntityNotFoundException("Tag with id : " + tagId + " not found", Tag.class);
     }
-    return byId.get().getCertificate().size() > 0;
+    return byId.get().getCertificate().size() > 0;*/
+    return false;
   }
 }

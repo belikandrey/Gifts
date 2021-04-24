@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Set;
@@ -21,7 +22,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "tag")
-public class Tag {
+public class Tag implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +31,6 @@ public class Tag {
 
   @Column(name = "name")
   private String name;
-
-  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
-  @JoinTable(
-      name = "certificate_tag",
-      joinColumns = @JoinColumn(name = "tag_id"),
-      inverseJoinColumns = @JoinColumn(name = "certificate_id"))
-  private Set<Certificate> certificate;
 
   /**
    * Constructor
@@ -59,14 +53,6 @@ public class Tag {
   public Tag(BigInteger id, String name) {
     this.id = id;
     this.name = name;
-  }
-
-  public Set<Certificate> getCertificate() {
-    return certificate;
-  }
-
-  public void setCertificate(Set<Certificate> certificate) {
-    this.certificate = certificate;
   }
 
   public BigInteger getId() {

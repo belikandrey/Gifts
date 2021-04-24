@@ -81,10 +81,6 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDAO.findByCriteria(new CertificateSearchCriteria(params)).stream()
             .map(converter::convertToDto)
             .collect(Collectors.toList());
-    for (CertificateDTO certificate : certificates) {
-      final Set<TagDTO> tags = tagService.findTagsByCertificateId(certificate.getId());
-      certificate.setTags(tags);
-    }
     return certificates;
   }
 

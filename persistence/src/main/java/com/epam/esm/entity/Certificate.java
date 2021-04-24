@@ -3,6 +3,7 @@ package com.epam.esm.entity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -23,7 +25,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "certificate")
-public class Certificate {
+public class Certificate implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +50,7 @@ public class Certificate {
   @Column(name = "lastUpdateDate")
   private LocalDateTime lastUpdateDate;
 
-  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
   @JoinTable(
       name = "certificate_tag",
       joinColumns = @JoinColumn(name = "certificate_id"),
@@ -209,6 +211,7 @@ public class Certificate {
   public LocalDateTime getLastUpdateDate() {
     return lastUpdateDate;
   }
+
 
   /**
    * Last update date setter
