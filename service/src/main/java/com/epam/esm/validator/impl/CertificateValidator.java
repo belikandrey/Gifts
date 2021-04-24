@@ -6,6 +6,8 @@ import com.epam.esm.validator.Validator;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CertificateValidator implements Validator<Certificate> {
@@ -16,53 +18,65 @@ public class CertificateValidator implements Validator<Certificate> {
 
   @Override
   public void validate(Certificate certificate) throws ValidatorException {
+
     if (certificate == null) {
-      throw new ValidatorException("Certificate should be not null");
+      throw new ValidatorException(List.of("Certificate should be not null"), Certificate.class);
     }
-    validateName(certificate.getName());
-    validateDescription(certificate.getDescription());
-    validateDuration(certificate.getDuration());
-    validatePrice(certificate.getPrice());
+    List<String> messages = new ArrayList<>();
+    addToMessages(messages, validateName(certificate.getName()));
+    addToMessages(messages, validateDescription(certificate.getDescription()));
+    addToMessages(messages, validateDuration(certificate.getDuration()));
+    addToMessages(messages, validatePrice(certificate.getPrice()));
+    if (!messages.isEmpty()) {
+      throw new ValidatorException(messages, Certificate.class);
+    }
   }
 
-  private void validateName(String name) throws ValidatorException {
+  private String validateName(String name) {
     if (name == null || name.isEmpty()) {
-      throw new ValidatorException("Certificate name should be not empty");
+      return "Certificate name should be not empty";
     }
     if (name.length() < MIN_NAME_SIZE) {
-      throw new ValidatorException(
-          "Certificate name should be at least " + MIN_NAME_SIZE + " characters");
+      return "Certificate name should be at least " + MIN_NAME_SIZE + " characters";
     }
     if (name.length() > MAX_NAME_SIZE) {
-      throw new ValidatorException(
-          "Certificate name should be not more than " + MAX_NAME_SIZE + " characters");
+      return "Certificate name should be not more than " + MAX_NAME_SIZE + " characters";
     }
+    return null;
   }
 
-  private void validateDescription(String description) throws ValidatorException {
+  private String validateDescription(String description) {
     if (description == null || description.isEmpty()) {
-      throw new ValidatorException("Certificate description should be not empty");
+      return "Certificate description should be not empty";
     }
     if (description.length() > MAX_DESCRIPTION_SIZE) {
-      throw new ValidatorException(
-          "Certificate description should be not more than "
-              + MAX_DESCRIPTION_SIZE
-              + " characters");
+      return "Certificate description should be not more than "
+          + MAX_DESCRIPTION_SIZE
+          + " characters";
     }
+    return null;
   }
 
-  private void validateDuration(Integer duration) throws ValidatorException {
-    if (duration==null || duration <= 0) {
-      throw new ValidatorException("Certificate duration should be more than 0");
+  private String validateDuration(Integer duration) {
+    if (duration == null || duration <= 0) {
+      return "Certificate duration should be more than 0";
     }
+    return null;
   }
 
-  private void validatePrice(BigDecimal price) throws ValidatorException {
+  private String validatePrice(BigDecimal price) {
     if (price == null) {
-      throw new ValidatorException("Certificate price should be not null");
+      return "Certificate price should be not null";
     }
     if (price.compareTo(BigDecimal.ZERO) < 0) {
-      throw new ValidatorException("Certificate price should be more than or equals 0");
+      return "Certificate price should be more than or equals 0";
+    }
+    return null;
+  }
+
+  private void addToMessages(List<String> message, String newMessage) {
+    if (newMessage != null) {
+      message.add(newMessage);
     }
   }
 }

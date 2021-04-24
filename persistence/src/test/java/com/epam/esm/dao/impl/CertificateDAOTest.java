@@ -1,7 +1,6 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
-import com.epam.esm.dao.mapper.CertificateMapper;
 import com.epam.esm.entity.Certificate;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

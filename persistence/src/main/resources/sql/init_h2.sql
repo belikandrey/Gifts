@@ -22,9 +22,9 @@ create table certificate_tag(
                                 certificate_id int not null ,
                                 tag_id int not null ,
                                 foreign key (certificate_id)
-                                    references certificate(id) on delete cascade on update cascade ,
+                                    references certificate(id) on update cascade ,
                                 foreign key (tag_id)
-                                    references tag(id) on delete cascade on update cascade ,
+                                    references tag(id) on update cascade ,
                                 primary key (certificate_id, tag_id)
 );
 

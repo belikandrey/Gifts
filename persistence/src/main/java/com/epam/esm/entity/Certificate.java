@@ -48,7 +48,7 @@ public class Certificate {
   @Column(name = "lastUpdateDate")
   private LocalDateTime lastUpdateDate;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(
       name = "certificate_tag",
       joinColumns = @JoinColumn(name = "certificate_id"),

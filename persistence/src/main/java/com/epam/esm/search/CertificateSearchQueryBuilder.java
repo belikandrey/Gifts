@@ -13,9 +13,9 @@ public class CertificateSearchQueryBuilder {
   private static final String SQL_BASIC_QUERY =
       "SELECT DISTINCT certificate.id, certificate.name, certificate.description, "
           + "certificate.price, certificate.duration,"
-          + " certificate.create_date, certificate.last_update_date FROM gifts.certificate"
-          + " LEFT JOIN gifts.certificate_tag ON certificate.id = certificate_tag.certificate_id"
-          + " LEFT JOIN gifts.tag ON certificate_tag.tag_id = tag.id ";
+          + " certificate.create_date, certificate.last_update_date FROM certificate"
+          + " LEFT JOIN certificate_tag ON certificate.id = certificate_tag.certificate_id"
+          + " LEFT JOIN tag ON certificate_tag.tag_id = tag.id ";
   private static final String SQL_SET_TAG_NAME = " tag.name = '";
   private static final String SQL_SET_NAME = " certificate.name LIKE '%";
   private static final String SQL_SET_DESCRIPTION = " certificate.description LIKE '%";

@@ -113,16 +113,16 @@ public class CertificateController {
    */
   @PatchMapping("/{id}")
   public ResponseEntity<?> update(
-          @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
-          throws ValidatorException {
+      @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
+      throws ValidatorException {
     certificateService.update(id, newCertificate, false);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<?> updateAllFields(
-          @PathVariable("id") BigInteger id, @RequestBody CertificateDTO certificateDTO)
-          throws ValidatorException {
+      @PathVariable("id") BigInteger id, @RequestBody CertificateDTO certificateDTO)
+      throws ValidatorException {
     certificateService.update(id, certificateDTO, true);
     final CertificateDTO certificate = certificateService.findById(id);
     return new ResponseEntity<>(certificate, HttpStatus.OK);

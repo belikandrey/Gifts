@@ -12,6 +12,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -25,12 +26,12 @@ import java.util.stream.Collectors;
  * @author Andrey Belik
  */
 @Service
+@Transactional
 public class TagServiceImpl implements TagService {
 
   private Validator<Tag> validator;
   private Converter<Tag, TagDTO> converter;
   private TagDAO tagRepository;
-  //private TagRepository tagRepository;
 
   /**
    * Constructor
@@ -39,13 +40,6 @@ public class TagServiceImpl implements TagService {
    * @param {@link com.epam.esm.dao.AbstractDAO}
    * @param converter {@link com.epam.esm.dto.converter.Converter}
    */
-  //  @Autowired
-  //  public TagServiceImpl(Validator<Tag> validator, TagDAO tagDao, Converter<Tag, TagDTO>
-  // converter) {
-  //    this.validator = validator;
-  //    this.tagDao = tagDao;
-  //    this.converter = converter;
-  //  }
   @Autowired
   public TagServiceImpl(
       Validator<Tag> validator, TagDAO tagRepository, Converter<Tag, TagDTO> converter) {
@@ -62,13 +56,8 @@ public class TagServiceImpl implements TagService {
    *
    * @return {@link java.util.Collection} of tags
    */
-  /*@Override
-  @Transactional
-  public Collection<TagDTO> findAll() {
-    return tagDao.findAll().stream().map(converter::convertToDto).collect(Collectors.toSet());
-  }*/
-
   @Override
+  @Transactional(readOnly = true)
   public Collection<TagDTO> findAll() {
     return tagRepository.findAll().stream()
         .map(converter::convertToDto)
@@ -82,10 +71,8 @@ public class TagServiceImpl implements TagService {
    * @return {@link Set} of {@link TagDTO}
    */
   @Override
+  @Transactional(readOnly = true)
   public Set<TagDTO> findTagsByCertificateId(BigInteger certificateId) {
-    //    return tagDao.findTagsByCertificateId(certificateId).stream()
-    //        .map(converter::convertToDto)
-    //        .collect(Collectors.toSet());
     return tagRepository.findTagsByCertificateId(certificateId).stream()
         .map(converter::convertToDto)
         .collect(Collectors.toSet());
@@ -99,14 +86,13 @@ public class TagServiceImpl implements TagService {
    * @exception EntityNotFoundException if entity with this name not found
    */
   @Override
+  @Transactional(readOnly = true)
   public TagDTO findByName(String name) {
-    /*final Optional<Tag> tag = tagDao.findTagByName(name);
+    final Optional<Tag> tag = tagRepository.findTagByName(name);
     if (tag.isEmpty()) {
-      throw new EntityNotFoundException("Tag with name : " + name + " not found");
+      throw new EntityNotFoundException("Tag with name : " + name + " not found", Tag.class);
     }
-    return converter.convertToDto(tag.get());*/
-    //return converter.convertToDto(tagRepository.findTagByName(name));
-    return null;
+    return converter.convertToDto(tag.get());
   }
 
   /**
@@ -116,11 +102,10 @@ public class TagServiceImpl implements TagService {
    * @return true if tag exist, false in another way
    */
   @Override
+  @Transactional(readOnly = true)
   public boolean isAlreadyExists(TagDTO tagDTO) {
-    // final Tag tag = converter.convertToEntity(tagDTO);
-    // return tagDao.isAlreadyExist(tag);
-    //return tagRepository.existsTagByIdOrName(tagDTO.getId(), tagDTO.getName());
-    return false;
+    final Tag tag = converter.convertToEntity(tagDTO);
+    return tagRepository.isAlreadyExist(tag);
   }
 
   /**
@@ -131,11 +116,11 @@ public class TagServiceImpl implements TagService {
    * @exception EntityNotFoundException if entity with this id not found
    */
   @Override
+  @Transactional(readOnly = true)
   public TagDTO findById(BigInteger id) {
-    //    final Optional<Tag> tag = tagDao.findById(id);
     final Optional<Tag> tag = tagRepository.findById(id);
     if (tag.isEmpty()) {
-      throw new EntityNotFoundException("Tag with id : " + id + " not found");
+      throw new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class);
     }
     return converter.convertToDto(tag.get());
   }
@@ -152,10 +137,12 @@ public class TagServiceImpl implements TagService {
   public TagDTO add(TagDTO tagDTO) throws ValidatorException {
     Tag tag = converter.convertToEntity(tagDTO);
     validator.validate(tag);
+    final Optional<Tag> tagByName = tagRepository.findTagByName(tagDTO.getName());
+    if (tagByName.isPresent()) {
+      throw new EntityAlreadyExistException(
+          "Tag with name : " + tagDTO.getName() + " is already exist in db", Tag.class);
+    }
     final Tag added = tagRepository.add(tag);
-    //    final Tag addedTag = tagDao.add(tag);
-    //final Tag addedTag = tagRepository.save(tag);
-    //return converter.convertToDto(addedTag);
     return converter.convertToDto(added);
   }
 
@@ -167,9 +154,8 @@ public class TagServiceImpl implements TagService {
    * @throws ValidatorException if tag is invalid
    */
   @Override
-  public void update(BigInteger id, TagDTO tagDTO) throws ValidatorException {
+  public void update(BigInteger id, TagDTO tagDTO) {
     throw new UnsupportedOperationException();
-    //tagDao.update(id, tag);
   }
 
   /**
@@ -183,16 +169,16 @@ public class TagServiceImpl implements TagService {
   public void delete(BigInteger id) {
     if (isTagUsed(id)) {
       throw new EntityUsedException(
-          "Can not delete tag with id : " + id + ". Tag is used in certificates");
+          "Can not delete tag with id : " + id + ". Tag is used in certificates", Tag.class);
     }
-    //tagRepository.deleteById(id);
+    tagRepository.delete(id);
   }
 
   private boolean isTagUsed(BigInteger tagId) {
     final Optional<Tag> byId = tagRepository.findById(tagId);
-    if(byId.isEmpty()){
-      throw new EntityNotFoundException("Tag with id : " + tagId + " not found");
+    if (byId.isEmpty()) {
+      throw new EntityNotFoundException("Tag with id : " + tagId + " not found", Tag.class);
     }
-    return byId.get().getCertificate().size()>0;
+    return byId.get().getCertificate().size() > 0;
   }
 }

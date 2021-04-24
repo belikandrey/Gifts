@@ -11,8 +11,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Andrey Belik
@@ -31,12 +31,12 @@ public class Tag {
   @Column(name = "name")
   private String name;
 
-  @ManyToMany(cascade = CascadeType.ALL)
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(
       name = "certificate_tag",
       joinColumns = @JoinColumn(name = "tag_id"),
       inverseJoinColumns = @JoinColumn(name = "certificate_id"))
-  private List<Certificate> certificate;
+  private Set<Certificate> certificate;
 
   /**
    * Constructor
@@ -61,11 +61,11 @@ public class Tag {
     this.name = name;
   }
 
-  public List<Certificate> getCertificate() {
+  public Set<Certificate> getCertificate() {
     return certificate;
   }
 
-  public void setCertificate(List<Certificate> certificate) {
+  public void setCertificate(Set<Certificate> certificate) {
     this.certificate = certificate;
   }
 
