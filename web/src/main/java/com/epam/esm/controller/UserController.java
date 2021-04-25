@@ -2,11 +2,13 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
-import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
+import com.epam.esm.dto.OrderDTO;
+import com.epam.esm.dto.UserDTO;
+import com.epam.esm.hateoas.HateoasResolver;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,24 +28,29 @@ public class UserController {
   private UserService userService;
   private OrderService orderService;
 
+  private HateoasResolver hateoasResolver;
+
   @Autowired
-  public UserController(UserService userService, OrderService orderService) {
+  public UserController(UserService userService, OrderService orderService, HateoasResolver hateoasResolver) {
     this.userService = userService;
     this.orderService = orderService;
+    this.hateoasResolver = hateoasResolver;
   }
 
   @GetMapping()
-  public ResponseEntity<List<User>> findAll(
+  public CollectionModel<UserDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
-    Pageable pageable = new Pageable(page, size);
-    final List<User> users = userService.findAll(pageable);
-    return new ResponseEntity<>(users, HttpStatus.OK);
+    Pageable pageable = new Pageable(size, page);
+    final List<UserDTO> users = userService.findAll(pageable);
+    users.forEach(hateoasResolver::addLinksForUser);
+    return hateoasResolver.getModelForUsers(users);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<?> findUserById(@PathVariable("id") BigInteger userId) {
-    final User user = userService.findById(userId);
+    final UserDTO user = userService.findById(userId);
+    hateoasResolver.addLinksForUser(user);
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
@@ -53,14 +60,16 @@ public class UserController {
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
     Pageable pageable = new Pageable(size, page);
-    final List<Order> orders = orderService.findAllByUserId(id, pageable);
+    final List<OrderDTO> orders = orderService.findAllByUserId(id, pageable);
+    orders.forEach(p->hateoasResolver.addLinksForOrder(p, id));
     return new ResponseEntity<>(orders, HttpStatus.OK);
   }
 
   @PostMapping("/{id}/orders")
   public ResponseEntity<?> createOrder(
       @PathVariable BigInteger id, @RequestBody List<CertificateDTO> certificates) {
-    Order order = orderService.create(id, certificates);
+    OrderDTO order = orderService.create(id, certificates);
+    hateoasResolver.addLinksForOrder(order, id);
     return new ResponseEntity<>(order, HttpStatus.OK);
   }
 
@@ -74,7 +83,8 @@ public class UserController {
   @GetMapping("/{user_id}/orders/{order_id}")
   public ResponseEntity<?> findUserOrderById(
       @PathVariable("user_id") BigInteger userId, @PathVariable("order_id") BigInteger orderId) {
-    Order order = orderService.findByIdAndUserId(orderId, userId);
+    OrderDTO order = orderService.findByIdAndUserId(orderId, userId);
+    hateoasResolver.addLinksForOrder(order, userId);
     return new ResponseEntity<>(order, HttpStatus.OK);
   }
 }

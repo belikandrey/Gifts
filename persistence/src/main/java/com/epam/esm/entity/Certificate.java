@@ -50,7 +50,7 @@ public class Certificate implements Serializable {
   @Column(name = "lastUpdateDate")
   private LocalDateTime lastUpdateDate;
 
-  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(
       name = "certificate_tag",
       joinColumns = @JoinColumn(name = "certificate_id"),

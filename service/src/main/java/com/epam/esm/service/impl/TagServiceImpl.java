@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityAlreadyExistException;
@@ -14,7 +15,6 @@ import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Optional;
@@ -61,8 +61,8 @@ public class TagServiceImpl implements TagService {
   @Transactional(readOnly = true)
   public Collection<TagDTO> findAll(Pageable pageable) {
     return tagRepository.findAll(pageable).stream()
-        .map(converter::convertToDto)
-        .collect(Collectors.toSet());
+            .map(converter::convertToDto)
+            .collect(Collectors.toSet());
   }
 
   /**
@@ -175,6 +175,7 @@ public class TagServiceImpl implements TagService {
     tagRepository.delete(id);
   }
 
+  //TODO
   private boolean isTagUsed(BigInteger tagId) {
     /*final Optional<Tag> byId = tagRepository.findById(tagId);
     if (byId.isEmpty()) {

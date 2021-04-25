@@ -2,17 +2,18 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.OrderDTO;
 import com.epam.esm.entity.Order;
 
 import java.math.BigInteger;
 import java.util.List;
 
-public interface OrderService extends EntityService<Order, BigInteger> {
+public interface OrderService extends EntityService<OrderDTO, BigInteger> {
     List<Order> findAll();
 
-    Order create(BigInteger userId, List<CertificateDTO> certificates);
+    OrderDTO create(BigInteger userId, List<CertificateDTO> certificates);
 
-    Order findByIdAndUserId(BigInteger orderId, BigInteger userId);
+    OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId);
 
-    List<Order> findAllByUserId(BigInteger id, Pageable pageable);
+    List<OrderDTO> findAllByUserId(BigInteger id, Pageable pageable);
 }

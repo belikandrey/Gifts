@@ -61,6 +61,12 @@ public class User implements Serializable {
         this.login = login;
     }
 
+    public User(BigInteger id, String login, List<Order> orders) {
+        this.id = id;
+        this.login = login;
+        this.orders = orders;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

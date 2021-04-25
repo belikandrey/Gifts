@@ -3,8 +3,11 @@ package com.epam.esm.controller;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.hateoas.HateoasResolver;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigInteger;
 import java.util.Collection;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 /**
  * Rest controller for tags
  *
@@ -31,14 +37,16 @@ import java.util.Collection;
 public class TagController {
   private final TagService tagService;
 
+  private final HateoasResolver hateoasResolver;
   /**
    * Constructor
    *
    * @param tagService {@link com.epam.esm.service.EntityService}
    */
   @Autowired
-  public TagController(TagService tagService) {
+  public TagController(TagService tagService, HateoasResolver hateoasResolver) {
     this.tagService = tagService;
+    this.hateoasResolver = hateoasResolver;
   }
 
   /**
@@ -49,13 +57,15 @@ public class TagController {
    * @return the response entity
    */
   @GetMapping()
-  public ResponseEntity<Collection<TagDTO>> findAll(
+  public CollectionModel<TagDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
     Pageable pageable = new Pageable(size, page);
     Collection<TagDTO> tags = tagService.findAll(pageable);
-    return new ResponseEntity<>(tags, HttpStatus.OK);
+    tags.forEach(hateoasResolver::addLinksForTag);
+    return hateoasResolver.getModelForTags(tags);
   }
+
 
   /**
    * Find tag by id
@@ -66,6 +76,7 @@ public class TagController {
   @GetMapping("/{id}")
   public ResponseEntity<?> find(@PathVariable("id") BigInteger tagId) {
     final TagDTO tag = tagService.findById(tagId);
+    hateoasResolver.addLinksForTag(tag);
     return new ResponseEntity<>(tag, HttpStatus.OK);
   }
 
@@ -79,6 +90,7 @@ public class TagController {
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> create(@RequestBody TagDTO tag) throws ValidatorException {
     tag = tagService.add(tag);
+    hateoasResolver.addLinksForTag(tag);
     return new ResponseEntity<>(tag, HttpStatus.OK);
   }
 

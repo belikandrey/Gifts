@@ -5,6 +5,7 @@ import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;

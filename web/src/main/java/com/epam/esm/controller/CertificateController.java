@@ -2,9 +2,13 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.hateoas.HateoasResolver;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -34,14 +41,16 @@ public class CertificateController {
 
   private final CertificateService certificateService;
 
+  private final HateoasResolver hateoasResolver;
   /**
    * Constructor
    *
    * @param certificateService {@link com.epam.esm.service.EntityService}
    */
   @Autowired
-  public CertificateController(CertificateService certificateService) {
+  public CertificateController(CertificateService certificateService, HateoasResolver hateoasResolver) {
     this.certificateService = certificateService;
+    this.hateoasResolver = hateoasResolver;
   }
 
   /**
@@ -55,7 +64,7 @@ public class CertificateController {
    * @return response entity
    */
   @GetMapping()
-  public ResponseEntity<?> findAll(
+  public CollectionModel<CertificateDTO> findAll(
       @RequestParam(value = "tagName", required = false) String tagName,
       @RequestParam(value = "name", required = false) String name,
       @RequestParam(value = "description", required = false) String description,
@@ -66,7 +75,8 @@ public class CertificateController {
     Pageable pageable = new Pageable(size, page);
     Collection<CertificateDTO> giftCertificates =
         certificateService.findAll(tagName, name, description, sortName, sortDate, pageable);
-    return new ResponseEntity<>(giftCertificates, HttpStatus.OK);
+    giftCertificates.forEach(hateoasResolver::addLinksForCertificate);
+    return hateoasResolver.getModelForCertificates(giftCertificates);
   }
 
   /**
@@ -78,6 +88,7 @@ public class CertificateController {
   @GetMapping("/{id}")
   public ResponseEntity<?> find(@PathVariable("id") BigInteger id) {
     final CertificateDTO certificate = certificateService.findById(id);
+    hateoasResolver.addLinksForCertificate(certificate);
     return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 
@@ -92,6 +103,7 @@ public class CertificateController {
   public ResponseEntity<?> create(@RequestBody CertificateDTO certificate)
       throws ValidatorException {
     certificate = certificateService.add(certificate);
+    hateoasResolver.addLinksForCertificate(certificate);
     return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 
@@ -128,7 +140,8 @@ public class CertificateController {
       @PathVariable("id") BigInteger id, @RequestBody CertificateDTO certificateDTO)
       throws ValidatorException {
     certificateService.update(id, certificateDTO, true);
-    final CertificateDTO certificate = certificateService.findById(id);
+    CertificateDTO certificate = certificateService.findById(id);
+    hateoasResolver.addLinksForCertificate(certificateDTO);
     return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 }

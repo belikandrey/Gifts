@@ -79,3 +79,68 @@ insert into certificate_tag(certificate_id, tag_id) values(7,4);
 insert into certificate_tag(certificate_id, tag_id) values(7,2);
 insert into certificate_tag(certificate_id, tag_id) values(7,8);
 
+/////////
+
+new script
+drop table user;
+drop table user_order;
+
+create table user
+(
+    id    int         not null primary key auto_increment,
+    login varchar(35) not null
+);
+
+create table user_order
+(
+    id          int      not null primary key auto_increment,
+    price       double   not null,
+    create_date datetime not null default NOW(),
+    user_id     int      not null,
+    foreign key (user_id)
+        references user (id)
+);
+
+create table order_certificate
+(
+    order_id       int not null,
+    certificate_id int not null,
+    foreign key (order_id)
+        references user_order (id),
+    foreign key (certificate_id)
+        references certificate (id)
+);
+
+
+insert into user(login) values ('root'), ('andrey')
+
+insert into user_order(price, user_id)
+values (12.3, 1);
+
+insert into user_order(price, user_id)
+    value (27, 1);
+
+insert into user_order(price, user_id)
+values (25.3, 2);
+
+
+insert into user_order(price, user_id)
+values (211.3, 2);
+
+insert into order_certificate(order_id, certificate_id)
+values (1, 2);
+
+insert into order_certificate(order_id, certificate_id)
+values (1, 3);
+
+insert into order_certificate(order_id, certificate_id)
+values (2, 4);
+
+insert into order_certificate(order_id, certificate_id)
+values (4, 5);
+
+insert into order_certificate(order_id, certificate_id)
+values (5, 7);
+
+
+

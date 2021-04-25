@@ -48,6 +48,13 @@ public class Order implements Serializable {
 
   public Order() {}
 
+  public Order(BigInteger id, BigDecimal price, LocalDateTime createDate, List<Certificate> certificates) {
+    this.id = id;
+    this.price = price;
+    this.createDate = createDate;
+    this.certificates = certificates;
+  }
+
   public Order(BigDecimal price, LocalDateTime createDate, List<Certificate> certificates, User user) {
     this.price = price;
     this.createDate = createDate;

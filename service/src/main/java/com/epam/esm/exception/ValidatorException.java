@@ -8,7 +8,7 @@ import java.util.List;
  * @author Andrey Belik
  * @version 1.0
  */
-public class ValidatorException extends Exception {
+public class ValidatorException extends RuntimeException {
   /**
    * Constructor
    *

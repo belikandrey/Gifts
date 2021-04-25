@@ -2,6 +2,8 @@ package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /** Certificate transfer class */
-public class CertificateDTO {
+public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 
   private BigInteger id;
 
