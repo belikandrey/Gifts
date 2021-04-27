@@ -39,6 +39,8 @@ import java.util.Collection;
 @RequestMapping("/certificates")
 public class CertificateController {
 
+  //TODO
+
   private final CertificateService certificateService;
 
   private final HateoasResolver hateoasResolver;

@@ -1,5 +1,6 @@
 package com.epam.esm.config;
 
+import com.epam.esm.SpringBootIntroApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 

@@ -1,13 +1,12 @@
-package com.epam.esm.config;
+package com.epam.esm;
 
+import com.epam.esm.config.PersistenceSpringConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Import;
 
-@SpringBootApplication(scanBasePackages = "com.epam.esm")
-@EntityScan(basePackages = {"com.epam.esm.entity"})
-@Import(PersistenceSpringConfig.class)
+@SpringBootApplication
 public class SpringBootIntroApplication {
   public static void main(String[] args) {
     SpringApplication.run(SpringBootIntroApplication.class, args);
