@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Optional;
@@ -22,12 +24,8 @@ import java.util.Optional;
 @Repository
 public class CertificateDAOImpl implements CertificateDAO {
 
+  @PersistenceContext
   private EntityManager entityManager;
-
-  @Autowired
-  public CertificateDAOImpl(EntityManager entityManager) {
-    this.entityManager = entityManager;
-  }
 
   @Override
   public Optional<Certificate> findById(BigInteger id) {

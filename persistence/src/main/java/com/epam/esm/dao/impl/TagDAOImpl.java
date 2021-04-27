@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -24,12 +25,9 @@ import java.util.Set;
 @Repository
 public class TagDAOImpl implements TagDAO {
 
+  @PersistenceContext
   private EntityManager entityManager;
 
-  @Autowired
-  public TagDAOImpl(EntityManager entityManager) {
-    this.entityManager = entityManager;
-  }
 
   @Override
   public Collection<Tag> findAll(Pageable pageable) {
