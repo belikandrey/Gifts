@@ -1,17 +1,23 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.dao.pagination.Pageable;
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
+import com.epam.esm.entity.Tag;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 
-public interface OrderDAO extends AbstractDAO<Order, BigInteger>{
-    List<Order> findAll();
+public interface OrderDAO {
+  List<Order> findAllByUserId(BigInteger id, Pageable pageable);
 
-    List<Order> findAllByUserId(BigInteger id, Pageable pageable);
+  Optional<Order> findById(BigInteger id);
 
-    Order create(User user, List<Certificate> certificates);
+  List<Order> findAll(Pageable pageable);
+
+  Order save(Order entity);
+
+  Order update(Order entity);
+
+  void deleteById(BigInteger id);
 }

@@ -3,6 +3,7 @@ package com.epam.esm.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /** Certificate transfer class */
+@Relation(collectionRelation = "certificates")
 public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 
   private BigInteger id;

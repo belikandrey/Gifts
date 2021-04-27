@@ -6,32 +6,20 @@ import com.epam.esm.entity.Certificate;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Base Certificate DAO interface
- *
- * @see com.epam.esm.dao.AbstractDAO
- * @version 1.0
- * @author Andrey Belik
- */
-public interface CertificateDAO extends AbstractDAO<Certificate, BigInteger> {
-  /**
-   * Find by {@link SearchCriteria} method
-   *
-   * @param criteria {@link SearchCriteria} for searching by
-   * @param pageable
-   * @return {@link Collection} of certificates
-   */
+public interface CertificateDAO {
+
+  Optional<Certificate> findById(BigInteger id);
+
+  List<Certificate> findAll(Pageable pageable);
+
+  Certificate save(Certificate entity);
+
+  Certificate update(Certificate entity);
+
+  void deleteById(BigInteger id);
+
   Collection<Certificate> findByCriteria(SearchCriteria criteria, Pageable pageable);
-
-  /**
-   * Add certificate id and tag id method
-   *
-   * @param certificateId id of certificate
-   * @param tagId id of tag
-   * @return true if added, false in another way
-   */
-  boolean addCertificateTag(BigInteger certificateId, BigInteger tagId);
-
-    boolean deleteCertificateTag(BigInteger certificateId, BigInteger tagId);
 }

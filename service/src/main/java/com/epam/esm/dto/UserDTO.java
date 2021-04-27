@@ -1,11 +1,13 @@
 package com.epam.esm.dto;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
+@Relation(collectionRelation = "users")
 public class UserDTO extends RepresentationModel<UserDTO> {
 
   private BigInteger id;

@@ -5,7 +5,17 @@ import com.epam.esm.entity.User;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 
-public interface UserDAO extends AbstractDAO<User, BigInteger>{
-    List<User> findAll(Pageable pageable);
+public interface UserDAO {
+
+  Optional<User> findById(BigInteger id);
+
+  List<User> findAll(Pageable pageable);
+
+  User save(User entity);
+
+  User update(User entity);
+
+  void deleteById(BigInteger id);
 }

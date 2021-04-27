@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.UserDTO;
-import com.epam.esm.entity.User;
 
 import java.math.BigInteger;
 import java.util.List;

@@ -1,11 +1,13 @@
 package com.epam.esm.dto;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.math.BigInteger;
 import java.util.Objects;
 
 /** Tag transfer class */
+@Relation(collectionRelation = "tags")
 public class TagDTO extends RepresentationModel<TagDTO> {
   private BigInteger id;
   private String name;

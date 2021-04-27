@@ -3,7 +3,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityAlreadyExistException;
@@ -143,7 +142,7 @@ public class TagServiceImpl implements TagService {
       throw new EntityAlreadyExistException(
           "Tag with name : " + tagDTO.getName() + " is already exist in db", Tag.class);
     }
-    final Tag added = tagRepository.add(tag);
+    final Tag added = tagRepository.save(tag);
     return converter.convertToDto(added);
   }
 
@@ -172,7 +171,7 @@ public class TagServiceImpl implements TagService {
       throw new EntityUsedException(
           "Can not delete tag with id : " + id + ". Tag is used in certificates", Tag.class);
     }
-    tagRepository.delete(id);
+    tagRepository.deleteById(id);
   }
 
   //TODO

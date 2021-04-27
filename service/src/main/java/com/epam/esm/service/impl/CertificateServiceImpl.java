@@ -5,7 +5,6 @@ import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
@@ -45,8 +44,7 @@ public class CertificateServiceImpl implements CertificateService {
   /**
    * Constructor
    *
-   * @param validator {@link com.epam.esm.validator.Validator}
-   * @param certificateDAO {@link com.epam.esm.dao.AbstractDAO}
+   * @param validator {@link com.epam.esm.validator.Validator} //* @param certificateDAO {@link
    * @param converter {@link com.epam.esm.dto.converter.Converter}
    * @param tagService {@link TagService}
    */
@@ -78,7 +76,12 @@ public class CertificateServiceImpl implements CertificateService {
   @Override
   @Transactional(readOnly = true)
   public Collection<CertificateDTO> findAll(
-          String tagName, String name, String description, String sortName, String sortDate, Pageable pageable) {
+      String tagName,
+      String name,
+      String description,
+      String sortName,
+      String sortDate,
+      Pageable pageable) {
     Map<String, String> params = fillMapWithParams(tagName, name, description, sortName, sortDate);
     final List<CertificateDTO> certificates =
         certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream()
@@ -136,7 +139,7 @@ public class CertificateServiceImpl implements CertificateService {
         tagsForSetIntoCertificate.stream()
             .map(tagConverter::convertToEntity)
             .collect(Collectors.toSet()));
-    certificate = certificateDAO.add(certificate);
+    certificate = certificateDAO.save(certificate);
     return converter.convertToDto(certificate);
   }
 
@@ -189,7 +192,8 @@ public class CertificateServiceImpl implements CertificateService {
             .collect(Collectors.toSet()));
     validator.validate(certificateForUpdate);
     certificateForUpdate.setLastUpdateDate(LocalDateTime.now());
-    if (certificateDAO.update(certificateId, certificateForUpdate) == null) {
+    certificateForUpdate.setId(certificateId);
+    if (certificateDAO.update(certificateForUpdate) == null) {
       throw new EntityNotFoundException(
           "Certificate with id : " + certificateId + " not found", Certificate.class);
     }
@@ -233,6 +237,6 @@ public class CertificateServiceImpl implements CertificateService {
       throw new EntityNotFoundException(
           "Certificate with id : " + id + " not found", Certificate.class);
     }
-    certificateDAO.delete(id);
+    certificateDAO.deleteById(id);
   }
 }

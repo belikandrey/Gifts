@@ -68,20 +68,22 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public OrderDTO add(OrderDTO orderDTO) throws ValidatorException {
     final Order order = orderConverter.convertToEntity(orderDTO);
-    return orderConverter.convertToDto(orderDAO.add(order));
+    return orderConverter.convertToDto(orderDAO.save(order));
   }
 
   @Override
   public void delete(BigInteger id) {
-    orderDAO.delete(id);
+    orderDAO.deleteById(id);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<Order> findAll() {
-    return orderDAO.findAll();
+  public List<Order> findAll(Pageable pageable) {
+    return orderDAO.findAll(pageable);
   }
 
+
+  //TODO fix
   @Override
   public OrderDTO create(BigInteger userId, List<CertificateDTO> certificateDTOS) {
 
@@ -95,8 +97,9 @@ public class OrderServiceImpl implements OrderService {
         certificateDTOS.stream()
             .map(certificateConverter::convertToEntity)
             .collect(Collectors.toList());
-
-    return orderConverter.convertToDto(orderDAO.create(user, certificates));
+    Order order = new Order();
+    //return orderConverter.convertToDto(orderDAO.save(user, certificates));
+    return orderConverter.convertToDto(orderDAO.save(order));
   }
 
   @Override

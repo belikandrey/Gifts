@@ -43,12 +43,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDTO add(UserDTO userDTO) throws ValidatorException {
     final User user = converter.convertToEntity(userDTO);
-    return converter.convertToDto(userDAO.add(user));
+    return converter.convertToDto(userDAO.save(user));
   }
 
   @Override
   public void delete(BigInteger id) {
-    userDAO.delete(id);
+    userDAO.deleteById(id);
   }
 
   @Override
