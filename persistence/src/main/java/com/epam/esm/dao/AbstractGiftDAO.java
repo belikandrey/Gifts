@@ -30,6 +30,10 @@ public abstract class AbstractGiftDAO<T extends Serializable> {
         .getResultList();
   }
 
+  public Long count(){
+    return (Long) getEntityManager().createQuery("SELECT COUNT(c) FROM "+clazz.getName()+" c").getSingleResult();
+  }
+
   public T save(T entity) {
     entityManager.persist(entity);
     return entity;

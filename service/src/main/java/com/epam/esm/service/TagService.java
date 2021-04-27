@@ -48,4 +48,6 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
    * @return true if tag exist, false in another way
    */
   boolean isAlreadyExists(TagDTO tagDTO);
+
+  Long count();
 }

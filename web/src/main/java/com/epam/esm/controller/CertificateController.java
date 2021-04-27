@@ -7,6 +7,7 @@ import com.epam.esm.hateoas.HateoasResolver;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import static org.springframework.hateoas.PagedModel.PageMetadata;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Rest controller for certificates
@@ -55,7 +57,7 @@ public class CertificateController {
   /**
    * Find all certificates, by params too
    *
-   * @param tagName name of tag
+   * //@param tagName name of tag
    * @param name name of certificate
    * @param description description of certificate
    * @param sortName type of sort by name(asc, desc)
@@ -64,7 +66,7 @@ public class CertificateController {
    */
   @GetMapping()
   public CollectionModel<CertificateDTO> findAll(
-      @RequestParam(value = "tagName", required = false) String tagName,
+      @RequestParam(value = "tagName", required = false) List<String> tagsName,
       @RequestParam(value = "name", required = false) String name,
       @RequestParam(value = "description", required = false) String description,
       @RequestParam(value = "sortName", required = false) String sortName,
@@ -73,9 +75,10 @@ public class CertificateController {
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
     Pageable pageable = new Pageable(size, page);
     Collection<CertificateDTO> giftCertificates =
-        certificateService.findAll(tagName, name, description, sortName, sortDate, pageable);
+        certificateService.findAll(tagsName, name, description, sortName, sortDate, pageable);
     giftCertificates.forEach(hateoasResolver::addLinksForCertificate);
-    return hateoasResolver.getModelForCertificates(giftCertificates);
+    final Long count = certificateService.count();
+    return hateoasResolver.getModelForCertificates(giftCertificates,pageable, count);
   }
 
   /**

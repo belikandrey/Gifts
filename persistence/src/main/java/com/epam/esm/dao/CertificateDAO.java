@@ -22,4 +22,6 @@ public interface CertificateDAO {
   void deleteById(BigInteger id);
 
   Collection<Certificate> findByCriteria(SearchCriteria criteria, Pageable pageable);
+
+  Long count();
 }

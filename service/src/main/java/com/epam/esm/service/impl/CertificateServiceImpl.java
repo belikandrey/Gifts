@@ -62,6 +62,11 @@ public class CertificateServiceImpl implements CertificateService {
     this.tagConverter = tagConverter;
   }
 
+  @Override
+  public Long count() {
+    return certificateDAO.count();
+  }
+
   /**
    * Find all certificates by params
    *
@@ -76,13 +81,13 @@ public class CertificateServiceImpl implements CertificateService {
   @Override
   @Transactional(readOnly = true)
   public Collection<CertificateDTO> findAll(
-      String tagName,
+      List<String> tagsName,
       String name,
       String description,
       String sortName,
       String sortDate,
       Pageable pageable) {
-    Map<String, String> params = fillMapWithParams(tagName, name, description, sortName, sortDate);
+    Map<String, Object> params = fillMapWithParams(tagsName, name, description, sortName, sortDate);
     final List<CertificateDTO> certificates =
         certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream()
             .map(converter::convertToDto)
@@ -90,10 +95,10 @@ public class CertificateServiceImpl implements CertificateService {
     return certificates;
   }
 
-  private Map<String, String> fillMapWithParams(
-      String tagName, String name, String description, String sortName, String sortDate) {
-    Map<String, String> params = new HashMap<>();
-    params.put("tagName", tagName);
+  private Map<String, Object> fillMapWithParams(
+      List<String> tagName, String name, String description, String sortName, String sortDate) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("tagsName", tagName);
     params.put("name", name);
     params.put("description", description);
     params.put("sortName", sortName);

@@ -95,6 +95,11 @@ public class TagServiceImpl implements TagService {
     return converter.convertToDto(tag.get());
   }
 
+  @Override
+  public Long count() {
+    return tagRepository.count();
+  }
+
   /**
    * Check that tag exist in database
    *

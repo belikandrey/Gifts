@@ -60,8 +60,9 @@ public class TagController {
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
     Pageable pageable = new Pageable(size, page);
     Collection<TagDTO> tags = tagService.findAll(pageable);
+    final Long count = tagService.count();
     tags.forEach(hateoasResolver::addLinksForTag);
-    return hateoasResolver.getModelForTags(tags);
+    return hateoasResolver.getModelForTags(tags,pageable,count);
   }
 
 

@@ -3,17 +3,20 @@ package com.epam.esm.hateoas;
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.controller.UserController;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.Collection;
 
+import static org.springframework.hateoas.PagedModel.PageMetadata;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -26,10 +29,20 @@ public class HateoasResolver {
     tagDTO.add(linkForSelf, deleteLink);
   }
 
-  public CollectionModel<TagDTO> getModelForTags(Collection<TagDTO> tags) {
+  public CollectionModel<TagDTO> getModelForTags(
+      Collection<TagDTO> tags, Pageable pageable, Long count) {
     Link linkForSelf = linkTo(TagController.class).withSelfRel();
     Link createLink = linkTo(TagController.class).withRel("create");
-    return CollectionModel.of(tags, linkForSelf, createLink);
+    final PageMetadata pageMetadata = getPageMetadata(pageable, count);
+    return PagedModel.of(tags, pageMetadata, linkForSelf, createLink);
+  }
+
+  private PageMetadata getPageMetadata(Pageable pageable, Long count) {
+    return new PageMetadata(
+        pageable.getSize(),
+        pageable.getPage(),
+        count,
+        (long) Math.ceil(count.doubleValue() / pageable.getSize()));
   }
 
   public void addLinksForCertificate(CertificateDTO certificateDTO) {
@@ -46,10 +59,11 @@ public class HateoasResolver {
   }
 
   public CollectionModel<CertificateDTO> getModelForCertificates(
-      Collection<CertificateDTO> certificates) {
+      Collection<CertificateDTO> certificates, Pageable pageable, Long count) {
     Link linkForSelf = linkTo(CertificateController.class).withSelfRel();
     Link createLink = linkTo(CertificateController.class).withRel("create");
-    return CollectionModel.of(certificates, linkForSelf, createLink);
+    final PageMetadata pageMetadata = getPageMetadata(pageable, count);
+    return PagedModel.of(certificates, pageMetadata, linkForSelf, createLink);
   }
 
   public void addLinksForUser(UserDTO userDTO) {

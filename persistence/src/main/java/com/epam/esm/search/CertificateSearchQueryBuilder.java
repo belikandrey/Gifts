@@ -2,6 +2,8 @@ package com.epam.esm.search;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Query builder for search by params
  *
@@ -21,7 +23,9 @@ public class CertificateSearchQueryBuilder {
   private static final String SQL_SET_DESCRIPTION = " certificate.description LIKE '%";
   private static final String SQL_SET_SORT_BY_NAME = " ORDER BY certificate.name ";
   private static final String SQL_SET_SORT_BY_DATE = " ORDER BY certificate.create_date ";
-
+  private static final String SQL_SET_TAG_REPEATED = " tag.name in (";
+  private static final String SQL_GROUP_BY_AND_COUNT =
+      ") group by certificate_id having count(*) = ";
   private final StringBuilder stringBuilder;
   private boolean isComposite;
 
@@ -42,16 +46,26 @@ public class CertificateSearchQueryBuilder {
   /**
    * Method that add tag name param in query
    *
-   * @param tagName name of tag to find by
+   * <p>//@param tagName name of tag to find by
+   *
    * @return {@link CertificateSearchQueryBuilder}
    */
-  public CertificateSearchQueryBuilder setTagName(String tagName) {
+  public CertificateSearchQueryBuilder setTagName(List<String> tagsName) {
     final SearchSeparator separator = getSeparator();
-    stringBuilder
-        .append(separator.getValue())
-        .append(SQL_SET_TAG_NAME)
-        .append(tagName)
-        .append("' ");
+    if (tagsName.size() == 1) {
+      stringBuilder
+          .append(separator.getValue())
+          .append(SQL_SET_TAG_NAME)
+          .append(tagsName.get(0))
+          .append("' ");
+    } else {
+      stringBuilder.append(separator.getValue()).append(SQL_SET_TAG_REPEATED);
+      for (String tagName : tagsName) {
+        stringBuilder.append(" '").append(tagName).append("',");
+      }
+      stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+      stringBuilder.append(SQL_GROUP_BY_AND_COUNT).append(tagsName.size()).append(" ");
+    }
     return this;
   }
 

@@ -24,4 +24,6 @@ public interface TagDAO {
   Optional<Tag> findTagByName(String name);
 
     boolean isAlreadyExist(Tag tag);
+
+    Long count();
 }
