@@ -58,4 +58,10 @@ public class UserServiceImpl implements UserService {
         .map(converter::convertToDto)
         .collect(Collectors.toList());
   }
+
+  @Override
+  public UserDTO update(UserDTO userDTO) {
+    final User user = converter.convertToEntity(userDTO);
+    return converter.convertToDto(userDAO.update(user));
+  }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class CertificateSearchQueryBuilder {
   private static final String SQL_BASIC_QUERY =
-      "SELECT DISTINCT certificate.id, certificate.name, certificate.description, "
+      "SELECT DISTINCT certificate.id, certificate.name, certificate.is_enabled, certificate.description, "
           + "certificate.price, certificate.duration,"
           + " certificate.create_date, certificate.last_update_date FROM certificate"
           + " LEFT JOIN certificate_tag ON certificate.id = certificate_tag.certificate_id"
@@ -28,6 +28,7 @@ public class CertificateSearchQueryBuilder {
       ") group by certificate_id having count(*) = ";
   private final StringBuilder stringBuilder;
   private boolean isComposite;
+  private static final String SQL_EXCLUDE_DISABLED = " certificate.is_enabled=true";
 
   /** Default constructor */
   public CertificateSearchQueryBuilder() {
@@ -40,6 +41,7 @@ public class CertificateSearchQueryBuilder {
    * @return query string
    */
   public String build() {
+    stringBuilder.append(getSeparator()).append(SQL_EXCLUDE_DISABLED);
     return stringBuilder.toString();
   }
 

@@ -70,7 +70,7 @@ public class CertificateServiceImpl implements CertificateService {
   /**
    * Find all certificates by params
    *
-   * @param tagName name of tag
+   * //@param tagName name of tag
    * @param name part of certificate name
    * @param description part of description of certificate
    * @param sortName type of sort by name(asc, desc)
@@ -89,7 +89,7 @@ public class CertificateServiceImpl implements CertificateService {
       Pageable pageable) {
     Map<String, Object> params = fillMapWithParams(tagsName, name, description, sortName, sortDate);
     final List<CertificateDTO> certificates =
-        certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream()
+        certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream().peek(System.out::println)
             .map(converter::convertToDto)
             .collect(Collectors.toList());
     return certificates;

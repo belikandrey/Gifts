@@ -3,7 +3,6 @@ package com.epam.esm.entity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,6 +48,9 @@ public class Certificate implements Serializable {
 
   @Column(name = "lastUpdateDate")
   private LocalDateTime lastUpdateDate;
+
+  @Column(name = "is_enabled")
+  private Boolean isEnabled;
 
   @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(
@@ -129,6 +131,14 @@ public class Certificate implements Serializable {
 
   public void setTags(Set<Tag> tags) {
     this.tags = tags;
+  }
+
+  public Boolean getEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(Boolean enabled) {
+    isEnabled = enabled;
   }
 
   /**
@@ -212,7 +222,6 @@ public class Certificate implements Serializable {
     return lastUpdateDate;
   }
 
-
   /**
    * Last update date setter
    *
@@ -257,6 +266,8 @@ public class Certificate implements Serializable {
         + createDate
         + ", lastUpdateDate="
         + lastUpdateDate
+        + ", isEnabled="
+        + isEnabled
         + '}';
   }
 }

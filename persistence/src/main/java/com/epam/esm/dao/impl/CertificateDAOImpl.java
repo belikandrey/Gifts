@@ -7,6 +7,7 @@ import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Certificate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.Collection;
 
 @Repository
@@ -23,5 +24,12 @@ public class CertificateDAOImpl extends AbstractGiftDAO<Certificate> implements 
         .setFirstResult((pageable.getPage() - 1) * pageable.getSize())
         .setMaxResults(pageable.getSize())
         .getResultList();
+  }
+
+  @Override
+  public void deleteById(BigInteger id) {
+    final Certificate certificate = findById(id).get();
+    certificate.setEnabled(false);
+    update(certificate);
   }
 }

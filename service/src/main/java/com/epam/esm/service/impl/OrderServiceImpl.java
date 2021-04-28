@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,8 +84,7 @@ public class OrderServiceImpl implements OrderService {
     return orderDAO.findAll(pageable);
   }
 
-
-  //TODO fix
+  // TODO fix
   @Override
   public OrderDTO create(BigInteger userId, List<CertificateDTO> certificateDTOS) {
 
@@ -97,9 +98,13 @@ public class OrderServiceImpl implements OrderService {
         certificateDTOS.stream()
             .map(certificateConverter::convertToEntity)
             .collect(Collectors.toList());
-    Order order = new Order();
-    //return orderConverter.convertToDto(orderDAO.save(user, certificates));
-    return orderConverter.convertToDto(orderDAO.save(order));
+    double sum = certificates.stream().mapToDouble((p) -> p.getPrice().doubleValue()).sum();
+    final Order order = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user);
+    user.getOrders().add(order);
+    // return orderConverter.convertToDto(orderDAO.save(user, certificates));
+    // return orderConverter.convertToDto(orderDAO.save(order));
+    userService.update(userConverter.convertToDto(user));
+    return orderConverter.convertToDto(order);
   }
 
   @Override
