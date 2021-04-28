@@ -104,4 +104,12 @@ public class TagController {
     tagService.delete(id);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
+
+  @GetMapping("/most-popular")
+  public ResponseEntity<?> findMostPopularTag() {
+    final TagDTO mostPopularTag = tagService.findMostPopularTag();
+    hateoasResolver.addLinksForTag(mostPopularTag);
+    return new ResponseEntity<>(mostPopularTag, HttpStatus.OK);
+  }
+
 }

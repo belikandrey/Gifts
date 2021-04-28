@@ -74,12 +74,6 @@ public class UserController {
   }
 
   // TODO
-  @GetMapping("/tags/most-popular")
-  public ResponseEntity<?> findMostPopularTag(@PathVariable BigInteger id) {
-    return null;
-  }
-
-  // TODO
   @GetMapping("/{user_id}/orders/{order_id}")
   public ResponseEntity<?> findUserOrderById(
       @PathVariable("user_id") BigInteger userId, @PathVariable("order_id") BigInteger orderId) {

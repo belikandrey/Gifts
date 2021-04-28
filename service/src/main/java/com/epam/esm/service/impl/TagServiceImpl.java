@@ -100,6 +100,15 @@ public class TagServiceImpl implements TagService {
     return tagRepository.count();
   }
 
+  @Override
+  public TagDTO findMostPopularTag() {
+    final Optional<Tag> mostPopularTag = tagRepository.findMostPopularTag();
+    if(mostPopularTag.isEmpty()){
+      throw new EntityNotFoundException("Most popular tag not found", Tag.class);
+    }
+    return converter.convertToDto(mostPopularTag.get());
+  }
+
   /**
    * Check that tag exist in database
    *

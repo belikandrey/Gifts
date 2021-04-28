@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Andrey Belik
  * @see com.epam.esm.dao.criteria.SearchCriteria
  */
-public class  CertificateSearchCriteria implements SearchCriteria {
+public class CertificateSearchCriteria implements SearchCriteria {
 
   /**
    * Certificate query builder. For building query by params

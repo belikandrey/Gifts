@@ -3,6 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ValidatorException;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -50,4 +51,6 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
   boolean isAlreadyExists(TagDTO tagDTO);
 
   Long count();
+
+  TagDTO findMostPopularTag();
 }
