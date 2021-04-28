@@ -19,4 +19,6 @@ public interface OrderService extends EntityService<OrderDTO, BigInteger> {
     OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId);
 
     List<OrderDTO> findAllByUserId(BigInteger id, Pageable pageable);
+    List<OrderDTO> findAllByUserId(BigInteger id);
+
 }

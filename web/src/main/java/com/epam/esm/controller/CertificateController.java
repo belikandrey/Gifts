@@ -72,10 +72,11 @@ public class CertificateController {
       @RequestParam(value = "sortName", required = false) String sortName,
       @RequestParam(value = "sortDate", required = false) String sortDate,
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-      @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
+      @RequestParam(name = "size", defaultValue = "10", required = false) int size,
+      @RequestParam(name="state", defaultValue = "enabled", required = false) String state) {
     Pageable pageable = new Pageable(size, page);
     Collection<CertificateDTO> giftCertificates =
-        certificateService.findAll(tagsName, name, description, sortName, sortDate, pageable);
+        certificateService.findAll(tagsName, name, description, sortName, sortDate, pageable, state);
     giftCertificates.forEach(hateoasResolver::addLinksForCertificate);
     final Long count = certificateService.count();
     return hateoasResolver.getModelForCertificates(giftCertificates,pageable, count);

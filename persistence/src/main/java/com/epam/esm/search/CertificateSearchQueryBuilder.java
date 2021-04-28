@@ -3,6 +3,7 @@ package com.epam.esm.search;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Query builder for search by params
@@ -28,7 +29,7 @@ public class CertificateSearchQueryBuilder {
       ") group by certificate_id having count(*) = ";
   private final StringBuilder stringBuilder;
   private boolean isComposite;
-  private static final String SQL_EXCLUDE_DISABLED = " certificate.is_enabled=true";
+  private static final String SQL_SET_STATE = " certificate.is_enabled= ";
 
   /** Default constructor */
   public CertificateSearchQueryBuilder() {
@@ -41,8 +42,21 @@ public class CertificateSearchQueryBuilder {
    * @return query string
    */
   public String build() {
-    stringBuilder.append(getSeparator()).append(SQL_EXCLUDE_DISABLED);
     return stringBuilder.toString();
+  }
+
+  public CertificateSearchQueryBuilder setState(String state){
+    switch (state.toLowerCase()){
+      case "enabled":
+        stringBuilder.append(getSeparator()).append(SQL_SET_STATE).append("true ");
+        break;
+      case "disabled":
+        stringBuilder.append(getSeparator()).append(SQL_SET_STATE).append("false");
+        break;
+      default:
+        break;
+    }
+    return this;
   }
 
   /**

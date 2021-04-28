@@ -28,7 +28,7 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
    * @return {@link Collection} of {@link CertificateDTO}
    */
   Collection<CertificateDTO> findAll(
-          List<String> tagName, String name, String description, String sortName, String sortDate, Pageable pageable);
+          List<String> tagName, String name, String description, String sortName, String sortDate, Pageable pageable,String state);
 
   void update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
 

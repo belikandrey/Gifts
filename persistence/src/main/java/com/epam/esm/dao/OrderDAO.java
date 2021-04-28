@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface OrderDAO {
   List<Order> findAllByUserId(BigInteger id, Pageable pageable);
 
+  List<Order> findAllByUserId(BigInteger id);
+
   Optional<Order> findById(BigInteger id);
 
   List<Order> findAll(Pageable pageable);

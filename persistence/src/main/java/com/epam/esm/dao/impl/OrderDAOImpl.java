@@ -1,11 +1,10 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dao.AbstractGiftDAO;
 import com.epam.esm.dao.OrderDAO;
+import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.entity.Order;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -26,6 +25,14 @@ public class OrderDAOImpl extends AbstractGiftDAO<Order> implements OrderDAO {
         .setParameter("user_id", id)
         .setFirstResult((pageable.getPage() - 1) * pageable.getSize())
         .setMaxResults(pageable.getSize())
+        .getResultList();
+  }
+
+  @Override
+  public List<Order> findAllByUserId(BigInteger id) {
+    return getEntityManager()
+        .createQuery(FIND_BY_USER_ID, Order.class)
+        .setParameter("user_id", id)
         .getResultList();
   }
 }

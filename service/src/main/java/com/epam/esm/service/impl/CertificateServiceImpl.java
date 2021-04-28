@@ -70,7 +70,8 @@ public class CertificateServiceImpl implements CertificateService {
   /**
    * Find all certificates by params
    *
-   * //@param tagName name of tag
+   * <p>//@param tagName name of tag
+   *
    * @param name part of certificate name
    * @param description part of description of certificate
    * @param sortName type of sort by name(asc, desc)
@@ -86,23 +87,26 @@ public class CertificateServiceImpl implements CertificateService {
       String description,
       String sortName,
       String sortDate,
-      Pageable pageable) {
-    Map<String, Object> params = fillMapWithParams(tagsName, name, description, sortName, sortDate);
+      Pageable pageable,
+      String state) {
+    Map<String, Object> params = fillMapWithParams(tagsName, name, description, sortName, sortDate, state);
     final List<CertificateDTO> certificates =
-        certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream().peek(System.out::println)
+        certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream()
+            .peek(System.out::println)
             .map(converter::convertToDto)
             .collect(Collectors.toList());
     return certificates;
   }
 
   private Map<String, Object> fillMapWithParams(
-      List<String> tagName, String name, String description, String sortName, String sortDate) {
+      List<String> tagName, String name, String description, String sortName, String sortDate,String state) {
     Map<String, Object> params = new HashMap<>();
     params.put("tagsName", tagName);
     params.put("name", name);
     params.put("description", description);
     params.put("sortName", sortName);
     params.put("sortDate", sortDate);
+    params.put("state", state);
     return params;
   }
 
@@ -144,6 +148,7 @@ public class CertificateServiceImpl implements CertificateService {
         tagsForSetIntoCertificate.stream()
             .map(tagConverter::convertToEntity)
             .collect(Collectors.toSet()));
+    certificate.setId(null);
     certificate = certificateDAO.save(certificate);
     return converter.convertToDto(certificate);
   }
@@ -160,17 +165,20 @@ public class CertificateServiceImpl implements CertificateService {
 
   private TagDTO findOrAddTag(TagDTO tag) throws ValidatorException {
     TagDTO tagFromDB;
-    if (tagService.isAlreadyExists(tag)) {
-      tagFromDB =
-          tag.getId() != null
-              ? tagService.findById(tag.getId())
-              : tagService.findByName(tag.getName());
+    tagFromDB = tag.getId() != null ? tagService.findById(tag.getId()) : null;
+    tagFromDB =
+        tagFromDB == null && tag.getName() != null
+            ? tagService.findByName(tag.getName())
+            : tagFromDB;
+    if (tagFromDB != null) {
+      return tagFromDB;
+    }
+    if ((tag.getName() == null || tag.getName().isEmpty())) {
+      throw new EntityNotFoundException("Tag with id " + tag.getId() + " not found", Tag.class);
     } else {
-      if (tag.getName() == null || tag.getName().isEmpty()) {
-        throw new EntityNotFoundException("Tag with id " + tag.getId() + " not found", Tag.class);
-      }
       tagFromDB = tagService.add(tag);
     }
+
     return tagFromDB;
   }
   /**

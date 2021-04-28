@@ -39,8 +39,8 @@ public class UserController {
 
   @GetMapping()
   public CollectionModel<UserDTO> findAll(
-      @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-      @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
+      @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
+      @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
     Pageable pageable = new Pageable(size, page);
     final List<UserDTO> users = userService.findAll(pageable);
     users.forEach(hateoasResolver::addLinksForUser);
@@ -57,8 +57,8 @@ public class UserController {
   @GetMapping("/{id}/orders")
   public ResponseEntity<?> findAllUserOrders(
       @PathVariable("id") BigInteger id,
-      @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-      @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
+      @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
+      @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
     Pageable pageable = new Pageable(size, page);
     final List<OrderDTO> orders = orderService.findAllByUserId(id, pageable);
     orders.forEach(p->hateoasResolver.addLinksForOrder(p, id));

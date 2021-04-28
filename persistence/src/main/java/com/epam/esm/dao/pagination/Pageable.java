@@ -3,40 +3,27 @@ package com.epam.esm.dao.pagination;
 import java.util.Objects;
 
 public class Pageable {
-    private int size;
-    private int page;
+    private Integer size;
+    private Integer page;
 
-    public Pageable(int size, int page) {
+    public Pageable(Integer size, Integer page) {
         this.size = size;
         this.page = page;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
-    public int getPage() {
+    public Integer getPage() {
         return page;
     }
 
-    public void setPage(int page) {
+    public void setPage(Integer page) {
         this.page = page;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pageable pageable = (Pageable) o;
-        return size == pageable.size && page == pageable.page;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(size, page);
     }
 }

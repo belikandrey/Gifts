@@ -52,7 +52,7 @@ public class Certificate implements Serializable {
   @Column(name = "is_enabled")
   private Boolean isEnabled;
 
-  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
+  @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   @JoinTable(
       name = "certificate_tag",
       joinColumns = @JoinColumn(name = "certificate_id"),

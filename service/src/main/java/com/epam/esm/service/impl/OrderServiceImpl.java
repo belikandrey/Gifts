@@ -111,8 +111,9 @@ public class OrderServiceImpl implements OrderService {
   @Transactional(readOnly = true)
   public OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId) {
     final Optional<OrderDTO> orderOptional =
-        userService.findById(userId).getOrders().stream()
+        userConverter.convertToEntity(userService.findById(userId)).getOrders().stream()
             .filter((p) -> p.getId().equals(orderId))
+            .map(orderConverter::convertToDto)
             .findAny();
     if (orderOptional.isEmpty()) {
       throw new EntityNotFoundException(
@@ -126,6 +127,13 @@ public class OrderServiceImpl implements OrderService {
   @Transactional(readOnly = true)
   public List<OrderDTO> findAllByUserId(BigInteger id, Pageable pageable) {
     return orderDAO.findAllByUserId(id, pageable).stream()
+        .map(orderConverter::convertToDto)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<OrderDTO> findAllByUserId(BigInteger id) {
+    return orderDAO.findAllByUserId(id).stream()
         .map(orderConverter::convertToDto)
         .collect(Collectors.toList());
   }

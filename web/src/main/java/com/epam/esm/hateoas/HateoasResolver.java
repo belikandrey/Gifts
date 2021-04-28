@@ -67,11 +67,10 @@ public class HateoasResolver {
   }
 
   public void addLinksForUser(UserDTO userDTO) {
-    userDTO.getOrders().forEach(p -> addLinksForOrder(p, userDTO.getId()));
     Link linkForSelf =
         linkTo(methodOn(UserController.class).findUserById(userDTO.getId())).withSelfRel();
     Link linkForOrders =
-        linkTo(methodOn(UserController.class).findAllUserOrders(userDTO.getId(), 0, 0))
+        linkTo(methodOn(UserController.class).findAllUserOrders(userDTO.getId(), null, null))
             .withRel("orders");
     userDTO.add(linkForSelf, linkForOrders);
   }
