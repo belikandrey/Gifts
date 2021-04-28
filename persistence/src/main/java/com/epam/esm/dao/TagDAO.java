@@ -23,9 +23,9 @@ public interface TagDAO {
 
   Optional<Tag> findTagByName(String name);
 
-  boolean isAlreadyExist(Tag tag);
-
   Long count();
 
   Optional<Tag> findMostPopularTag();
+
+  boolean isTagUsed(BigInteger tagId);
 }

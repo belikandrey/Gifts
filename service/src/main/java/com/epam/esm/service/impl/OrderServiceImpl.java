@@ -1,19 +1,19 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.OrderDAO;
+import com.epam.esm.dao.UserDAO;
 import com.epam.esm.dao.pagination.Pageable;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderDTO;
-import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
+import com.epam.esm.exception.EntityDisabledException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
-import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,30 +32,22 @@ public class OrderServiceImpl implements OrderService {
 
   private OrderDAO orderDAO;
 
-  private UserService userService;
-
-  private Converter<Certificate, CertificateDTO> certificateConverter;
-
   private Converter<Order, OrderDTO> orderConverter;
 
-  private CertificateService certificateService;
+  private UserDAO userDAO;
 
-  private Converter<User, UserDTO> userConverter;
+  private CertificateDAO certificateDAO;
 
   @Autowired
   public OrderServiceImpl(
       OrderDAO orderDAO,
-      UserService userService,
-      Converter<Certificate, CertificateDTO> certificateConverter,
-      CertificateService certificateService,
       Converter<Order, OrderDTO> orderConverter,
-      Converter<User, UserDTO> userConverter) {
+      UserDAO userDAO,
+      CertificateDAO certificateDAO) {
     this.orderDAO = orderDAO;
-    this.userService = userService;
-    this.certificateConverter = certificateConverter;
-    this.certificateService = certificateService;
     this.orderConverter = orderConverter;
-    this.userConverter = userConverter;
+    this.userDAO = userDAO;
+    this.certificateDAO = certificateDAO;
   }
 
   @Override
@@ -84,34 +77,46 @@ public class OrderServiceImpl implements OrderService {
     return orderDAO.findAll(pageable);
   }
 
-  // TODO fix
   @Override
   public OrderDTO create(BigInteger userId, List<CertificateDTO> certificateDTOS) {
-
-    certificateDTOS =
-        certificateDTOS.stream()
-            .map((p) -> certificateService.findById(p.getId()))
-            .collect(Collectors.toList());
-
-    User user = userConverter.convertToEntity(userService.findById(userId));
-    final List<Certificate> certificates =
-        certificateDTOS.stream()
-            .map(certificateConverter::convertToEntity)
-            .collect(Collectors.toList());
-    double sum = certificates.stream().mapToDouble((p) -> p.getPrice().doubleValue()).sum();
-    final Order order = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user);
-    user.getOrders().add(order);
-    // return orderConverter.convertToDto(orderDAO.save(user, certificates));
-    // return orderConverter.convertToDto(orderDAO.save(order));
-    userService.update(userConverter.convertToDto(user));
+    List<Certificate> certificates = getCertificatesForCreateOrder(certificateDTOS);
+    final double sum = certificates.stream().mapToDouble((p) -> p.getPrice().doubleValue()).sum();
+    final Optional<User> user = userDAO.findById(userId);
+    if (user.isEmpty()) {
+      throw new EntityNotFoundException("User with id : " + userId + " not found", User.class);
+    }
+    Order order = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user.get());
+    order = orderDAO.save(order);
     return orderConverter.convertToDto(order);
+  }
+
+  private List<Certificate> getCertificatesForCreateOrder(List<CertificateDTO> certificateDTOS) {
+    List<Certificate> certificates = new ArrayList<>();
+    for (CertificateDTO certificateDTO : certificateDTOS) {
+      Optional<Certificate> certificateOptional = certificateDAO.findById(certificateDTO.getId());
+      if (certificateOptional.isEmpty()) {
+        throw new EntityNotFoundException(
+            "Certificate with id : " + certificateDTO.getId() + " not found", Certificate.class);
+      }
+      final Certificate certificate = certificateOptional.get();
+      if (!certificate.getEnabled()) {
+        throw new EntityDisabledException(
+            "Certificate with id : " + certificate.getId() + " is disabled", Certificate.class);
+      }
+      certificates.add(certificate);
+    }
+    return certificates;
   }
 
   @Override
   @Transactional(readOnly = true)
   public OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId) {
+    final Optional<User> user = userDAO.findById(userId);
+    if (user.isEmpty()) {
+      throw new EntityNotFoundException("User with id : " + userId + " not found", User.class);
+    }
     final Optional<OrderDTO> orderOptional =
-        userConverter.convertToEntity(userService.findById(userId)).getOrders().stream()
+        user.get().getOrders().stream()
             .filter((p) -> p.getId().equals(orderId))
             .map(orderConverter::convertToDto)
             .findAny();

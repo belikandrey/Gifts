@@ -30,6 +30,8 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
           + "limit 1) "
           + "group by (tag.id)"
           + "order by count(tag_id) desc limit 1";
+  private static final String FIND_COUNT_OF_TAG_USAGES =
+      "select count(certificate_id) from certificate_tag where tag_id=:tag_id group by (tag_id)";
 
   public TagDAOImpl() {
     setClazz(Tag.class);
@@ -53,12 +55,21 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
   }
 
   @Override
-  public boolean isAlreadyExist(Tag tag) {
-    return false;
+  public Optional<Tag> findMostPopularTag() {
+    return getEntityManager()
+        .createNativeQuery(FIND_MOST_POPULAR_TAG, Tag.class)
+        .getResultStream()
+        .findAny();
   }
 
   @Override
-  public Optional<Tag> findMostPopularTag() {
-    return getEntityManager().createNativeQuery(FIND_MOST_POPULAR_TAG, Tag.class).getResultStream().findAny();
+  public boolean isTagUsed(BigInteger tagId) {
+    final Optional<Object> countOfTags =
+        getEntityManager()
+            .createNativeQuery(FIND_COUNT_OF_TAG_USAGES)
+            .setParameter("tag_id", tagId)
+            .getResultStream()
+            .findAny();
+    return countOfTags.isPresent();
   }
 }

@@ -14,6 +14,7 @@ import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Optional;
@@ -60,8 +61,8 @@ public class TagServiceImpl implements TagService {
   @Transactional(readOnly = true)
   public Collection<TagDTO> findAll(Pageable pageable) {
     return tagRepository.findAll(pageable).stream()
-            .map(converter::convertToDto)
-            .collect(Collectors.toSet());
+        .map(converter::convertToDto)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -103,7 +104,7 @@ public class TagServiceImpl implements TagService {
   @Override
   public TagDTO findMostPopularTag() {
     final Optional<Tag> mostPopularTag = tagRepository.findMostPopularTag();
-    if(mostPopularTag.isEmpty()){
+    if (mostPopularTag.isEmpty()) {
       throw new EntityNotFoundException("Most popular tag not found", Tag.class);
     }
     return converter.convertToDto(mostPopularTag.get());
@@ -115,12 +116,6 @@ public class TagServiceImpl implements TagService {
    * @param tagDTO {@link TagDTO} for check
    * @return true if tag exist, false in another way
    */
-  @Override
-  @Transactional(readOnly = true)
-  public boolean isAlreadyExists(TagDTO tagDTO) {
-    final Tag tag = converter.convertToEntity(tagDTO);
-    return tagRepository.isAlreadyExist(tag);
-  }
 
   /**
    * Find by id method
@@ -188,13 +183,8 @@ public class TagServiceImpl implements TagService {
     tagRepository.deleteById(id);
   }
 
-  //TODO
-  private boolean isTagUsed(BigInteger tagId) {
-    /*final Optional<Tag> byId = tagRepository.findById(tagId);
-    if (byId.isEmpty()) {
-      throw new EntityNotFoundException("Tag with id : " + tagId + " not found", Tag.class);
-    }
-    return byId.get().getCertificate().size() > 0;*/
-    return false;
+  @Override
+  public boolean isTagUsed(BigInteger tagId) {
+    return tagRepository.isTagUsed(tagId);
   }
 }

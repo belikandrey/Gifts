@@ -89,7 +89,8 @@ public class CertificateServiceImpl implements CertificateService {
       String sortDate,
       Pageable pageable,
       String state) {
-    Map<String, Object> params = fillMapWithParams(tagsName, name, description, sortName, sortDate, state);
+    Map<String, Object> params =
+        fillMapWithParams(tagsName, name, description, sortName, sortDate, state);
     final List<CertificateDTO> certificates =
         certificateDAO.findByCriteria(new CertificateSearchCriteria(params), pageable).stream()
             .peek(System.out::println)
@@ -99,7 +100,12 @@ public class CertificateServiceImpl implements CertificateService {
   }
 
   private Map<String, Object> fillMapWithParams(
-      List<String> tagName, String name, String description, String sortName, String sortDate,String state) {
+      List<String> tagName,
+      String name,
+      String description,
+      String sortName,
+      String sortDate,
+      String state) {
     Map<String, Object> params = new HashMap<>();
     params.put("tagsName", tagName);
     params.put("name", name);
@@ -141,6 +147,7 @@ public class CertificateServiceImpl implements CertificateService {
     Certificate certificate = converter.convertToEntity(newCertificateDTO);
     certificate.setCreateDate(LocalDateTime.now());
     certificate.setLastUpdateDate(LocalDateTime.now());
+    certificate.setEnabled(true);
     validator.validate(certificate);
     final Set<TagDTO> tagsForSetIntoCertificate =
         getTagsForSetIntoCertificate(newCertificateDTO.getTags());
@@ -194,16 +201,26 @@ public class CertificateServiceImpl implements CertificateService {
   public void update(BigInteger certificateId, CertificateDTO giftCertificate, boolean isFullUpdate)
       throws ValidatorException {
     final Certificate certificateForUpdate = converter.convertToEntity(giftCertificate);
-    final CertificateDTO certificateDTO = findById(certificateId);
-    if (!isFullUpdate) {
-      fillForInsert(certificateForUpdate, certificateDTO);
+    final Optional<Certificate> certificateOptional = certificateDAO.findById(certificateId);
+    if (certificateOptional.isEmpty()) {
+      throw new EntityNotFoundException(
+          "Certificate with id : " + certificateId + " not found", Certificate.class);
     }
-
+    Certificate certificate = certificateOptional.get();
+    if (!isFullUpdate) {
+      fillForInsert(certificateForUpdate, certificate);
+    }
+    final Set<TagDTO> tagsForSetIntoCertificate =
+        getTagsForSetIntoCertificate(giftCertificate.getTags());
+    //    certificateForUpdate.setTags(
+    //        giftCertificate.getTags().stream()
+    //            .map(tagConverter::convertToEntity)
+    //            .collect(Collectors.toSet()));
+    validator.validate(certificateForUpdate);
     certificateForUpdate.setTags(
-        giftCertificate.getTags().stream()
+        tagsForSetIntoCertificate.stream()
             .map(tagConverter::convertToEntity)
             .collect(Collectors.toSet()));
-    validator.validate(certificateForUpdate);
     certificateForUpdate.setLastUpdateDate(LocalDateTime.now());
     certificateForUpdate.setId(certificateId);
     if (certificateDAO.update(certificateForUpdate) == null) {
@@ -213,7 +230,7 @@ public class CertificateServiceImpl implements CertificateService {
   }
 
   private Certificate fillForInsert(
-      Certificate certificateForUpdate, CertificateDTO certificateFromDb) {
+      Certificate certificateForUpdate, Certificate certificateFromDb) {
     certificateForUpdate.setName(
         certificateForUpdate.getName() == null || certificateForUpdate.getName().isEmpty()
             ? certificateFromDb.getName()
@@ -235,6 +252,8 @@ public class CertificateServiceImpl implements CertificateService {
             ? certificateFromDb.getDuration()
             : certificateForUpdate.getDuration());
 
+    certificateForUpdate.setCreateDate(certificateFromDb.getCreateDate());
+    certificateForUpdate.setEnabled(certificateFromDb.getEnabled());
     return certificateForUpdate;
   }
 

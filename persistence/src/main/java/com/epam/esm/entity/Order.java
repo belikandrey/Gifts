@@ -1,8 +1,8 @@
 package com.epam.esm.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -34,28 +33,29 @@ public class Order implements Serializable {
   @Column(name = "create_date")
   private LocalDateTime createDate;
 
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.PERSIST})
   @JoinTable(
-          name = "order_certificate",
-          joinColumns = @JoinColumn(name = "order_id"),
-          inverseJoinColumns = @JoinColumn(name = "certificate_id")
-  )
+      name = "order_certificate",
+      joinColumns = @JoinColumn(name = "order_id"),
+      inverseJoinColumns = @JoinColumn(name = "certificate_id"))
   private List<Certificate> certificates;
 
-  @ManyToOne
+  @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private User user;
 
   public Order() {}
 
-  public Order(BigInteger id, BigDecimal price, LocalDateTime createDate, List<Certificate> certificates) {
+  public Order(
+      BigInteger id, BigDecimal price, LocalDateTime createDate, List<Certificate> certificates) {
     this.id = id;
     this.price = price;
     this.createDate = createDate;
     this.certificates = certificates;
   }
 
-  public Order(BigDecimal price, LocalDateTime createDate, List<Certificate> certificates, User user) {
+  public Order(
+      BigDecimal price, LocalDateTime createDate, List<Certificate> certificates, User user) {
     this.price = price;
     this.createDate = createDate;
     this.certificates = certificates;

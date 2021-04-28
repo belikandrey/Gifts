@@ -1,7 +1,10 @@
 package com.epam.esm.handler;
 
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityAlreadyExistException;
+import com.epam.esm.exception.EntityDisabledException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.EntityUsedException;
 import com.epam.esm.exception.ValidatorException;
@@ -21,15 +24,21 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final String TAG_CODE = "01";
   private static final String CERTIFICATE_CODE = "00";
+  private static final String ORDER_CODE = "10";
+  private static final String USER_CODE = "11";
 
   @ExceptionHandler(value = ValidatorException.class)
   protected ResponseEntity<?> handleValidationException(
       ValidatorException exception, WebRequest request) {
     ErrorResponseBody errorResponseBody;
     if (exception.getEntityClass().equals(Tag.class)) {
-      errorResponseBody = new ErrorResponseBody(List.of(exception.getMessage()), HttpStatus.BAD_REQUEST.value() + TAG_CODE);
+      errorResponseBody =
+          new ErrorResponseBody(
+              List.of(exception.getMessage()), HttpStatus.BAD_REQUEST.value() + TAG_CODE);
     } else {
-      errorResponseBody = new ErrorResponseBody(exception.getMessages(), HttpStatus.BAD_REQUEST.value() + CERTIFICATE_CODE);
+      errorResponseBody =
+          new ErrorResponseBody(
+              exception.getMessages(), HttpStatus.BAD_REQUEST.value() + CERTIFICATE_CODE);
     }
     return handleExceptionInternal(
         exception, errorResponseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
@@ -38,7 +47,8 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = EntityNotFoundException.class)
   protected ResponseEntity<?> handleNotFoundException(
       EntityNotFoundException exception, WebRequest request) {
-    ErrorResponseBody responseBody = getResponseBody(exception, exception.getEntityClass(), HttpStatus.NOT_FOUND.value());
+    ErrorResponseBody responseBody =
+        getResponseBody(exception, exception.getEntityClass(), HttpStatus.NOT_FOUND.value());
     return handleExceptionInternal(
         exception, responseBody, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
@@ -46,7 +56,8 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = EntityUsedException.class)
   protected ResponseEntity<?> handleEntityUsedException(
       EntityUsedException exception, WebRequest request) {
-    ErrorResponseBody responseBody = getResponseBody(exception, exception.getEntityClass(), HttpStatus.CONFLICT.value());
+    ErrorResponseBody responseBody =
+        getResponseBody(exception, exception.getEntityClass(), HttpStatus.CONFLICT.value());
     return handleExceptionInternal(
         exception, responseBody, new HttpHeaders(), HttpStatus.CONFLICT, request);
   }
@@ -54,7 +65,17 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = EntityAlreadyExistException.class)
   protected ResponseEntity<?> handleAlreadyExists(
       EntityAlreadyExistException exception, WebRequest request) {
-    ErrorResponseBody responseBody = getResponseBody(exception, exception.getEntityClass(), HttpStatus.CONFLICT.value());
+    ErrorResponseBody responseBody =
+        getResponseBody(exception, exception.getEntityClass(), HttpStatus.CONFLICT.value());
+    return handleExceptionInternal(
+        exception, responseBody, new HttpHeaders(), HttpStatus.CONFLICT, request);
+  }
+
+  @ExceptionHandler(value = EntityDisabledException.class)
+  protected ResponseEntity<?> handleEntityDisabled(
+      EntityDisabledException exception, WebRequest request) {
+    ErrorResponseBody responseBody =
+        getResponseBody(exception, exception.getEntityClass(), HttpStatus.CONFLICT.value());
     return handleExceptionInternal(
         exception, responseBody, new HttpHeaders(), HttpStatus.CONFLICT, request);
   }
@@ -68,8 +89,12 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   private ErrorResponseBody getResponseBody(Exception exception, Class<?> entityClass, int code) {
-    return entityClass.equals(Tag.class)
-        ? new ErrorResponseBody(List.of(exception.getMessage()), code + TAG_CODE)
-        : new ErrorResponseBody(List.of(exception.getMessage()), code + CERTIFICATE_CODE);
+    String errorCode =
+        entityClass.equals(Tag.class)
+            ? TAG_CODE
+            : entityClass.equals(Certificate.class)
+                ? CERTIFICATE_CODE
+                : entityClass.equals(User.class) ? USER_CODE : ORDER_CODE;
+    return new ErrorResponseBody(List.of(exception.getMessage()), code + errorCode);
   }
 }

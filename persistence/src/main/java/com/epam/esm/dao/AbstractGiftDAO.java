@@ -12,6 +12,8 @@ import java.util.Optional;
 public abstract class AbstractGiftDAO<T extends Serializable> {
   private Class<T> clazz;
 
+  private String FIND_COUNT = "SELECT COUNT(c) FROM ";
+
   @PersistenceContext private EntityManager entityManager;
 
   public void setClazz(Class<T> clazz) {
@@ -30,8 +32,9 @@ public abstract class AbstractGiftDAO<T extends Serializable> {
         .getResultList();
   }
 
-  public Long count(){
-    return (Long) getEntityManager().createQuery("SELECT COUNT(c) FROM "+clazz.getName()+" c").getSingleResult();
+  public Long count() {
+    return (Long)
+        getEntityManager().createQuery(FIND_COUNT + clazz.getName() + " c").getSingleResult();
   }
 
   public T save(T entity) {
