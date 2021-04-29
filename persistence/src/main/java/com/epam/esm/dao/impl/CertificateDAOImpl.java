@@ -27,6 +27,17 @@ public class CertificateDAOImpl extends AbstractGiftDAO<Certificate> implements 
   }
 
   @Override
+  public Certificate save(Certificate entity) {
+    getEntityManager().persist(entity);
+    return entity;
+  }
+
+  @Override
+  public Certificate update(Certificate entity) {
+    return getEntityManager().merge(entity);
+  }
+
+  @Override
   public void deleteById(BigInteger id) {
     final Certificate certificate = findById(id).get();
     certificate.setEnabled(false);

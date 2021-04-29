@@ -59,17 +59,13 @@ public class OrderServiceImpl implements OrderService {
     }
     return orderConverter.convertToDto(orderOptional.get());
   }
+//
+//  @Override
+//  public OrderDTO add(OrderDTO orderDTO) throws ValidatorException {
+//    final Order order = orderConverter.convertToEntity(orderDTO);
+//    return orderConverter.convertToDto(orderDAO.save(order));
+//  }
 
-  @Override
-  public OrderDTO add(OrderDTO orderDTO) throws ValidatorException {
-    final Order order = orderConverter.convertToEntity(orderDTO);
-    return orderConverter.convertToDto(orderDAO.save(order));
-  }
-
-  @Override
-  public void delete(BigInteger id) {
-    orderDAO.deleteById(id);
-  }
 
   @Override
   @Transactional(readOnly = true)
@@ -136,10 +132,4 @@ public class OrderServiceImpl implements OrderService {
         .collect(Collectors.toList());
   }
 
-  @Override
-  public List<OrderDTO> findAllByUserId(BigInteger id) {
-    return orderDAO.findAllByUserId(id).stream()
-        .map(orderConverter::convertToDto)
-        .collect(Collectors.toList());
-  }
 }

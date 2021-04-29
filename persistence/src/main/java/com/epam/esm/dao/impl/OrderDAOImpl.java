@@ -35,4 +35,10 @@ public class OrderDAOImpl extends AbstractGiftDAO<Order> implements OrderDAO {
         .setParameter("user_id", id)
         .getResultList();
   }
+
+  @Override
+  public Order save(Order entity) {
+    getEntityManager().persist(entity);
+    return entity;
+  }
 }

@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface OrderService extends EntityService<OrderDTO, BigInteger> {
 
-    @Transactional(readOnly = true)
     List<Order> findAll(Pageable pageable);
 
     OrderDTO create(BigInteger userId, List<CertificateDTO> certificates);
@@ -19,6 +18,8 @@ public interface OrderService extends EntityService<OrderDTO, BigInteger> {
     OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId);
 
     List<OrderDTO> findAllByUserId(BigInteger id, Pageable pageable);
-    List<OrderDTO> findAllByUserId(BigInteger id);
+
+    //OrderDTO add(OrderDTO orderDTO);
+
 
 }

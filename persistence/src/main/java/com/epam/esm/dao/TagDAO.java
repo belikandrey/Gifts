@@ -15,8 +15,6 @@ public interface TagDAO {
 
   Tag save(Tag entity);
 
-  Tag update(Tag entity);
-
   void deleteById(BigInteger id);
 
   List<Tag> findTagsByCertificateId(BigInteger certificateId);

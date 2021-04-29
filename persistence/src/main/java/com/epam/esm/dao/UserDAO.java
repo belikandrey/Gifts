@@ -13,9 +13,4 @@ public interface UserDAO {
 
   List<User> findAll(Pageable pageable);
 
-  User save(User entity);
-
-  User update(User entity);
-
-  void deleteById(BigInteger id);
 }

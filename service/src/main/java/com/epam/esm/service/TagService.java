@@ -39,7 +39,10 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
    */
   TagDTO findByName(String name);
 
-  void update(BigInteger id, TagDTO t) throws ValidatorException;
+  TagDTO add(TagDTO tagDTO);
+
+
+  void delete(BigInteger id);
   /**
    * Check is tag is already exist
    *

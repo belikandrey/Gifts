@@ -8,6 +8,4 @@ import java.util.List;
 
 public interface UserService extends EntityService<UserDTO, BigInteger>{
     List<UserDTO> findAll(Pageable pageable);
-
-    UserDTO update(UserDTO userDTO);
 }

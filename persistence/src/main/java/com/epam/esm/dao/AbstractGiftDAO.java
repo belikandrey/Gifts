@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractGiftDAO<T extends Serializable> {
+public abstract class AbstractGiftDAO<T> {
   private Class<T> clazz;
 
   private String FIND_COUNT = "SELECT COUNT(c) FROM ";
@@ -36,20 +36,20 @@ public abstract class AbstractGiftDAO<T extends Serializable> {
     return (Long)
         getEntityManager().createQuery(FIND_COUNT + clazz.getName() + " c").getSingleResult();
   }
-
-  public T save(T entity) {
-    entityManager.persist(entity);
-    return entity;
-  }
-
-  public T update(T entity) {
-    return entityManager.merge(entity);
-  }
-
-  public void deleteById(BigInteger id) {
-    final T entity = entityManager.find(clazz, id);
-    entityManager.remove(entity);
-  }
+//
+//  public T save(T entity) {
+//    entityManager.persist(entity);
+//    return entity;
+//  }
+//
+//  public T update(T entity) {
+//    return entityManager.merge(entity);
+//  }
+//
+//  public void deleteById(BigInteger id) {
+//    final T entity = entityManager.find(clazz, id);
+//    entityManager.remove(entity);
+//  }
 
   protected EntityManager getEntityManager() {
     return entityManager;

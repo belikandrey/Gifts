@@ -162,10 +162,6 @@ public class TagServiceImpl implements TagService {
    * @param tagDTO tag for update
    * @throws ValidatorException if tag is invalid
    */
-  @Override
-  public void update(BigInteger id, TagDTO tagDTO) {
-    throw new UnsupportedOperationException();
-  }
 
   /**
    * Delete tag by id method
@@ -176,10 +172,14 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public void delete(BigInteger id) {
+    if(tagRepository.findById(id).isEmpty()){
+      throw new EntityNotFoundException("Tag with id : "+id+" not found", Tag.class);
+    }
     if (isTagUsed(id)) {
       throw new EntityUsedException(
           "Can not delete tag with id : " + id + ". Tag is used in certificates", Tag.class);
     }
+    System.out.println("After is tag used");
     tagRepository.deleteById(id);
   }
 

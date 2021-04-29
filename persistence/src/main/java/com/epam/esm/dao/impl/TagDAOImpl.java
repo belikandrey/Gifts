@@ -38,6 +38,18 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
   }
 
   @Override
+  public Tag save(Tag entity) {
+    getEntityManager().persist(entity);
+    return entity;
+  }
+
+  @Override
+  public void deleteById(BigInteger id) {
+    final Tag entity = getEntityManager().find(Tag.class, id);
+    getEntityManager().remove(entity);
+  }
+
+  @Override
   public List<Tag> findTagsByCertificateId(BigInteger certificateId) {
     return getEntityManager()
         .createQuery(FIND_BY_CERTIFICATE_ID)

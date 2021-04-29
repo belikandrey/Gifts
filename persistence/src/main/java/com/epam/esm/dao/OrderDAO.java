@@ -18,8 +18,4 @@ public interface OrderDAO {
   List<Order> findAll(Pageable pageable);
 
   Order save(Order entity);
-
-  Order update(Order entity);
-
-  void deleteById(BigInteger id);
 }

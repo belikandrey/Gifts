@@ -41,27 +41,10 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDTO add(UserDTO userDTO) throws ValidatorException {
-    final User user = converter.convertToEntity(userDTO);
-    return converter.convertToDto(userDAO.save(user));
-  }
-
-  @Override
-  public void delete(BigInteger id) {
-    userDAO.deleteById(id);
-  }
-
-  @Override
   @Transactional(readOnly = true)
   public List<UserDTO> findAll(Pageable pageable) {
     return userDAO.findAll(pageable).stream()
         .map(converter::convertToDto)
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public UserDTO update(UserDTO userDTO) {
-    final User user = converter.convertToEntity(userDTO);
-    return converter.convertToDto(userDAO.update(user));
   }
 }

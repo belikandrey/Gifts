@@ -26,7 +26,6 @@ public interface EntityService<T, K> {
    * @return added entity
    * @throws ValidatorException if entity is invalid
    */
-  T add(T t) throws ValidatorException;
 
   /**
    * Update entity method
@@ -40,5 +39,5 @@ public interface EntityService<T, K> {
    *
    * @param id id of entity for delete
    */
-  void delete(K id);
+
 }

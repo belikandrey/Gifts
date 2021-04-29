@@ -33,4 +33,8 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
   void update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
 
   Long count();
+
+  CertificateDTO add(CertificateDTO certificateDTO);
+
+  void delete(BigInteger id);
 }
