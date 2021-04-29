@@ -3,7 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.OrderDAO;
 import com.epam.esm.dao.UserDAO;
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderDTO;
 import com.epam.esm.dto.converter.Converter;
@@ -12,7 +12,6 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDisabledException;
 import com.epam.esm.exception.EntityNotFoundException;
-import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,18 +58,11 @@ public class OrderServiceImpl implements OrderService {
     }
     return orderConverter.convertToDto(orderOptional.get());
   }
-//
-//  @Override
-//  public OrderDTO add(OrderDTO orderDTO) throws ValidatorException {
-//    final Order order = orderConverter.convertToEntity(orderDTO);
-//    return orderConverter.convertToDto(orderDAO.save(order));
-//  }
-
 
   @Override
   @Transactional(readOnly = true)
-  public List<Order> findAll(Pageable pageable) {
-    return orderDAO.findAll(pageable);
+  public List<Order> findAll(PaginationSetting paginationSetting) {
+    return orderDAO.findAll(paginationSetting);
   }
 
   @Override
@@ -126,10 +118,9 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<OrderDTO> findAllByUserId(BigInteger id, Pageable pageable) {
-    return orderDAO.findAllByUserId(id, pageable).stream()
+  public List<OrderDTO> findAllByUserId(BigInteger id, PaginationSetting paginationSetting) {
+    return orderDAO.findAllByUserId(id, paginationSetting).stream()
         .map(orderConverter::convertToDto)
         .collect(Collectors.toList());
   }
-
 }

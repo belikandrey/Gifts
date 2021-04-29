@@ -32,7 +32,10 @@ public class OrderConverter implements Converter<Order, OrderDTO> {
 
   @Override
   public OrderDTO convertToDto(Order entity) {
-      final List<CertificateDTO> certificateDTOS = entity.getCertificates().stream().map(certificateConverter::convertToDto).collect(Collectors.toList());
-      return new OrderDTO(entity.getId(), entity.getPrice(), entity.getCreateDate(), certificateDTOS);
+    final List<CertificateDTO> certificateDTOS =
+        entity.getCertificates().stream()
+            .map(certificateConverter::convertToDto)
+            .collect(Collectors.toList());
+    return new OrderDTO(entity.getId(), entity.getPrice(), entity.getCreateDate(), certificateDTOS);
   }
 }

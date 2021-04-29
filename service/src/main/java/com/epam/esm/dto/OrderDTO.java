@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+
 @Relation(collectionRelation = "orders")
 public class OrderDTO extends RepresentationModel<OrderDTO> {
 
@@ -23,10 +24,11 @@ public class OrderDTO extends RepresentationModel<OrderDTO> {
 
   private List<CertificateDTO> certificates;
 
-
-
   public OrderDTO(
-      BigInteger id, BigDecimal price, LocalDateTime createDate, List<CertificateDTO> certificates) {
+      BigInteger id,
+      BigDecimal price,
+      LocalDateTime createDate,
+      List<CertificateDTO> certificates) {
     this.id = id;
     this.price = price;
     this.createDate = createDate;

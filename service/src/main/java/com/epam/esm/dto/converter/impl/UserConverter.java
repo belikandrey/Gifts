@@ -25,7 +25,6 @@ public class UserConverter implements Converter<User, UserDTO> {
   public User convertToEntity(UserDTO dto) {
     final List<Order> orders =
         dto.getOrders().stream().map(orderConverter::convertToEntity).collect(Collectors.toList());
-
     return new User(dto.getId(), dto.getLogin(), orders);
   }
 

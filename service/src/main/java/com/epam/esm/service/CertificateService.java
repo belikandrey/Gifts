@@ -1,6 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.exception.ValidatorException;
 
@@ -24,11 +24,17 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
    * @param description description of certificate
    * @param sortName sort by name type(asc, desc)
    * @param sortDate sort by date type(asc, desc)
-   * @param pageable
+   * @param paginationSetting
    * @return {@link Collection} of {@link CertificateDTO}
    */
   Collection<CertificateDTO> findAll(
-          List<String> tagName, String name, String description, String sortName, String sortDate, Pageable pageable,String state);
+      List<String> tagName,
+      String name,
+      String description,
+      String sortName,
+      String sortDate,
+      PaginationSetting paginationSetting,
+      String state);
 
   void update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
 

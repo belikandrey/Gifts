@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.entity.User;
 
 import java.math.BigInteger;
@@ -11,6 +11,5 @@ public interface UserDAO {
 
   Optional<User> findById(BigInteger id);
 
-  List<User> findAll(Pageable pageable);
-
+  List<User> findAll(PaginationSetting paginationSetting);
 }

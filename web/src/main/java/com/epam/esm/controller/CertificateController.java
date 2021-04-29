@@ -1,13 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.hateoas.HateoasResolver;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import static org.springframework.hateoas.PagedModel.PageMetadata;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -38,8 +35,6 @@ import java.util.List;
 @RequestMapping("/certificates")
 public class CertificateController {
 
-  //TODO
-
   private final CertificateService certificateService;
 
   private final HateoasResolver hateoasResolver;
@@ -49,7 +44,8 @@ public class CertificateController {
    * @param certificateService {@link com.epam.esm.service.EntityService}
    */
   @Autowired
-  public CertificateController(CertificateService certificateService, HateoasResolver hateoasResolver) {
+  public CertificateController(
+      CertificateService certificateService, HateoasResolver hateoasResolver) {
     this.certificateService = certificateService;
     this.hateoasResolver = hateoasResolver;
   }
@@ -57,7 +53,8 @@ public class CertificateController {
   /**
    * Find all certificates, by params too
    *
-   * //@param tagName name of tag
+   * <p>//@param tagName name of tag
+   *
    * @param name name of certificate
    * @param description description of certificate
    * @param sortName type of sort by name(asc, desc)
@@ -73,13 +70,14 @@ public class CertificateController {
       @RequestParam(value = "sortDate", required = false) String sortDate,
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size,
-      @RequestParam(name="state", defaultValue = "enabled", required = false) String state) {
-    Pageable pageable = new Pageable(size, page);
+      @RequestParam(name = "state", defaultValue = "enabled", required = false) String state) {
+    PaginationSetting paginationSetting = new PaginationSetting(size, page);
     Collection<CertificateDTO> giftCertificates =
-        certificateService.findAll(tagsName, name, description, sortName, sortDate, pageable, state);
+        certificateService.findAll(
+            tagsName, name, description, sortName, sortDate, paginationSetting, state);
     giftCertificates.forEach(hateoasResolver::addLinksForCertificate);
     final Long count = certificateService.count();
-    return hateoasResolver.getModelForCertificates(giftCertificates,pageable, count);
+    return hateoasResolver.getModelForCertificates(giftCertificates, paginationSetting, count);
   }
 
   /**

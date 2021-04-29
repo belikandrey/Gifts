@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.entity.Tag;
 
 import java.math.BigInteger;
@@ -11,7 +11,7 @@ public interface TagDAO {
 
   Optional<Tag> findById(BigInteger id);
 
-  List<Tag> findAll(Pageable pageable);
+  List<Tag> findAll(PaginationSetting paginationSetting);
 
   Tag save(Tag entity);
 

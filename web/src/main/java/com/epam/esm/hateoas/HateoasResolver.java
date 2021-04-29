@@ -3,7 +3,7 @@ package com.epam.esm.hateoas;
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.controller.UserController;
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderDTO;
 import com.epam.esm.dto.TagDTO;
@@ -30,19 +30,19 @@ public class HateoasResolver {
   }
 
   public CollectionModel<TagDTO> getModelForTags(
-      Collection<TagDTO> tags, Pageable pageable, Long count) {
+          Collection<TagDTO> tags, PaginationSetting paginationSetting, Long count) {
     Link linkForSelf = linkTo(TagController.class).withSelfRel();
     Link createLink = linkTo(TagController.class).withRel("create");
-    final PageMetadata pageMetadata = getPageMetadata(pageable, count);
+    final PageMetadata pageMetadata = getPageMetadata(paginationSetting, count);
     return PagedModel.of(tags, pageMetadata, linkForSelf, createLink);
   }
 
-  private PageMetadata getPageMetadata(Pageable pageable, Long count) {
+  private PageMetadata getPageMetadata(PaginationSetting paginationSetting, Long count) {
     return new PageMetadata(
-        pageable.getSize(),
-        pageable.getPage(),
+        paginationSetting.getSize(),
+        paginationSetting.getPage(),
         count,
-        (long) Math.ceil(count.doubleValue() / pageable.getSize()));
+        (long) Math.ceil(count.doubleValue() / paginationSetting.getSize()));
   }
 
   public void addLinksForCertificate(CertificateDTO certificateDTO) {
@@ -59,10 +59,10 @@ public class HateoasResolver {
   }
 
   public CollectionModel<CertificateDTO> getModelForCertificates(
-      Collection<CertificateDTO> certificates, Pageable pageable, Long count) {
+          Collection<CertificateDTO> certificates, PaginationSetting paginationSetting, Long count) {
     Link linkForSelf = linkTo(CertificateController.class).withSelfRel();
     Link createLink = linkTo(CertificateController.class).withRel("create");
-    final PageMetadata pageMetadata = getPageMetadata(pageable, count);
+    final PageMetadata pageMetadata = getPageMetadata(paginationSetting, count);
     return PagedModel.of(certificates, pageMetadata, linkForSelf, createLink);
   }
 

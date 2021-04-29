@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderDTO;
 import com.epam.esm.dto.UserDTO;
@@ -31,7 +31,8 @@ public class UserController {
   private HateoasResolver hateoasResolver;
 
   @Autowired
-  public UserController(UserService userService, OrderService orderService, HateoasResolver hateoasResolver) {
+  public UserController(
+      UserService userService, OrderService orderService, HateoasResolver hateoasResolver) {
     this.userService = userService;
     this.orderService = orderService;
     this.hateoasResolver = hateoasResolver;
@@ -41,8 +42,8 @@ public class UserController {
   public CollectionModel<UserDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
       @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-    Pageable pageable = new Pageable(size, page);
-    final List<UserDTO> users = userService.findAll(pageable);
+    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    final List<UserDTO> users = userService.findAll(paginationSetting);
     users.forEach(hateoasResolver::addLinksForUser);
     return hateoasResolver.getModelForUsers(users);
   }
@@ -59,9 +60,9 @@ public class UserController {
       @PathVariable("id") BigInteger id,
       @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
       @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-    Pageable pageable = new Pageable(size, page);
-    final List<OrderDTO> orders = orderService.findAllByUserId(id, pageable);
-    orders.forEach(p->hateoasResolver.addLinksForOrder(p, id));
+    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    final List<OrderDTO> orders = orderService.findAllByUserId(id, paginationSetting);
+    orders.forEach(p -> hateoasResolver.addLinksForOrder(p, id));
     return new ResponseEntity<>(orders, HttpStatus.OK);
   }
 

@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -59,22 +58,8 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   @Transactional(readOnly = true)
-  public Collection<TagDTO> findAll(Pageable pageable) {
-    return tagRepository.findAll(pageable).stream()
-        .map(converter::convertToDto)
-        .collect(Collectors.toSet());
-  }
-
-  /**
-   * Find all tags by certificate id method
-   *
-   * @param certificateId id of certificate
-   * @return {@link Set} of {@link TagDTO}
-   */
-  @Override
-  @Transactional(readOnly = true)
-  public Set<TagDTO> findTagsByCertificateId(BigInteger certificateId) {
-    return tagRepository.findTagsByCertificateId(certificateId).stream()
+  public Collection<TagDTO> findAll(PaginationSetting paginationSetting) {
+    return tagRepository.findAll(paginationSetting).stream()
         .map(converter::convertToDto)
         .collect(Collectors.toSet());
   }
@@ -172,8 +157,8 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public void delete(BigInteger id) {
-    if(tagRepository.findById(id).isEmpty()){
-      throw new EntityNotFoundException("Tag with id : "+id+" not found", Tag.class);
+    if (tagRepository.findById(id).isEmpty()) {
+      throw new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class);
     }
     if (isTagUsed(id)) {
       throw new EntityUsedException(

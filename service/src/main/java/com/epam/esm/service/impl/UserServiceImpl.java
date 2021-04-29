@@ -1,12 +1,11 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDAO;
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityNotFoundException;
-import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,8 +41,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<UserDTO> findAll(Pageable pageable) {
-    return userDAO.findAll(pageable).stream()
+  public List<UserDTO> findAll(PaginationSetting paginationSetting) {
+    return userDAO.findAll(paginationSetting).stream()
         .map(converter::convertToDto)
         .collect(Collectors.toList());
   }

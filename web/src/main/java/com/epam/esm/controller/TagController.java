@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.hateoas.HateoasResolver;
@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
 import java.util.Collection;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 /**
  * Rest controller for tags
@@ -58,13 +56,12 @@ public class TagController {
   public CollectionModel<TagDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
-    Pageable pageable = new Pageable(size, page);
-    Collection<TagDTO> tags = tagService.findAll(pageable);
+    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    Collection<TagDTO> tags = tagService.findAll(paginationSetting);
     final Long count = tagService.count();
     tags.forEach(hateoasResolver::addLinksForTag);
-    return hateoasResolver.getModelForTags(tags,pageable,count);
+    return hateoasResolver.getModelForTags(tags, paginationSetting, count);
   }
-
 
   /**
    * Find tag by id
@@ -111,5 +108,4 @@ public class TagController {
     hateoasResolver.addLinksForTag(mostPopularTag);
     return new ResponseEntity<>(mostPopularTag, HttpStatus.OK);
   }
-
 }

@@ -1,12 +1,10 @@
 package com.epam.esm.service;
 
-import com.epam.esm.dao.pagination.Pageable;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.exception.ValidatorException;
 
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Base interface for Tag service
@@ -21,15 +19,7 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
    *
    * @return {@link Collection} of {@link TagDTO}
    */
-  Collection<TagDTO> findAll(Pageable pageable);
-
-  /**
-   * Find all tags by certificate id method
-   *
-   * @param certificateId id of certificate
-   * @return {@link Set} of {@link TagDTO}
-   */
-  Set<TagDTO> findTagsByCertificateId(BigInteger certificateId);
+  Collection<TagDTO> findAll(PaginationSetting paginationSetting);
 
   /**
    * Find tag by name method
@@ -40,7 +30,6 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
   TagDTO findByName(String name);
 
   TagDTO add(TagDTO tagDTO);
-
 
   void delete(BigInteger id);
   /**
