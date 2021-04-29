@@ -25,18 +25,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/** The type Order service. */
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
 
+  /** The Order dao. */
   private OrderDAO orderDAO;
 
+  /** The Order converter. */
   private Converter<Order, OrderDTO> orderConverter;
 
+  /** The User dao. */
   private UserDAO userDAO;
 
+  /** The Certificate dao. */
   private CertificateDAO certificateDAO;
 
+  /**
+   * Instantiates a new Order service.
+   *
+   * @param orderDAO the {@link OrderDAO}
+   * @param orderConverter the {@link Converter}
+   * @param userDAO the {@link UserDAO}
+   * @param certificateDAO the {@link CertificateDAO}
+   */
   @Autowired
   public OrderServiceImpl(
       OrderDAO orderDAO,
@@ -49,6 +62,12 @@ public class OrderServiceImpl implements OrderService {
     this.certificateDAO = certificateDAO;
   }
 
+  /**
+   * Find by id order dto.
+   *
+   * @param id the id
+   * @return the {@link OrderDTO}
+   */
   @Override
   @Transactional(readOnly = true)
   public OrderDTO findById(BigInteger id) {
@@ -59,12 +78,25 @@ public class OrderServiceImpl implements OrderService {
     return orderConverter.convertToDto(orderOptional.get());
   }
 
+  /**
+   * Find all list.
+   *
+   * @param paginationSetting the pagination setting
+   * @return the list of
+   */
   @Override
   @Transactional(readOnly = true)
   public List<Order> findAll(PaginationSetting paginationSetting) {
     return orderDAO.findAll(paginationSetting);
   }
 
+  /**
+   * Create order dto.
+   *
+   * @param userId the user id
+   * @param certificateDTOS the certificate dtos
+   * @return the order dto
+   */
   @Override
   public OrderDTO create(BigInteger userId, List<CertificateDTO> certificateDTOS) {
     List<Certificate> certificates = getCertificatesForCreateOrder(certificateDTOS);
@@ -78,6 +110,12 @@ public class OrderServiceImpl implements OrderService {
     return orderConverter.convertToDto(order);
   }
 
+  /**
+   * Gets certificates for create order.
+   *
+   * @param certificateDTOS the certificate dtos
+   * @return the certificates for create order
+   */
   private List<Certificate> getCertificatesForCreateOrder(List<CertificateDTO> certificateDTOS) {
     List<Certificate> certificates = new ArrayList<>();
     for (CertificateDTO certificateDTO : certificateDTOS) {
@@ -96,6 +134,13 @@ public class OrderServiceImpl implements OrderService {
     return certificates;
   }
 
+  /**
+   * Find by id and user id order dto.
+   *
+   * @param orderId the order id
+   * @param userId the user id
+   * @return the order dto
+   */
   @Override
   @Transactional(readOnly = true)
   public OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId) {
@@ -116,6 +161,13 @@ public class OrderServiceImpl implements OrderService {
     return orderOptional.get();
   }
 
+  /**
+   * Find all by user id list.
+   *
+   * @param id the id
+   * @param paginationSetting the pagination setting
+   * @return the list
+   */
   @Override
   @Transactional(readOnly = true)
   public List<OrderDTO> findAllByUserId(BigInteger id, PaginationSetting paginationSetting) {

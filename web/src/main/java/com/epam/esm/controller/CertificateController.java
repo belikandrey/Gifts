@@ -35,13 +35,16 @@ import java.util.List;
 @RequestMapping("/certificates")
 public class CertificateController {
 
+  /** The Certificate service. */
   private final CertificateService certificateService;
 
+  /** The Hateoas resolver. */
   private final HateoasResolver hateoasResolver;
   /**
    * Constructor
    *
    * @param certificateService {@link com.epam.esm.service.EntityService}
+   * @param hateoasResolver the hateoas resolver
    */
   @Autowired
   public CertificateController(
@@ -53,12 +56,14 @@ public class CertificateController {
   /**
    * Find all certificates, by params too
    *
-   * <p>//@param tagName name of tag
-   *
+   * @param tagsName the tags name
    * @param name name of certificate
    * @param description description of certificate
    * @param sortName type of sort by name(asc, desc)
    * @param sortDate type of sort by date(asc, desc)
+   * @param page the page
+   * @param size the size
+   * @param state the state
    * @return response entity
    */
   @GetMapping()
@@ -136,6 +141,14 @@ public class CertificateController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * Update all fields response entity.
+   *
+   * @param id the id
+   * @param certificateDTO the certificate dto
+   * @return the response entity
+   * @throws ValidatorException the validator exception
+   */
   @PutMapping("/{id}")
   public ResponseEntity<?> updateAllFields(
       @PathVariable("id") BigInteger id, @RequestBody CertificateDTO certificateDTO)

@@ -12,7 +12,7 @@ public interface EntityService<T, K> {
    * Find entity by id method
    *
    * @param id id of entity
-   * @return entity
+   * @return entity t
    */
   T findById(K id);
 }

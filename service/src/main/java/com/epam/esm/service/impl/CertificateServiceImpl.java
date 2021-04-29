@@ -36,17 +36,28 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class CertificateServiceImpl implements CertificateService {
+  /** The Validator. */
   private final Validator<Certificate> validator;
+
+  /** The Certificate dao. */
   private final CertificateDAO certificateDAO;
+
+  /** The Converter. */
   private final Converter<Certificate, CertificateDTO> converter;
+
+  /** The Tag service. */
   private final TagService tagService;
+
+  /** The Tag converter. */
   private final Converter<Tag, TagDTO> tagConverter;
   /**
    * Constructor
    *
-   * @param validator {@link com.epam.esm.validator.Validator} //* @param certificateDAO {@link
+   * @param validator {@link com.epam.esm.validator.Validator}
    * @param converter {@link com.epam.esm.dto.converter.Converter}
    * @param tagService {@link TagService}
+   * @param certificateDAO the {@link CertificateDAO}
+   * @param tagConverter the tag {@link Converter}
    */
   @Autowired
   public CertificateServiceImpl(
@@ -62,6 +73,11 @@ public class CertificateServiceImpl implements CertificateService {
     this.tagConverter = tagConverter;
   }
 
+  /**
+   * Count long.
+   *
+   * @return the long
+   */
   @Override
   public Long count() {
     return certificateDAO.count();
@@ -72,11 +88,13 @@ public class CertificateServiceImpl implements CertificateService {
    *
    * <p>//@param tagName name of tag
    *
+   * @param tagsName the tags name
    * @param name part of certificate name
    * @param description part of description of certificate
    * @param sortName type of sort by name(asc, desc)
    * @param sortDate type of sort by date(asc, desc)
-   * @param paginationSetting
+   * @param paginationSetting the pagination setting
+   * @param state the state
    * @return {@link java.util.Collection} of certificates
    */
   @Override
@@ -101,6 +119,17 @@ public class CertificateServiceImpl implements CertificateService {
     return certificates;
   }
 
+  /**
+   * Fill map with params map.
+   *
+   * @param tagName the tag name
+   * @param name the name
+   * @param description the description
+   * @param sortName the sort name
+   * @param sortDate the sort date
+   * @param state the state
+   * @return the map
+   */
   private Map<String, Object> fillMapWithParams(
       List<String> tagName,
       String name,
@@ -122,7 +151,7 @@ public class CertificateServiceImpl implements CertificateService {
    * Find certificate by id method
    *
    * @param id id of certificate
-   * @return certificate
+   * @return certificate certificate dto
    * @exception EntityNotFoundException if certificate with this id not found
    */
   @Override
@@ -162,6 +191,13 @@ public class CertificateServiceImpl implements CertificateService {
     return converter.convertToDto(certificate);
   }
 
+  /**
+   * Gets tags for set into certificate.
+   *
+   * @param tags the tags
+   * @return the tags for set into certificate
+   * @throws ValidatorException the validator exception
+   */
   private Set<TagDTO> getTagsForSetIntoCertificate(Set<TagDTO> tags) throws ValidatorException {
     Set<TagDTO> tagsFromDb = new HashSet<>();
     for (TagDTO tag : tags) {
@@ -172,6 +208,13 @@ public class CertificateServiceImpl implements CertificateService {
     return tagsFromDb;
   }
 
+  /**
+   * Find or add tag tag dto.
+   *
+   * @param tag the tag
+   * @return the tag dto
+   * @throws ValidatorException the validator exception
+   */
   private TagDTO findOrAddTag(TagDTO tag) throws ValidatorException {
     TagDTO tagFromDB;
     tagFromDB = tag.getId() != null ? tagService.findById(tag.getId()) : null;
@@ -195,6 +238,7 @@ public class CertificateServiceImpl implements CertificateService {
    *
    * @param certificateId id of certificate for update
    * @param giftCertificate certificate for update
+   * @param isFullUpdate the is full update
    * @throws ValidatorException if certificate is invalid
    * @exception EntityNotFoundException if certificate with this id not found
    */
@@ -231,6 +275,13 @@ public class CertificateServiceImpl implements CertificateService {
     }
   }
 
+  /**
+   * Fill for insert certificate.
+   *
+   * @param certificateForUpdate the certificate for update
+   * @param certificateFromDb the certificate from db
+   * @return the certificate
+   */
   private Certificate fillForInsert(
       Certificate certificateForUpdate, Certificate certificateFromDb) {
     certificateForUpdate.setName(

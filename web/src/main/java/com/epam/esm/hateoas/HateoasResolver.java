@@ -20,8 +20,14 @@ import static org.springframework.hateoas.PagedModel.PageMetadata;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/** The type Hateoas resolver. */
 @Component
 public class HateoasResolver {
+  /**
+   * Add links for tag.
+   *
+   * @param tagDTO the tag dto
+   */
   public void addLinksForTag(TagDTO tagDTO) {
     Link linkForSelf = linkTo(TagController.class).slash(tagDTO.getId()).withSelfRel();
     Link deleteLink =
@@ -29,14 +35,29 @@ public class HateoasResolver {
     tagDTO.add(linkForSelf, deleteLink);
   }
 
+  /**
+   * Gets model for tags.
+   *
+   * @param tags the tags
+   * @param paginationSetting the pagination setting
+   * @param count the count
+   * @return the model for tags
+   */
   public CollectionModel<TagDTO> getModelForTags(
-          Collection<TagDTO> tags, PaginationSetting paginationSetting, Long count) {
+      Collection<TagDTO> tags, PaginationSetting paginationSetting, Long count) {
     Link linkForSelf = linkTo(TagController.class).withSelfRel();
     Link createLink = linkTo(TagController.class).withRel("create");
     final PageMetadata pageMetadata = getPageMetadata(paginationSetting, count);
     return PagedModel.of(tags, pageMetadata, linkForSelf, createLink);
   }
 
+  /**
+   * Gets page metadata.
+   *
+   * @param paginationSetting the pagination setting
+   * @param count the count
+   * @return the page metadata
+   */
   private PageMetadata getPageMetadata(PaginationSetting paginationSetting, Long count) {
     return new PageMetadata(
         paginationSetting.getSize(),
@@ -45,6 +66,11 @@ public class HateoasResolver {
         (long) Math.ceil(count.doubleValue() / paginationSetting.getSize()));
   }
 
+  /**
+   * Add links for certificate.
+   *
+   * @param certificateDTO the certificate dto
+   */
   public void addLinksForCertificate(CertificateDTO certificateDTO) {
     certificateDTO.getTags().forEach(this::addLinksForTag);
     Link linkForSelf =
@@ -58,14 +84,27 @@ public class HateoasResolver {
     certificateDTO.add(linkForSelf, deleteLink, updateLink);
   }
 
+  /**
+   * Gets model for certificates.
+   *
+   * @param certificates the certificates
+   * @param paginationSetting the pagination setting
+   * @param count the count
+   * @return the model for certificates
+   */
   public CollectionModel<CertificateDTO> getModelForCertificates(
-          Collection<CertificateDTO> certificates, PaginationSetting paginationSetting, Long count) {
+      Collection<CertificateDTO> certificates, PaginationSetting paginationSetting, Long count) {
     Link linkForSelf = linkTo(CertificateController.class).withSelfRel();
     Link createLink = linkTo(CertificateController.class).withRel("create");
     final PageMetadata pageMetadata = getPageMetadata(paginationSetting, count);
     return PagedModel.of(certificates, pageMetadata, linkForSelf, createLink);
   }
 
+  /**
+   * Add links for user.
+   *
+   * @param userDTO the user dto
+   */
   public void addLinksForUser(UserDTO userDTO) {
     Link linkForSelf =
         linkTo(methodOn(UserController.class).findUserById(userDTO.getId())).withSelfRel();
@@ -75,6 +114,12 @@ public class HateoasResolver {
     userDTO.add(linkForSelf, linkForOrders);
   }
 
+  /**
+   * Add links for order.
+   *
+   * @param orderDTO the order dto
+   * @param userId the user id
+   */
   public void addLinksForOrder(OrderDTO orderDTO, BigInteger userId) {
     orderDTO.getCertificates().forEach(this::addLinksForCertificate);
     Link linkForSelf =
@@ -83,6 +128,12 @@ public class HateoasResolver {
     orderDTO.add(linkForSelf);
   }
 
+  /**
+   * Gets model for users.
+   *
+   * @param users the users
+   * @return the model for users
+   */
   public CollectionModel<UserDTO> getModelForUsers(Collection<UserDTO> users) {
     Link linkForSelf = linkTo(UserController.class).withSelfRel();
     return CollectionModel.of(users, linkForSelf);

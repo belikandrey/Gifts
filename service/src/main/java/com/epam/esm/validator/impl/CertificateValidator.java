@@ -9,13 +9,25 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/** The type Certificate validator. */
 @Service
 public class CertificateValidator implements Validator<Certificate> {
 
+  /** The Min name size. */
   private final int MIN_NAME_SIZE = 3;
+
+  /** The Max name size. */
   private final int MAX_NAME_SIZE = 30;
+
+  /** The Max description size. */
   private final int MAX_DESCRIPTION_SIZE = 150;
 
+  /**
+   * Validate.
+   *
+   * @param certificate the certificate
+   * @throws ValidatorException the validator exception
+   */
   @Override
   public void validate(Certificate certificate) throws ValidatorException {
 
@@ -32,6 +44,12 @@ public class CertificateValidator implements Validator<Certificate> {
     }
   }
 
+  /**
+   * Validate name string.
+   *
+   * @param name the name
+   * @return the string
+   */
   private String validateName(String name) {
     if (name == null || name.isEmpty()) {
       return "Certificate name should be not empty";
@@ -45,6 +63,12 @@ public class CertificateValidator implements Validator<Certificate> {
     return null;
   }
 
+  /**
+   * Validate description string.
+   *
+   * @param description the description
+   * @return the string
+   */
   private String validateDescription(String description) {
     if (description == null || description.isEmpty()) {
       return "Certificate description should be not empty";
@@ -57,6 +81,12 @@ public class CertificateValidator implements Validator<Certificate> {
     return null;
   }
 
+  /**
+   * Validate duration string.
+   *
+   * @param duration the duration
+   * @return the string
+   */
   private String validateDuration(Integer duration) {
     if (duration == null || duration <= 0) {
       return "Certificate duration should be more than 0";
@@ -64,6 +94,12 @@ public class CertificateValidator implements Validator<Certificate> {
     return null;
   }
 
+  /**
+   * Validate price string.
+   *
+   * @param price the price
+   * @return the string
+   */
   private String validatePrice(BigDecimal price) {
     if (price == null) {
       return "Certificate price should be not null";
@@ -74,6 +110,12 @@ public class CertificateValidator implements Validator<Certificate> {
     return null;
   }
 
+  /**
+   * Add to messages.
+   *
+   * @param message the message
+   * @param newMessage the new message
+   */
   private void addToMessages(List<String> message, String newMessage) {
     if (newMessage != null) {
       message.add(newMessage);

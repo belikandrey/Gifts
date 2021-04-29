@@ -9,7 +9,10 @@ import java.util.Objects;
 /** Tag transfer class */
 @Relation(collectionRelation = "tags")
 public class TagDTO extends RepresentationModel<TagDTO> {
+  /** The Id. */
   private BigInteger id;
+
+  /** The Name. */
   private String name;
 
   /**
@@ -62,6 +65,12 @@ public class TagDTO extends RepresentationModel<TagDTO> {
     this.name = name;
   }
 
+  /**
+   * Equals boolean.
+   *
+   * @param o the o
+   * @return the boolean
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -70,11 +79,21 @@ public class TagDTO extends RepresentationModel<TagDTO> {
     return Objects.equals(id, tagDTO.id) && Objects.equals(name, tagDTO.name);
   }
 
+  /**
+   * Hash code int.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     return Objects.hash(id, name);
   }
 
+  /**
+   * To string string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "TagDTO{" + "id=" + id + ", name='" + name + '\'' + '}';

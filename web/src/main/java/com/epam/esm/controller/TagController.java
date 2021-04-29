@@ -31,13 +31,16 @@ import java.util.Collection;
 @RestController
 @RequestMapping("/tags")
 public class TagController {
+  /** The Tag service. */
   private final TagService tagService;
 
+  /** The Hateoas resolver. */
   private final HateoasResolver hateoasResolver;
   /**
    * Constructor
    *
    * @param tagService {@link com.epam.esm.service.EntityService}
+   * @param hateoasResolver the hateoas resolver
    */
   @Autowired
   public TagController(TagService tagService, HateoasResolver hateoasResolver) {
@@ -50,6 +53,8 @@ public class TagController {
    *
    * <p>//* @param certificateId certificate id
    *
+   * @param page the page
+   * @param size the size
    * @return the response entity
    */
   @GetMapping()
@@ -102,6 +107,11 @@ public class TagController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
+  /**
+   * Find most popular tag response entity.
+   *
+   * @return the response entity
+   */
   @GetMapping("/most-popular")
   public ResponseEntity<?> findMostPopularTag() {
     final TagDTO mostPopularTag = tagService.findMostPopularTag();

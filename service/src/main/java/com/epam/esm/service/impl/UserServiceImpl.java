@@ -16,19 +16,35 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/** The type User service. */
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
+  /** The User dao. */
   private UserDAO userDAO;
+
+  /** The Converter. */
   private Converter<User, UserDTO> converter;
 
+  /**
+   * Instantiates a new User service.
+   *
+   * @param userDAO the {@link UserDAO}
+   * @param converter the {@link Converter}
+   */
   @Autowired
   public UserServiceImpl(UserDAO userDAO, Converter<User, UserDTO> converter) {
     this.userDAO = userDAO;
     this.converter = converter;
   }
 
+  /**
+   * Find by id user dto.
+   *
+   * @param id the id
+   * @return the {@link UserDTO}
+   */
   @Override
   @Transactional(readOnly = true)
   public UserDTO findById(BigInteger id) {
@@ -39,6 +55,12 @@ public class UserServiceImpl implements UserService {
     return converter.convertToDto(userOptional.get());
   }
 
+  /**
+   * Find all.
+   *
+   * @param paginationSetting the pagination setting {@link PaginationSetting}
+   * @return the list of {@link UserDTO}
+   */
   @Override
   @Transactional(readOnly = true)
   public List<UserDTO> findAll(PaginationSetting paginationSetting) {

@@ -29,22 +29,26 @@ import java.util.stream.Collectors;
 @Transactional
 public class TagServiceImpl implements TagService {
 
+  /** The Validator. */
   private Validator<Tag> validator;
+
+  /** The Converter. */
   private Converter<Tag, TagDTO> converter;
-  private TagDAO tagRepository;
+
+  /** The Tag repository. */
+  private TagDAO tagDAO;
 
   /**
    * Constructor
    *
    * @param validator {@link com.epam.esm.validator.Validator}
-   * @param {@link com.epam.esm.dao.AbstractDAO}
+   * @param tagDAO the {@link TagDAO}
    * @param converter {@link com.epam.esm.dto.converter.Converter}
    */
   @Autowired
-  public TagServiceImpl(
-      Validator<Tag> validator, TagDAO tagRepository, Converter<Tag, TagDTO> converter) {
+  public TagServiceImpl(Validator<Tag> validator, TagDAO tagDAO, Converter<Tag, TagDTO> converter) {
     this.validator = validator;
-    this.tagRepository = tagRepository;
+    this.tagDAO = tagDAO;
     this.converter = converter;
   }
 
@@ -54,12 +58,13 @@ public class TagServiceImpl implements TagService {
   /**
    * Find all tags method
    *
+   * @param paginationSetting the pagination setting
    * @return {@link java.util.Collection} of tags
    */
   @Override
   @Transactional(readOnly = true)
   public Collection<TagDTO> findAll(PaginationSetting paginationSetting) {
-    return tagRepository.findAll(paginationSetting).stream()
+    return tagDAO.findAll(paginationSetting).stream()
         .map(converter::convertToDto)
         .collect(Collectors.toSet());
   }
@@ -68,27 +73,37 @@ public class TagServiceImpl implements TagService {
    * Find tag by name method
    *
    * @param name name of tag
-   * @return tag
+   * @return {@link TagDTO}
    * @exception EntityNotFoundException if entity with this name not found
    */
   @Override
   @Transactional(readOnly = true)
   public TagDTO findByName(String name) {
-    final Optional<Tag> tag = tagRepository.findTagByName(name);
+    final Optional<Tag> tag = tagDAO.findTagByName(name);
     if (tag.isEmpty()) {
       throw new EntityNotFoundException("Tag with name : " + name + " not found", Tag.class);
     }
     return converter.convertToDto(tag.get());
   }
 
+  /**
+   * Count long.
+   *
+   * @return the long
+   */
   @Override
   public Long count() {
-    return tagRepository.count();
+    return tagDAO.count();
   }
 
+  /**
+   * Find most popular tag.
+   *
+   * @return the {@link TagDTO}
+   */
   @Override
   public TagDTO findMostPopularTag() {
-    final Optional<Tag> mostPopularTag = tagRepository.findMostPopularTag();
+    final Optional<Tag> mostPopularTag = tagDAO.findMostPopularTag();
     if (mostPopularTag.isEmpty()) {
       throw new EntityNotFoundException("Most popular tag not found", Tag.class);
     }
@@ -96,23 +111,16 @@ public class TagServiceImpl implements TagService {
   }
 
   /**
-   * Check that tag exist in database
-   *
-   * @param tagDTO {@link TagDTO} for check
-   * @return true if tag exist, false in another way
-   */
-
-  /**
    * Find by id method
    *
    * @param id id of tag
-   * @return tag
+   * @return {@link TagDTO}
    * @exception EntityNotFoundException if entity with this id not found
    */
   @Override
   @Transactional(readOnly = true)
   public TagDTO findById(BigInteger id) {
-    final Optional<Tag> tag = tagRepository.findById(id);
+    final Optional<Tag> tag = tagDAO.findById(id);
     if (tag.isEmpty()) {
       throw new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class);
     }
@@ -123,7 +131,7 @@ public class TagServiceImpl implements TagService {
    * Add tag method
    *
    * @param tagDTO tag to add
-   * @return added tag
+   * @return added {@link TagDTO}
    * @throws ValidatorException if tag is invalid
    * @exception EntityAlreadyExistException if entity with this name already exist
    */
@@ -131,22 +139,14 @@ public class TagServiceImpl implements TagService {
   public TagDTO add(TagDTO tagDTO) throws ValidatorException {
     Tag tag = converter.convertToEntity(tagDTO);
     validator.validate(tag);
-    final Optional<Tag> tagByName = tagRepository.findTagByName(tagDTO.getName());
+    final Optional<Tag> tagByName = tagDAO.findTagByName(tagDTO.getName());
     if (tagByName.isPresent()) {
       throw new EntityAlreadyExistException(
           "Tag with name : " + tagDTO.getName() + " is already exist in db", Tag.class);
     }
-    final Tag added = tagRepository.save(tag);
+    final Tag added = tagDAO.save(tag);
     return converter.convertToDto(added);
   }
-
-  /**
-   * Update tag method
-   *
-   * @param id id of tag for update
-   * @param tagDTO tag for update
-   * @throws ValidatorException if tag is invalid
-   */
 
   /**
    * Delete tag by id method
@@ -157,19 +157,24 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public void delete(BigInteger id) {
-    if (tagRepository.findById(id).isEmpty()) {
+    if (tagDAO.findById(id).isEmpty()) {
       throw new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class);
     }
     if (isTagUsed(id)) {
       throw new EntityUsedException(
           "Can not delete tag with id : " + id + ". Tag is used in certificates", Tag.class);
     }
-    System.out.println("After is tag used");
-    tagRepository.deleteById(id);
+    tagDAO.deleteById(id);
   }
 
+  /**
+   * Is tag used boolean.
+   *
+   * @param tagId the tag id
+   * @return true if tag is used in certificates, otherwise false
+   */
   @Override
   public boolean isTagUsed(BigInteger tagId) {
-    return tagRepository.isTagUsed(tagId);
+    return tagDAO.isTagUsed(tagId);
   }
 }

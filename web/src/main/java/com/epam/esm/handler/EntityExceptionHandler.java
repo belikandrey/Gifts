@@ -19,14 +19,29 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
+/** The type Entity exception handler. */
 @ControllerAdvice
 public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+  /** The constant TAG_CODE. */
   private static final String TAG_CODE = "01";
+
+  /** The constant CERTIFICATE_CODE. */
   private static final String CERTIFICATE_CODE = "00";
+
+  /** The constant ORDER_CODE. */
   private static final String ORDER_CODE = "10";
+
+  /** The constant USER_CODE. */
   private static final String USER_CODE = "11";
 
+  /**
+   * Handle validation exception response entity.
+   *
+   * @param exception the exception
+   * @param request the request
+   * @return the response entity
+   */
   @ExceptionHandler(value = ValidatorException.class)
   protected ResponseEntity<?> handleValidationException(
       ValidatorException exception, WebRequest request) {
@@ -44,6 +59,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         exception, errorResponseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
+  /**
+   * Handle not found exception response entity.
+   *
+   * @param exception the exception
+   * @param request the request
+   * @return the response entity
+   */
   @ExceptionHandler(value = EntityNotFoundException.class)
   protected ResponseEntity<?> handleNotFoundException(
       EntityNotFoundException exception, WebRequest request) {
@@ -53,6 +75,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         exception, responseBody, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
   }
 
+  /**
+   * Handle entity used exception response entity.
+   *
+   * @param exception the exception
+   * @param request the request
+   * @return the response entity
+   */
   @ExceptionHandler(value = EntityUsedException.class)
   protected ResponseEntity<?> handleEntityUsedException(
       EntityUsedException exception, WebRequest request) {
@@ -62,6 +91,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         exception, responseBody, new HttpHeaders(), HttpStatus.CONFLICT, request);
   }
 
+  /**
+   * Handle already exists response entity.
+   *
+   * @param exception the exception
+   * @param request the request
+   * @return the response entity
+   */
   @ExceptionHandler(value = EntityAlreadyExistException.class)
   protected ResponseEntity<?> handleAlreadyExists(
       EntityAlreadyExistException exception, WebRequest request) {
@@ -71,6 +107,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         exception, responseBody, new HttpHeaders(), HttpStatus.CONFLICT, request);
   }
 
+  /**
+   * Handle entity disabled response entity.
+   *
+   * @param exception the exception
+   * @param request the request
+   * @return the response entity
+   */
   @ExceptionHandler(value = EntityDisabledException.class)
   protected ResponseEntity<?> handleEntityDisabled(
       EntityDisabledException exception, WebRequest request) {
@@ -80,6 +123,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         exception, responseBody, new HttpHeaders(), HttpStatus.CONFLICT, request);
   }
 
+  /**
+   * Handle bad id response entity.
+   *
+   * @param exception the exception
+   * @param request the request
+   * @return the response entity
+   */
   @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
   protected ResponseEntity<?> handleBadId(
       MethodArgumentTypeMismatchException exception, WebRequest request) {
@@ -88,6 +138,14 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         exception, message, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
+  /**
+   * Gets response body.
+   *
+   * @param exception the exception
+   * @param entityClass the entity class
+   * @param code the code
+   * @return the response body
+   */
   private ErrorResponseBody getResponseBody(Exception exception, Class<?> entityClass, int code) {
     String errorCode =
         entityClass.equals(Tag.class)

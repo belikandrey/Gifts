@@ -22,14 +22,26 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigInteger;
 import java.util.List;
 
+/** The type User controller. */
 @RestController
 @RequestMapping("/users")
 public class UserController {
+  /** The User service. */
   private UserService userService;
+
+  /** The Order service. */
   private OrderService orderService;
 
+  /** The Hateoas resolver. */
   private HateoasResolver hateoasResolver;
 
+  /**
+   * Instantiates a new User controller.
+   *
+   * @param userService the user service
+   * @param orderService the order service
+   * @param hateoasResolver the hateoas resolver
+   */
   @Autowired
   public UserController(
       UserService userService, OrderService orderService, HateoasResolver hateoasResolver) {
@@ -38,6 +50,13 @@ public class UserController {
     this.hateoasResolver = hateoasResolver;
   }
 
+  /**
+   * Find all collection model.
+   *
+   * @param page the page
+   * @param size the size
+   * @return the collection model
+   */
   @GetMapping()
   public CollectionModel<UserDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
@@ -48,6 +67,12 @@ public class UserController {
     return hateoasResolver.getModelForUsers(users);
   }
 
+  /**
+   * Find user by id response entity.
+   *
+   * @param userId the user id
+   * @return the response entity
+   */
   @GetMapping("/{id}")
   public ResponseEntity<?> findUserById(@PathVariable("id") BigInteger userId) {
     final UserDTO user = userService.findById(userId);
@@ -55,6 +80,14 @@ public class UserController {
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
+  /**
+   * Find all user orders response entity.
+   *
+   * @param id the id
+   * @param page the page
+   * @param size the size
+   * @return the response entity
+   */
   @GetMapping("/{id}/orders")
   public ResponseEntity<?> findAllUserOrders(
       @PathVariable("id") BigInteger id,
@@ -66,6 +99,13 @@ public class UserController {
     return new ResponseEntity<>(orders, HttpStatus.OK);
   }
 
+  /**
+   * Create order response entity.
+   *
+   * @param id the id
+   * @param certificates the certificates
+   * @return the response entity
+   */
   @PostMapping("/{id}/orders")
   public ResponseEntity<?> createOrder(
       @PathVariable BigInteger id, @RequestBody List<CertificateDTO> certificates) {
@@ -74,6 +114,13 @@ public class UserController {
     return new ResponseEntity<>(order, HttpStatus.OK);
   }
 
+  /**
+   * Find user order by id response entity.
+   *
+   * @param userId the user id
+   * @param orderId the order id
+   * @return the response entity
+   */
   // TODO
   @GetMapping("/{user_id}/orders/{order_id}")
   public ResponseEntity<?> findUserOrderById(

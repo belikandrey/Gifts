@@ -24,7 +24,8 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
    * @param description description of certificate
    * @param sortName sort by name type(asc, desc)
    * @param sortDate sort by date type(asc, desc)
-   * @param paginationSetting
+   * @param paginationSetting the pagination setting
+   * @param state the state
    * @return {@link Collection} of {@link CertificateDTO}
    */
   Collection<CertificateDTO> findAll(
@@ -36,11 +37,35 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
       PaginationSetting paginationSetting,
       String state);
 
+  /**
+   * Update.
+   *
+   * @param id the id
+   * @param t the t
+   * @param isFullUpdate the is full update
+   * @throws ValidatorException the validator exception
+   */
   void update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
 
+  /**
+   * Count long.
+   *
+   * @return the long
+   */
   Long count();
 
+  /**
+   * Add certificate dto.
+   *
+   * @param certificateDTO the certificate dto
+   * @return the certificate dto
+   */
   CertificateDTO add(CertificateDTO certificateDTO);
 
+  /**
+   * Delete.
+   *
+   * @param id the id
+   */
   void delete(BigInteger id);
 }

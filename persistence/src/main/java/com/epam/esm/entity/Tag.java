@@ -11,6 +11,8 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 /**
+ * The type Tag.
+ *
  * @author Andrey Belik
  * @version 1.0
  * @see
@@ -19,11 +21,13 @@ import java.util.Objects;
 @Table(name = "tag")
 public class Tag implements Serializable {
 
+  /** The Id. */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private BigInteger id;
 
+  /** The Name. */
   @Column(name = "name")
   private String name;
 
@@ -50,10 +54,20 @@ public class Tag implements Serializable {
     this.name = name;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public BigInteger getId() {
     return id;
   }
 
+  /**
+   * Sets id.
+   *
+   * @param id the id
+   */
   public void setId(BigInteger id) {
     this.id = id;
   }
@@ -76,6 +90,12 @@ public class Tag implements Serializable {
     this.name = name;
   }
 
+  /**
+   * Equals boolean.
+   *
+   * @param o the o
+   * @return the boolean
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -84,11 +104,21 @@ public class Tag implements Serializable {
     return Objects.equals(name, tag.name);
   }
 
+  /**
+   * Hash code int.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     return Objects.hash(name);
   }
 
+  /**
+   * To string string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "Tag{" + "name='" + name + '\'' + '}';

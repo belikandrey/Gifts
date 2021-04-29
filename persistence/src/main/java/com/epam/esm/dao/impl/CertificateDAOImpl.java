@@ -10,13 +10,33 @@ import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
 import java.util.Collection;
 
+/**
+ * Class that interacts with the database
+ *
+ * @version 1.0
+ * @author Andrey Belik
+ * @see com.epam.esm.dao.AbstractGiftDAO
+ * @see com.epam.esm.dao.CertificateDAO
+ */
 @Repository
 public class CertificateDAOImpl extends AbstractGiftDAO<Certificate> implements CertificateDAO {
 
+  /**
+   * Setter for Class field
+   *
+   * @see Class
+   */
   public CertificateDAOImpl() {
     setClazz(Certificate.class);
   }
 
+  /**
+   * Find by criteria collection.
+   *
+   * @param criteria the {@link SearchCriteria}
+   * @param paginationSetting the pagination setting {@link PaginationSetting}
+   * @return collection
+   */
   @Override
   public Collection<Certificate> findByCriteria(
       SearchCriteria criteria, PaginationSetting paginationSetting) {
@@ -27,20 +47,37 @@ public class CertificateDAOImpl extends AbstractGiftDAO<Certificate> implements 
         .getResultList();
   }
 
+  /**
+   * Save certificate.
+   *
+   * @param entity the {@link Certificate}
+   * @return the {@link Certificate}
+   */
   @Override
   public Certificate save(Certificate entity) {
     getEntityManager().persist(entity);
     return entity;
   }
 
+  /**
+   * Update certificate.
+   *
+   * @param entity the {@link Certificate}
+   * @return the {@link Certificate}
+   */
   @Override
   public Certificate update(Certificate entity) {
     return getEntityManager().merge(entity);
   }
 
+  /**
+   * Delete by id.
+   *
+   * @param id the id {@link BigInteger}
+   */
   @Override
   public void deleteById(BigInteger id) {
-    final Certificate certificate = findById(id).get();
+    final Certificate certificate = findById(id).orElseThrow();
     certificate.setEnabled(false);
     update(certificate);
   }

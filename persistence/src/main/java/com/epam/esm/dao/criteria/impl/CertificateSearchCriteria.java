@@ -23,7 +23,7 @@ public class CertificateSearchCriteria implements SearchCriteria {
   private CertificateSearchQueryBuilder builder;
 
   /** Params for find by */
-  private Map<String, Object> params;
+  private final Map<String, Object> params;
 
   /**
    * Constructor

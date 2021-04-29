@@ -11,16 +11,34 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Converter of order
+ *
+ * @author Andrey Belik
+ * @version 1.0
+ */
 @Component
 public class OrderConverter implements Converter<Order, OrderDTO> {
 
+  /** The Certificate converter. */
   private Converter<Certificate, CertificateDTO> certificateConverter;
 
+  /**
+   * Instantiates a new Order converter.
+   *
+   * @param certificateConverter the certificate converter
+   */
   @Autowired
   public OrderConverter(Converter<Certificate, CertificateDTO> certificateConverter) {
     this.certificateConverter = certificateConverter;
   }
 
+  /**
+   * Convert to entity order.
+   *
+   * @param dto the dto
+   * @return the order
+   */
   @Override
   public Order convertToEntity(OrderDTO dto) {
     final List<Certificate> certificates =
@@ -30,6 +48,12 @@ public class OrderConverter implements Converter<Order, OrderDTO> {
     return new Order(dto.getId(), dto.getPrice(), dto.getCreateDate(), certificates);
   }
 
+  /**
+   * Convert to dto order dto.
+   *
+   * @param entity the entity
+   * @return the order dto
+   */
   @Override
   public OrderDTO convertToDto(Order entity) {
     final List<CertificateDTO> certificateDTOS =

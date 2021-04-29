@@ -6,15 +6,23 @@ import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class that interacts with the database
+ *
+ * @version 1.0
+ * @author Andrey Belik
+ * @see com.epam.esm.dao.AbstractGiftDAO
+ * @see com.epam.esm.dao.TagDAO
+ */
 @Repository
 public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
 
-  private static final String FIND_BY_CERTIFICATE_ID =
-      "select t from Tag t join t.certificate c where c.id = :cert_id";
+  /** The constant FIND_BY_NAME. */
   private static final String FIND_BY_NAME = "from Tag where name =:tag_name";
+
+  /** The constant FIND_MOST_POPULAR_TAG. */
   private static final String FIND_MOST_POPULAR_TAG =
       "select tag.id, tag.name "
           + "from tag "
@@ -30,33 +38,45 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
           + "limit 1) "
           + "group by (tag.id)"
           + "order by count(tag_id) desc limit 1";
+
+  /** The constant FIND_COUNT_OF_TAG_USAGES. */
   private static final String FIND_COUNT_OF_TAG_USAGES =
       "select count(certificate_id) from certificate_tag where tag_id=:tag_id group by (tag_id)";
 
+  /** Instantiates a new Tag dao. */
   public TagDAOImpl() {
     setClazz(Tag.class);
   }
 
+  /**
+   * Save tag.
+   *
+   * @param entity the {@link Tag}
+   * @return the {@link Tag}
+   */
   @Override
   public Tag save(Tag entity) {
     getEntityManager().persist(entity);
     return entity;
   }
 
+  /**
+   * Delete by id.
+   *
+   * @param id the id {@link BigInteger}
+   */
   @Override
   public void deleteById(BigInteger id) {
     final Tag entity = getEntityManager().find(Tag.class, id);
     getEntityManager().remove(entity);
   }
 
-  @Override
-  public List<Tag> findTagsByCertificateId(BigInteger certificateId) {
-    return getEntityManager()
-        .createQuery(FIND_BY_CERTIFICATE_ID)
-        .setParameter("cert_id", certificateId)
-        .getResultList();
-  }
-
+  /**
+   * Find tag by name optional.
+   *
+   * @param name the name
+   * @return the {@link Optional} of {@link Tag}
+   */
   @Override
   public Optional<Tag> findTagByName(String name) {
     return getEntityManager()
@@ -66,6 +86,11 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
         .findAny();
   }
 
+  /**
+   * Find most popular tag optional.
+   *
+   * @return the {@link Optional} of {@link Tag}
+   */
   @Override
   public Optional<Tag> findMostPopularTag() {
     return getEntityManager()
@@ -74,6 +99,12 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
         .findAny();
   }
 
+  /**
+   * Is tag used boolean.
+   *
+   * @param tagId the tag id
+   * @return true if tag is used in certificates, otherwise false
+   */
   @Override
   public boolean isTagUsed(BigInteger tagId) {
     final Optional<Object> countOfTags =

@@ -16,24 +16,32 @@ import java.util.Set;
 @Relation(collectionRelation = "certificates")
 public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 
+  /** The Id. */
   private BigInteger id;
 
+  /** The Name. */
   private String name;
 
+  /** The Description. */
   private String description;
 
+  /** The Price. */
   private BigDecimal price;
 
+  /** The Duration. */
   private Integer duration;
 
+  /** The Creation date. */
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime creationDate;
 
+  /** The Last update date. */
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime lastUpdateDate;
 
+  /** The Tags. */
   private Set<TagDTO> tags = new HashSet<>();
 
   /** Default constructor */
@@ -211,6 +219,12 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
     this.lastUpdateDate = lastUpdateDate;
   }
 
+  /**
+   * Equals boolean.
+   *
+   * @param o the o
+   * @return the boolean
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -225,11 +239,21 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
         && Objects.equals(lastUpdateDate, that.lastUpdateDate);
   }
 
+  /**
+   * Hash code int.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     return Objects.hash(id, name, description, price, duration, creationDate, lastUpdateDate);
   }
 
+  /**
+   * To string string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "CertificateDTO{"

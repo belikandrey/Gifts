@@ -18,6 +18,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
+ * The type Certificate.
+ *
  * @author Andrey Belik
  * @version 1.0
  * @see
@@ -26,32 +28,41 @@ import java.util.Set;
 @Table(name = "certificate")
 public class Certificate implements Serializable {
 
+  /** The Id. */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private BigInteger id;
 
+  /** The Name. */
   @Column(name = "name")
   private String name;
 
+  /** The Description. */
   @Column(name = "description")
   private String description;
 
+  /** The Price. */
   @Column(name = "price")
   private BigDecimal price;
 
+  /** The Duration. */
   @Column(name = "duration")
   private Integer duration;
 
+  /** The Create date. */
   @Column(name = "createDate")
   private LocalDateTime createDate;
 
+  /** The Last update date. */
   @Column(name = "lastUpdateDate")
   private LocalDateTime lastUpdateDate;
 
+  /** The Is enabled. */
   @Column(name = "is_enabled")
   private Boolean isEnabled;
 
+  /** The Tags. */
   @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   @JoinTable(
       name = "certificate_tag",
@@ -108,10 +119,20 @@ public class Certificate implements Serializable {
     return name;
   }
 
+  /**
+   * Gets id.
+   *
+   * @return the id
+   */
   public BigInteger getId() {
     return id;
   }
 
+  /**
+   * Sets id.
+   *
+   * @param id the id
+   */
   public void setId(BigInteger id) {
     this.id = id;
   }
@@ -125,18 +146,38 @@ public class Certificate implements Serializable {
     this.name = name;
   }
 
+  /**
+   * Gets tags.
+   *
+   * @return the tags
+   */
   public Set<Tag> getTags() {
     return tags;
   }
 
+  /**
+   * Sets tags.
+   *
+   * @param tags the tags
+   */
   public void setTags(Set<Tag> tags) {
     this.tags = tags;
   }
 
+  /**
+   * Gets enabled.
+   *
+   * @return the enabled
+   */
   public Boolean getEnabled() {
     return isEnabled;
   }
 
+  /**
+   * Sets enabled.
+   *
+   * @param enabled the enabled
+   */
   public void setEnabled(Boolean enabled) {
     isEnabled = enabled;
   }
@@ -231,6 +272,12 @@ public class Certificate implements Serializable {
     this.lastUpdateDate = lastUpdateDate;
   }
 
+  /**
+   * Equals boolean.
+   *
+   * @param o the o
+   * @return the boolean
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -244,11 +291,21 @@ public class Certificate implements Serializable {
         && Objects.equals(lastUpdateDate, that.lastUpdateDate);
   }
 
+  /**
+   * Hash code int.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     return Objects.hash(name, description, price, duration, createDate, lastUpdateDate);
   }
 
+  /**
+   * To string string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "GiftCertificate{"
