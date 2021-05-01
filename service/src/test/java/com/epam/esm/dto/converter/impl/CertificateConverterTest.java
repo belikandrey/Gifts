@@ -1,60 +1,93 @@
 package com.epam.esm.dto.converter.impl;
 
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
-import org.junit.jupiter.api.BeforeAll;
+import com.epam.esm.entity.Tag;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 class CertificateConverterTest {
-/*
-  private static CertificateConverter converter;
-  private static final BigInteger ID = BigInteger.ONE;
-  private static final String NAME = "Apple.com";
-  private static final String DESCRIPTION = "Certificate for Iphone X";
-  private static final BigDecimal PRICE = BigDecimal.TEN;
-  private static final int DURATION = 42;
-  private static final LocalDateTime CREATE_DATE = LocalDateTime.now();
-  private static final LocalDateTime LAST_UPDATE_DATE = LocalDateTime.now();
+  @Mock Converter<Tag, TagDTO> tagConverter;
+  @InjectMocks CertificateConverter certificateConverter;
 
-  @BeforeAll
-  public static void init() {
-    converter = new CertificateConverter();
+  private static final TagDTO TAG_DTO = new TagDTO(BigInteger.ONE, "tagName");
+  private static final CertificateDTO CERTIFICATE_DTO =
+      new CertificateDTO(
+          BigInteger.ONE,
+          "name",
+          "description",
+          new BigDecimal(0),
+              0,
+          LocalDateTime.of(2021, Month.APRIL, 30, 19, 0, 37),
+          LocalDateTime.of(2021, Month.APRIL, 30, 19, 0, 37),
+          Set.of(TAG_DTO));
+  private static final Tag TAG = new Tag(BigInteger.ONE, "tagName");
+    private static final Certificate CERTIFICATE =
+            new Certificate(
+                    BigInteger.ONE,
+                    "name",
+                    "description",
+                    new BigDecimal(0),
+                    0,
+                    LocalDateTime.of(2021, Month.APRIL, 30, 19, 0, 37),
+                    LocalDateTime.of(2021, Month.APRIL, 30, 19, 0, 37),
+                    true,
+                    Set.of(TAG));
+
+
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test
-  public void convertToDtoTest() {
-    Certificate certificate =
-        new Certificate(ID, NAME, DESCRIPTION, PRICE, DURATION, CREATE_DATE, LAST_UPDATE_DATE);
-    final CertificateDTO certificateDTO = converter.convert(certificate);
-    assertNotNull(certificateDTO);
-    assertEquals(certificate.getId(), certificateDTO.getId());
-    assertEquals(certificate.getName(), certificateDTO.getName());
-    assertEquals(certificate.getDescription(), certificateDTO.getDescription());
-    assertEquals(certificate.getPrice(), certificateDTO.getPrice());
-    assertEquals(certificate.getDuration(), certificateDTO.getDuration());
-    assertEquals(certificate.getCreateDate(), certificateDTO.getCreationDate());
-    assertEquals(certificate.getLastUpdateDate(), certificateDTO.getLastUpdateDate());
+  void testConvertToEntity() {
+    when(tagConverter.convertToEntity(TAG_DTO)).thenReturn(TAG);
+    Certificate result = certificateConverter.convertToEntity(CERTIFICATE_DTO);
+    assertNotNull(result);
+    assertEquals(1, result.getTags().size());
+    assertEquals(CERTIFICATE_DTO.getId(), result.getId());
+    assertEquals(CERTIFICATE_DTO.getName(), result.getName());
+    assertEquals(CERTIFICATE_DTO.getDescription(), result.getDescription());
+    assertEquals(CERTIFICATE_DTO.getPrice(), result.getPrice());
+    assertEquals(CERTIFICATE_DTO.getDuration(), result.getDuration());
+    assertEquals(CERTIFICATE_DTO.getCreationDate(), result.getCreateDate());
+    assertEquals(CERTIFICATE_DTO.getLastUpdateDate(), result.getLastUpdateDate());
   }
 
   @Test
-  public void convertToEntityTest() {
-    CertificateDTO certificateDTO =
-        new CertificateDTO(ID, NAME, DESCRIPTION, PRICE, DURATION, CREATE_DATE, LAST_UPDATE_DATE);
-    final Certificate certificate = converter.convert(certificateDTO);
-    assertNotNull(certificateDTO);
-    assertEquals(certificate.getId(), certificateDTO.getId());
-    assertEquals(certificate.getName(), certificateDTO.getName());
-    assertEquals(certificate.getDescription(), certificateDTO.getDescription());
-    assertEquals(certificate.getPrice(), certificateDTO.getPrice());
-    assertEquals(certificate.getDuration(), certificateDTO.getDuration());
-    assertEquals(certificate.getCreateDate(), certificateDTO.getCreationDate());
-    assertEquals(certificate.getLastUpdateDate(), certificateDTO.getLastUpdateDate());
-  }*/
+  void testConvertToDto() {
+    when(tagConverter.convertToDto(TAG)).thenReturn(TAG_DTO);
+    CertificateDTO result = certificateConverter.convertToDto(CERTIFICATE);
+    assertNotNull(result);
+    assertEquals(1, result.getTags().size());
+    assertEquals(CERTIFICATE.getId(), result.getId());
+    assertEquals(CERTIFICATE.getName(), result.getName());
+    assertEquals(CERTIFICATE.getDuration(), result.getDuration());
+    assertEquals(CERTIFICATE.getDescription(), result.getDescription());
+    assertEquals(CERTIFICATE.getPrice(), result.getPrice());
+    assertEquals(CERTIFICATE.getCreateDate(), result.getCreationDate());
+    assertEquals(CERTIFICATE.getLastUpdateDate(), result.getLastUpdateDate());
+  }
 }
+
+// Generated with love by TestMe :) Please report issues and submit feature requests at:
+// http://weirddev.com/forum#!/testme

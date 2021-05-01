@@ -76,6 +76,37 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
   }
 
   /**
+   * Instantiates a new Certificate dto.
+   *
+   * @param id the id
+   * @param name the name
+   * @param description the description
+   * @param price the price
+   * @param duration the duration
+   * @param creationDate the creation date
+   * @param lastUpdateDate the last update date
+   * @param tags the tags
+   */
+  public CertificateDTO(
+      BigInteger id,
+      String name,
+      String description,
+      BigDecimal price,
+      Integer duration,
+      LocalDateTime creationDate,
+      LocalDateTime lastUpdateDate,
+      Set<TagDTO> tags) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.duration = duration;
+    this.creationDate = creationDate;
+    this.lastUpdateDate = lastUpdateDate;
+    this.tags = tags;
+  }
+
+  /**
    * Tags DTO setter
    *
    * @param tags {@link java.util.Set} of {@link TagDTO}

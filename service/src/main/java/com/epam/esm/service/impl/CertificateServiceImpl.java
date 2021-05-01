@@ -258,11 +258,8 @@ public class CertificateServiceImpl implements CertificateService {
     }
     final Set<TagDTO> tagsForSetIntoCertificate =
         getTagsForSetIntoCertificate(giftCertificate.getTags());
-    //    certificateForUpdate.setTags(
-    //        giftCertificate.getTags().stream()
-    //            .map(tagConverter::convertToEntity)
-    //            .collect(Collectors.toSet()));
     validator.validate(certificateForUpdate);
+    System.out.println(certificateForUpdate);
     certificateForUpdate.setTags(
         tagsForSetIntoCertificate.stream()
             .map(tagConverter::convertToEntity)

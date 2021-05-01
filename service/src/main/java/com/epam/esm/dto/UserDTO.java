@@ -33,6 +33,19 @@ public class UserDTO extends RepresentationModel<UserDTO> {
   }
 
   /**
+   * Instantiates a new User dto.
+   *
+   * @param id the id
+   * @param login the login
+   * @param orders the orders
+   */
+  public UserDTO(BigInteger id, String login, List<OrderDTO> orders) {
+    this.id = id;
+    this.login = login;
+    this.orders = orders;
+  }
+
+  /**
    * Gets id.
    *
    * @return the id

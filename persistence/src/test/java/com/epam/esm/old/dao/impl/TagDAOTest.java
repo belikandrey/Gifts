@@ -1,4 +1,4 @@
-package com.epam.esm.dao.impl;
+package com.epam.esm.old.dao.impl;
 
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.AfterAll;

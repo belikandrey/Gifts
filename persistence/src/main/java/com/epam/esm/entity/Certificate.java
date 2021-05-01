@@ -111,6 +111,40 @@ public class Certificate implements Serializable {
   }
 
   /**
+   * Instantiates a new Certificate.
+   *
+   * @param id the id
+   * @param name the name
+   * @param description the description
+   * @param price the price
+   * @param duration the duration
+   * @param createDate the create date
+   * @param lastUpdateDate the last update date
+   * @param isEnabled the is enabled
+   * @param tags the tags
+   */
+  public Certificate(
+      BigInteger id,
+      String name,
+      String description,
+      BigDecimal price,
+      Integer duration,
+      LocalDateTime createDate,
+      LocalDateTime lastUpdateDate,
+      Boolean isEnabled,
+      Set<Tag> tags) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.duration = duration;
+    this.createDate = createDate;
+    this.lastUpdateDate = lastUpdateDate;
+    this.isEnabled = isEnabled;
+    this.tags = tags;
+  }
+
+  /**
    * Name getter
    *
    * @return name of the certificate

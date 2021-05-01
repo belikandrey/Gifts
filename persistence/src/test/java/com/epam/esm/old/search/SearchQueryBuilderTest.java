@@ -1,5 +1,6 @@
-package com.epam.esm.search;
+package com.epam.esm.old.search;
 
+import com.epam.esm.search.CertificateSearchQueryBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

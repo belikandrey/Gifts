@@ -25,7 +25,12 @@ public class CertificateConverter implements Converter<Certificate, CertificateD
    * @param dto {@link CertificateDTO} to convert
    * @return {@link Certificate} after convert
    */
-  @Autowired private Converter<Tag, TagDTO> tagConverter;
+  private Converter<Tag, TagDTO> tagConverter;
+
+  @Autowired
+  public CertificateConverter(Converter<Tag, TagDTO> tagConverter) {
+    this.tagConverter = tagConverter;
+  }
 
   /**
    * Convert to entity certificate.
