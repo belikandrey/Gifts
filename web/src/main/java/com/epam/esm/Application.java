@@ -3,15 +3,15 @@ package com.epam.esm;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/** The type Spring boot intro application. */
+/** The type Spring boot application. */
 @SpringBootApplication
-public class SpringBootIntroApplication {
+public class Application {
   /**
    * The entry point of application.
    *
    * @param args the input arguments
    */
   public static void main(String[] args) {
-    SpringApplication.run(SpringBootIntroApplication.class, args);
+    SpringApplication.run(Application.class, args);
   }
 }

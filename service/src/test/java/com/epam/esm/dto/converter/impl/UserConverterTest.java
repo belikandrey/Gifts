@@ -62,5 +62,3 @@ class UserConverterTest {
         assertEquals(result.getLogin(), USER.getLogin());
     }
 }
-
-//Generated with love by TestMe :) Please report issues and submit feature requests at: http://weirddev.com/forum#!/testme

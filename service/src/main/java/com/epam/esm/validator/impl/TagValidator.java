@@ -5,6 +5,9 @@ import com.epam.esm.exception.ValidatorException;
 import com.epam.esm.validator.Validator;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** The type Tag validator. */
 @Service
 public class TagValidator implements Validator<Tag> {
@@ -24,7 +27,7 @@ public class TagValidator implements Validator<Tag> {
   @Override
   public void validate(Tag tag) throws ValidatorException {
     if (tag == null) {
-      throw new ValidatorException("Tag should be not null", Tag.class);
+      throw new ValidatorException(List.of("Tag should be not null"), Tag.class);
     }
     validateName(tag.getName());
   }
@@ -37,14 +40,17 @@ public class TagValidator implements Validator<Tag> {
    */
   private void validateName(String name) throws ValidatorException {
     if (name == null || name.isEmpty()) {
-      throw new ValidatorException("Tag name should be not empty", Tag.class);
+      throw new ValidatorException(List.of("Tag name should be not empty"), Tag.class);
     }
+    List<String> messages = new ArrayList<>();
     if (name.length() < MIN_NAME_SIZE) {
-      throw new ValidatorException("Tag name should contain at least 3 characters", Tag.class);
+      messages.add("Tag name should contain at least 3 characters");
     }
     if (name.length() > MAX_NAME_SIZE) {
-      throw new ValidatorException(
-          "Tag name should contain not more than 30 characters", Tag.class);
+      messages.add("Tag name should contain not more than 30 characters");
+    }
+    if (!messages.isEmpty()) {
+      throw new ValidatorException(messages, Tag.class);
     }
   }
 }

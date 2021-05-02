@@ -29,9 +29,12 @@ public class HateoasResolver {
    * @param tagDTO the tag dto
    */
   public void addLinksForTag(TagDTO tagDTO) {
-    Link linkForSelf = linkTo(TagController.class).slash(tagDTO.getId()).withSelfRel();
-    Link deleteLink =
-        linkTo(methodOn(TagController.class).delete(tagDTO.getId())).withRel("delete");
+    Link linkForSelf = linkTo(TagController.class)
+            .slash(tagDTO.getId())
+            .withSelfRel();
+    Link deleteLink = linkTo(methodOn(TagController.class)
+                .delete(tagDTO.getId()))
+                .withRel("delete");
     tagDTO.add(linkForSelf, deleteLink);
   }
 
@@ -73,13 +76,14 @@ public class HateoasResolver {
    */
   public void addLinksForCertificate(CertificateDTO certificateDTO) {
     certificateDTO.getTags().forEach(this::addLinksForTag);
-    Link linkForSelf =
-        linkTo(CertificateController.class).slash(certificateDTO.getId()).withSelfRel();
-    Link deleteLink =
-        linkTo(methodOn(CertificateController.class).delete(certificateDTO.getId()))
+    Link linkForSelf = linkTo(CertificateController.class)
+            .slash(certificateDTO.getId())
+            .withSelfRel();
+    Link deleteLink = linkTo(methodOn(CertificateController.class)
+            .delete(certificateDTO.getId()))
             .withRel("delete");
-    Link updateLink =
-        linkTo(methodOn(CertificateController.class).update(certificateDTO.getId(), certificateDTO))
+    Link updateLink = linkTo(methodOn(CertificateController.class)
+            .update(certificateDTO.getId(), certificateDTO))
             .withRel("update");
     certificateDTO.add(linkForSelf, deleteLink, updateLink);
   }
@@ -106,10 +110,11 @@ public class HateoasResolver {
    * @param userDTO the user dto
    */
   public void addLinksForUser(UserDTO userDTO) {
-    Link linkForSelf =
-        linkTo(methodOn(UserController.class).findUserById(userDTO.getId())).withSelfRel();
-    Link linkForOrders =
-        linkTo(methodOn(UserController.class).findAllUserOrders(userDTO.getId(), null, null))
+    Link linkForSelf = linkTo(methodOn(UserController.class)
+            .findUserById(userDTO.getId()))
+            .withSelfRel();
+    Link linkForOrders = linkTo(methodOn(UserController.class)
+            .findAllUserOrders(userDTO.getId(), null, null))
             .withRel("orders");
     userDTO.add(linkForSelf, linkForOrders);
   }
@@ -122,8 +127,8 @@ public class HateoasResolver {
    */
   public void addLinksForOrder(OrderDTO orderDTO, BigInteger userId) {
     orderDTO.getCertificates().forEach(this::addLinksForCertificate);
-    Link linkForSelf =
-        linkTo(methodOn(UserController.class).findUserOrderById(userId, orderDTO.getId()))
+    Link linkForSelf = linkTo(methodOn(UserController.class)
+            .findUserOrderById(userId, orderDTO.getId()))
             .withSelfRel();
     orderDTO.add(linkForSelf);
   }

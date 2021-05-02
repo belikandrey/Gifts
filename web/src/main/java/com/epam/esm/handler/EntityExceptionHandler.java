@@ -1,8 +1,5 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityAlreadyExistException;
 import com.epam.esm.exception.EntityDisabledException;
 import com.epam.esm.exception.EntityNotFoundException;
@@ -35,6 +32,9 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   /** The constant USER_CODE. */
   private static final String USER_CODE = "11";
 
+  /** The constant DEFAULT_CODE. */
+  private static final String DEFAULT_CODE = "22";
+
   /**
    * Handle validation exception response entity.
    *
@@ -45,16 +45,8 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = ValidatorException.class)
   protected ResponseEntity<?> handleValidationException(
       ValidatorException exception, WebRequest request) {
-    ErrorResponseBody errorResponseBody;
-    if (exception.getEntityClass().equals(Tag.class)) {
-      errorResponseBody =
-          new ErrorResponseBody(
-              List.of(exception.getMessage()), HttpStatus.BAD_REQUEST.value() + TAG_CODE);
-    } else {
-      errorResponseBody =
-          new ErrorResponseBody(
-              exception.getMessages(), HttpStatus.BAD_REQUEST.value() + CERTIFICATE_CODE);
-    }
+    String errorCode = getErrorCode(HttpStatus.BAD_REQUEST.value(), exception.getEntityClass());
+    ErrorResponseBody errorResponseBody = new ErrorResponseBody(exception.getMessages(), errorCode);
     return handleExceptionInternal(
         exception, errorResponseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
@@ -147,12 +139,28 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
    * @return the response body
    */
   private ErrorResponseBody getResponseBody(Exception exception, Class<?> entityClass, int code) {
-    String errorCode =
-        entityClass.equals(Tag.class)
-            ? TAG_CODE
-            : entityClass.equals(Certificate.class)
-                ? CERTIFICATE_CODE
-                : entityClass.equals(User.class) ? USER_CODE : ORDER_CODE;
+    String errorCode = getErrorCode(code, entityClass);
     return new ErrorResponseBody(List.of(exception.getMessage()), code + errorCode);
+  }
+
+  private String getErrorCode(int code, Class<?> entityClass) {
+    String errorCode = String.valueOf(code);
+    switch (entityClass.getName()) {
+      case "Tag":
+        errorCode += TAG_CODE;
+        break;
+      case "Certificate":
+        errorCode += CERTIFICATE_CODE;
+        break;
+      case "User":
+        errorCode += USER_CODE;
+        break;
+      case "Order":
+        errorCode += ORDER_CODE;
+        break;
+      default:
+        errorCode += DEFAULT_CODE;
+    }
+    return errorCode;
   }
 }

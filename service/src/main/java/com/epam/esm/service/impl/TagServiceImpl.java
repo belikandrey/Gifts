@@ -79,11 +79,14 @@ public class TagServiceImpl implements TagService {
   @Override
   @Transactional(readOnly = true)
   public TagDTO findByName(String name) {
-    final Optional<Tag> tag = tagDAO.findTagByName(name);
-    if (tag.isEmpty()) {
-      throw new EntityNotFoundException("Tag with name : " + name + " not found", Tag.class);
-    }
-    return converter.convertToDto(tag.get());
+    Tag tag =
+        tagDAO
+            .findTagByName(name)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Tag with name : " + name + " not found", Tag.class));
+    return converter.convertToDto(tag);
   }
 
   /**
@@ -103,11 +106,12 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   public TagDTO findMostPopularTag() {
-    final Optional<Tag> mostPopularTag = tagDAO.findMostPopularTag();
-    if (mostPopularTag.isEmpty()) {
-      throw new EntityNotFoundException("Most popular tag not found", Tag.class);
-    }
-    return converter.convertToDto(mostPopularTag.get());
+    Tag tag =
+        tagDAO
+            .findMostPopularTag()
+            .orElseThrow(
+                () -> new EntityNotFoundException("Most popular tag not found", Tag.class));
+    return converter.convertToDto(tag);
   }
 
   /**
@@ -120,11 +124,12 @@ public class TagServiceImpl implements TagService {
   @Override
   @Transactional(readOnly = true)
   public TagDTO findById(BigInteger id) {
-    final Optional<Tag> tag = tagDAO.findById(id);
-    if (tag.isEmpty()) {
-      throw new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class);
-    }
-    return converter.convertToDto(tag.get());
+    Tag tag =
+        tagDAO
+            .findById(id)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class));
+    return converter.convertToDto(tag);
   }
 
   /**

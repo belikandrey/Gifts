@@ -22,7 +22,6 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /** The type Order service. */
@@ -71,11 +70,15 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional(readOnly = true)
   public OrderDTO findById(BigInteger id) {
-    final Optional<Order> orderOptional = orderDAO.findById(id);
-    if (orderOptional.isEmpty()) {
-      throw new EntityNotFoundException("Order with id : " + id + " not found", Order.class);
-    }
-    return orderConverter.convertToDto(orderOptional.get());
+    final Order order =
+        orderDAO
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Order with id : " + id + " not found", Order.class));
+
+    return orderConverter.convertToDto(order);
   }
 
   /**
@@ -101,11 +104,14 @@ public class OrderServiceImpl implements OrderService {
   public OrderDTO create(BigInteger userId, List<CertificateDTO> certificateDTOS) {
     List<Certificate> certificates = getCertificatesForCreateOrder(certificateDTOS);
     final double sum = certificates.stream().mapToDouble((p) -> p.getPrice().doubleValue()).sum();
-    final Optional<User> user = userDAO.findById(userId);
-    if (user.isEmpty()) {
-      throw new EntityNotFoundException("User with id : " + userId + " not found", User.class);
-    }
-    Order order = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user.get());
+    final User user =
+        userDAO
+            .findById(userId)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "User with id : " + userId + " not found", User.class));
+    Order order = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user);
     order = orderDAO.save(order);
     return orderConverter.convertToDto(order);
   }
@@ -119,12 +125,14 @@ public class OrderServiceImpl implements OrderService {
   private List<Certificate> getCertificatesForCreateOrder(List<CertificateDTO> certificateDTOS) {
     List<Certificate> certificates = new ArrayList<>();
     for (CertificateDTO certificateDTO : certificateDTOS) {
-      Optional<Certificate> certificateOptional = certificateDAO.findById(certificateDTO.getId());
-      if (certificateOptional.isEmpty()) {
-        throw new EntityNotFoundException(
-            "Certificate with id : " + certificateDTO.getId() + " not found", Certificate.class);
-      }
-      final Certificate certificate = certificateOptional.get();
+      Certificate certificate =
+          certificateDAO
+              .findById(certificateDTO.getId())
+              .orElseThrow(
+                  () ->
+                      new EntityNotFoundException(
+                          "Certificate with id : " + certificateDTO.getId() + " not found",
+                          Certificate.class));
       if (!certificate.getEnabled()) {
         throw new EntityDisabledException(
             "Certificate with id : " + certificate.getId() + " is disabled", Certificate.class);
@@ -144,21 +152,22 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional(readOnly = true)
   public OrderDTO findByIdAndUserId(BigInteger orderId, BigInteger userId) {
-    final Optional<User> user = userDAO.findById(userId);
-    if (user.isEmpty()) {
-      throw new EntityNotFoundException("User with id : " + userId + " not found", User.class);
-    }
-    final Optional<OrderDTO> orderOptional =
-        user.get().getOrders().stream()
-            .filter((p) -> p.getId().equals(orderId))
-            .map(orderConverter::convertToDto)
-            .findAny();
-    if (orderOptional.isEmpty()) {
-      throw new EntityNotFoundException(
-          "Order with id : " + orderId + " for user with id : " + userId + " not found",
-          Order.class);
-    }
-    return orderOptional.get();
+    User user =
+        userDAO
+            .findById(userId)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "User with id : " + userId + " not found", User.class));
+    return user.getOrders().stream()
+        .filter((p) -> p.getId().equals(orderId))
+        .map(orderConverter::convertToDto)
+        .findAny()
+        .orElseThrow(
+            () ->
+                new EntityNotFoundException(
+                    "Order with id : " + orderId + " for user with id : " + userId + " not found",
+                    Order.class));
   }
 
   /**

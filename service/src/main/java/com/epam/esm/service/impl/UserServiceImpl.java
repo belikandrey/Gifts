@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /** The type User service. */
@@ -48,11 +47,13 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(readOnly = true)
   public UserDTO findById(BigInteger id) {
-    final Optional<User> userOptional = userDAO.findById(id);
-    if (userOptional.isEmpty()) {
-      throw new EntityNotFoundException("User with id : " + id + " not found", User.class);
-    }
-    return converter.convertToDto(userOptional.get());
+    User user =
+        userDAO
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException("User with id : " + id + " not found", User.class));
+    return converter.convertToDto(user);
   }
 
   /**

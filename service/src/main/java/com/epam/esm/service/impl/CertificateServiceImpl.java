@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -113,7 +112,6 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDAO
             .findByCriteria(new CertificateSearchCriteria(params), paginationSetting)
             .stream()
-            .peek(System.out::println)
             .map(converter::convertToDto)
             .collect(Collectors.toList());
     return certificates;
@@ -157,12 +155,14 @@ public class CertificateServiceImpl implements CertificateService {
   @Override
   @Transactional(readOnly = true)
   public CertificateDTO findById(BigInteger id) {
-    final Optional<Certificate> certificateOptional = certificateDAO.findById(id);
-    if (certificateOptional.isEmpty()) {
-      throw new EntityNotFoundException(
-          "Certificate with id : " + id + " not found", Certificate.class);
-    }
-    return converter.convertToDto(certificateOptional.get());
+    Certificate certificate =
+        certificateDAO
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Certificate with id : " + id + " not found", Certificate.class));
+    return converter.convertToDto(certificate);
   }
 
   /**
@@ -247,12 +247,14 @@ public class CertificateServiceImpl implements CertificateService {
   public void update(BigInteger certificateId, CertificateDTO giftCertificate, boolean isFullUpdate)
       throws ValidatorException {
     final Certificate certificateForUpdate = converter.convertToEntity(giftCertificate);
-    final Optional<Certificate> certificateOptional = certificateDAO.findById(certificateId);
-    if (certificateOptional.isEmpty()) {
-      throw new EntityNotFoundException(
-          "Certificate with id : " + certificateId + " not found", Certificate.class);
-    }
-    Certificate certificate = certificateOptional.get();
+    Certificate certificate =
+        certificateDAO
+            .findById(certificateId)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Certificate with id : " + certificateId + " not found",
+                        Certificate.class));
     if (!isFullUpdate) {
       fillForInsert(certificateForUpdate, certificate);
     }
@@ -315,10 +317,12 @@ public class CertificateServiceImpl implements CertificateService {
    */
   @Override
   public void delete(BigInteger id) {
-    if (certificateDAO.findById(id).isEmpty()) {
-      throw new EntityNotFoundException(
-          "Certificate with id : " + id + " not found", Certificate.class);
-    }
+    certificateDAO
+        .findById(id)
+        .orElseThrow(
+            () ->
+                new EntityNotFoundException(
+                    "Certificate with id : " + id + " not found", Certificate.class));
     certificateDAO.deleteById(id);
   }
 }
