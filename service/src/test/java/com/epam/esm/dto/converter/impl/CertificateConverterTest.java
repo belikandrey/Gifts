@@ -5,7 +5,6 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,10 +17,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 class CertificateConverterTest {
