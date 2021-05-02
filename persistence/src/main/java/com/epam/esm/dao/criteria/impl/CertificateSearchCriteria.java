@@ -73,7 +73,7 @@ public class CertificateSearchCriteria implements SearchCriteria {
         description != null && !description.isEmpty()
             ? builder.setDescription(description)
             : builder;
-    builder = builder.setState(state);
+    builder = state != null ? builder.setState(state) : builder;
     builder =
         sortName != null
                 && !sortName.isEmpty()

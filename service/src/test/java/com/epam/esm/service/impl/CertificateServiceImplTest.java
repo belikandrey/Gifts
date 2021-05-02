@@ -4,12 +4,13 @@ import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.dto.converter.Converter;
+import com.epam.esm.dto.converter.impl.CertificateConverter;
+import com.epam.esm.dto.converter.impl.TagConverter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.service.TagService;
-import com.epam.esm.validator.Validator;
+import com.epam.esm.validator.impl.CertificateValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,36 +31,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 class CertificateServiceImplTest {
-  @Mock Validator<Certificate> validator;
+  @Mock CertificateValidator validator;
   @Mock CertificateDAO certificateDAO;
-  @Mock Converter<Certificate, CertificateDTO> converter;
+  @Mock CertificateConverter converter;
   @Mock TagService tagService;
-  @Mock Converter<Tag, TagDTO> tagConverter;
+  @Mock TagConverter tagConverter;
   @InjectMocks CertificateServiceImpl certificateServiceImpl;
-
-  private Certificate certificate =
-      new Certificate(
-          BigInteger.ONE,
-          "name",
-          "description",
-          new BigDecimal(0),
-          0,
-          LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23),
-          LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23));
-  private CertificateDTO certificateDTO =
-      new CertificateDTO(
-          BigInteger.ONE,
-          "name",
-          "description",
-          new BigDecimal(0),
-          0,
-          LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23),
-          LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23));
 
   @BeforeEach
   void setUp() {
@@ -76,7 +57,7 @@ class CertificateServiceImplTest {
 
   @Test
   void testFindAll() {
-    when(certificateDAO.findByCriteria(any(), any())).thenReturn(List.of(certificate));
+    when(certificateDAO.findByCriteria(any(), any())).thenReturn(List.of(getCertificate()));
 
     Collection<CertificateDTO> result =
         certificateServiceImpl.findAll(
@@ -85,7 +66,7 @@ class CertificateServiceImplTest {
             "description",
             "sortName",
             "sortDate",
-            new PaginationSetting(Integer.valueOf(0), Integer.valueOf(0)),
+            new PaginationSetting(0, 0),
             "state");
     assertNotNull(result);
     assertEquals(1, result.size());
@@ -93,12 +74,13 @@ class CertificateServiceImplTest {
 
   @Test
   void testFindById() {
-    when(certificateDAO.findById(BigInteger.ONE)).thenReturn(Optional.empty());
-    assertThrows(EntityNotFoundException.class, () -> certificateServiceImpl.findById(BigInteger.ONE));
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.empty());
+    assertThrows(
+        EntityNotFoundException.class, () -> certificateServiceImpl.findById(BigInteger.ONE));
 
-    when(certificateDAO.findById(BigInteger.ONE)).thenReturn(Optional.of(certificate));
-    when(converter.convertToDto(certificate)).thenReturn(certificateDTO);
-    when(tagConverter.convertToDto(any())).thenReturn(new TagDTO());
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.of(getCertificate()));
+    when(converter.convertToDto(any(Certificate.class))).thenReturn(getCertificateDTO());
+    when(tagConverter.convertToDto(any(Tag.class))).thenReturn(new TagDTO(BigInteger.ONE, "#cool"));
     CertificateDTO certificateDTO = certificateServiceImpl.findById(BigInteger.ONE);
     assertNotNull(certificateDTO);
     assertEquals(BigInteger.ONE, certificateDTO.getId());
@@ -106,31 +88,58 @@ class CertificateServiceImplTest {
 
   @Test
   void testAdd() {
-    when(certificateDAO.save(certificate)).thenReturn(certificate);
-    when(converter.convertToEntity(certificateDTO)).thenReturn(certificate);
-    when(converter.convertToDto(certificate)).thenReturn(certificateDTO);
-    doNothing().when(validator).validate(certificate);
-
-    CertificateDTO added = assertDoesNotThrow(()->certificateServiceImpl.add(certificateDTO));
+    when(converter.convertToEntity(any(CertificateDTO.class))).thenReturn(getCertificate());
+    when(certificateDAO.save(any(Certificate.class))).thenReturn(getCertificate());
+    when(converter.convertToDto(any(Certificate.class))).thenReturn(getCertificateDTO());
+    doNothing().when(validator).validate(any(Certificate.class));
+    when(tagConverter.convertToEntity(any(TagDTO.class))).thenReturn(new Tag());
+    CertificateDTO added =
+        assertDoesNotThrow(() -> certificateServiceImpl.add(getCertificateDTO()));
     assertNotNull(added);
   }
 
   @Test
   void testUpdate() {
-    when(certificateDAO.findById(BigInteger.ONE)).thenReturn(Optional.empty());
-    when(converter.convertToEntity(certificateDTO)).thenReturn(certificate);
-    assertThrows(EntityNotFoundException.class, ()->certificateServiceImpl.update(BigInteger.ONE, certificateDTO, false));
-    when(certificateDAO.findById(BigInteger.ONE)).thenReturn(Optional.of(certificate));
-    doNothing().when(validator).validate(certificate);
-    when(certificateDAO.update(certificate)).thenReturn(certificate);
-    assertDoesNotThrow(()->certificateServiceImpl.update(BigInteger.ONE, certificateDTO, true));
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.empty());
+    when(converter.convertToEntity(any(CertificateDTO.class))).thenReturn(getCertificate());
+    assertThrows(
+        EntityNotFoundException.class,
+        () -> certificateServiceImpl.update(BigInteger.ONE, getCertificateDTO(), false));
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.of(getCertificate()));
+    doNothing().when(validator).validate(any(Certificate.class));
+    when(certificateDAO.update(any(Certificate.class))).thenReturn(getCertificate());
+    assertDoesNotThrow(
+        () -> certificateServiceImpl.update(BigInteger.ONE, getCertificateDTO(), true));
   }
 
   @Test
   void testDelete() {
-    when(certificateDAO.findById(BigInteger.ONE)).thenReturn(Optional.empty());
-    assertThrows(EntityNotFoundException.class ,()->certificateServiceImpl.delete(BigInteger.ONE));
-    when(certificateDAO.findById(BigInteger.TWO)).thenReturn(Optional.of(certificate));
-    assertDoesNotThrow(()->certificateServiceImpl.delete(BigInteger.TWO));
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.empty());
+    assertThrows(
+        EntityNotFoundException.class, () -> certificateServiceImpl.delete(BigInteger.ONE));
+    when(certificateDAO.findById(any(BigInteger.class))).thenReturn(Optional.of(getCertificate()));
+    assertDoesNotThrow(() -> certificateServiceImpl.delete(BigInteger.TWO));
+  }
+
+  private Certificate getCertificate() {
+    return new Certificate(
+        BigInteger.ONE,
+        "name",
+        "description",
+        new BigDecimal(0),
+        0,
+        LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23),
+        LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23));
+  }
+
+  private CertificateDTO getCertificateDTO() {
+    return new CertificateDTO(
+        BigInteger.ONE,
+        "name",
+        "description",
+        new BigDecimal(0),
+        0,
+        LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23),
+        LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23));
   }
 }
