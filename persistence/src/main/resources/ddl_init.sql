@@ -12,7 +12,7 @@ create table tag
 create table certificate
 (
     id               int         not null primary key auto_increment,
-    name             varchar(50) not null,
+    name             varchar(120) not null,
     description      varchar(150),
     price            double      not null,
     duration         int         not null,

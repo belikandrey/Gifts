@@ -17,7 +17,7 @@ public class CertificateValidator implements Validator<Certificate> {
   private final int MIN_NAME_SIZE = 3;
 
   /** The Max name size. */
-  private final int MAX_NAME_SIZE = 30;
+  private final int MAX_NAME_SIZE = 120;
 
   /** The Max description size. */
   private final int MAX_DESCRIPTION_SIZE = 150;
