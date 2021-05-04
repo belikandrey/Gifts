@@ -135,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
                           Certificate.class));
       if (!certificate.getEnabled()) {
         throw new EntityDisabledException(
-            "Certificate with id : " + certificate.getId() + " is disabled", Certificate.class);
+            "Certificate with id : " + certificate.getId() + " is disabled. Please, enter another certificate", Certificate.class);
       }
       certificates.add(certificate);
     }

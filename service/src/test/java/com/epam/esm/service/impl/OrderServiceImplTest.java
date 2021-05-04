@@ -74,7 +74,7 @@ class OrderServiceImplTest {
           LocalDateTime.of(2021, Month.APRIL, 30, 19, 5, 0),
           List.of(CERTIFICATE_DTO));
 
-  private static final PaginationSetting PAGINATION_SETTING = new PaginationSetting(0, 0);
+  private static final PaginationSetting PAGINATION_SETTING = PaginationSetting.getInstance(0, 0);
   private static final User USER = new User(BigInteger.ONE, "login", List.of(ORDER));
 
   @BeforeEach

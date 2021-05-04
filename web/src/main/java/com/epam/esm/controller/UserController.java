@@ -61,7 +61,7 @@ public class UserController {
   public CollectionModel<UserDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
       @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    PaginationSetting paginationSetting = PaginationSetting.getInstance(size, page);
     final List<UserDTO> users = userService.findAll(paginationSetting);
     users.forEach(hateoasResolver::addLinksForUser);
     return hateoasResolver.getModelForUsers(users);
@@ -93,7 +93,7 @@ public class UserController {
       @PathVariable("id") BigInteger id,
       @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
       @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
-    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    PaginationSetting paginationSetting = PaginationSetting.getInstance(size, page);
     final List<OrderDTO> orders = orderService.findAllByUserId(id, paginationSetting);
     orders.forEach(p -> hateoasResolver.addLinksForOrder(p, id));
     return new ResponseEntity<>(orders, HttpStatus.OK);

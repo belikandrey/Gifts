@@ -38,7 +38,7 @@ class UserServiceImplTest {
 
     private static final User USER = new User(BigInteger.ONE, "login");
     private static final UserDTO USER_DTO = new UserDTO(BigInteger.ONE, "login");
-    private static final PaginationSetting PAGINATION_SETTING = new PaginationSetting(0, 0);
+    private static final PaginationSetting PAGINATION_SETTING = PaginationSetting.getInstance(0, 0);
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);

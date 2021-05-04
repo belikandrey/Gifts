@@ -14,9 +14,22 @@ public class PaginationSetting {
    * @param size the size
    * @param page the page
    */
-  public PaginationSetting(Integer size, Integer page) {
+  private PaginationSetting(Integer size, Integer page) {
     this.size = size;
     this.page = page;
+  }
+
+  /**
+   * Gets instance.
+   *
+   * @param size the size
+   * @param page the page
+   * @return the instance
+   */
+  public static PaginationSetting getInstance(Integer size, Integer page) {
+    size = size <= 0 ? 10 : size;
+    page = page <= 0 ? 1 : page;
+    return new PaginationSetting(size, page);
   }
 
   /**

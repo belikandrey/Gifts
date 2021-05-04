@@ -76,7 +76,7 @@ public class CertificateController {
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size,
       @RequestParam(name = "state", defaultValue = "enabled", required = false) String state) {
-    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    PaginationSetting paginationSetting = PaginationSetting.getInstance(size, page);
     Collection<CertificateDTO> giftCertificates =
         certificateService.findAll(
             tagsName, name, description, sortName, sortDate, paginationSetting, state);

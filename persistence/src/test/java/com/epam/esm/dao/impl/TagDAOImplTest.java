@@ -35,7 +35,7 @@ class TagDAOImplTest {
 
   @Test
   public void findAllTest() {
-    final List<Tag> all = tagDAO.findAll(new PaginationSetting(10, 1));
+    final List<Tag> all = tagDAO.findAll(PaginationSetting.getInstance(10, 1));
     assertNotNull(all);
     assertFalse(all.isEmpty());
     assertEquals(10, all.size());

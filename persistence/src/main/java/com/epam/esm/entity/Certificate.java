@@ -51,11 +51,11 @@ public class Certificate implements Serializable {
   private Integer duration;
 
   /** The Create date. */
-  @Column(name = "createDate")
+  @Column(name = "create_date")
   private LocalDateTime createDate;
 
   /** The Last update date. */
-  @Column(name = "lastUpdateDate")
+  @Column(name = "last_update_date")
   private LocalDateTime lastUpdateDate;
 
   /** The Is enabled. */

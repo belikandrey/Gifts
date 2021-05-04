@@ -66,7 +66,7 @@ class CertificateServiceImplTest {
             "description",
             "sortName",
             "sortDate",
-            new PaginationSetting(0, 0),
+            PaginationSetting.getInstance(0, 0),
             "state");
     assertNotNull(result);
     assertEquals(1, result.size());

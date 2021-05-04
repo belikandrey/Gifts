@@ -49,7 +49,7 @@ class CertificateDAOImplTest {
     params.put("description", "Certificate for one");
     CertificateSearchCriteria certificateSearchCriteria = new CertificateSearchCriteria(params);
     final Collection<Certificate> certificates =
-        certificateDAO.findByCriteria(certificateSearchCriteria, new PaginationSetting(10, 1));
+        certificateDAO.findByCriteria(certificateSearchCriteria, PaginationSetting.getInstance(10, 1));
     assertFalse(certificates.isEmpty());
     assertEquals(1, certificates.size());
     final Optional<Certificate> certificate =

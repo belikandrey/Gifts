@@ -14997,6 +14997,9 @@ insert into certificate_tag (certificate_id, tag_id) values (6283, 147);
 insert into certificate_tag (certificate_id, tag_id) values (8231, 484);
 insert into certificate_tag (certificate_id, tag_id) values (4070, 270);
 insert into certificate_tag (certificate_id, tag_id) values (2264, 820);
+
+
+
 insert into certificate_tag (certificate_id, tag_id) values (6648, 252);
 insert into certificate_tag (certificate_id, tag_id) values (2972, 68);
 insert into certificate_tag (certificate_id, tag_id) values (4454, 884);
@@ -15109,6 +15112,8 @@ insert into certificate_tag (certificate_id, tag_id) values (2927, 986);
 insert into certificate_tag (certificate_id, tag_id) values (6931, 565);
 insert into certificate_tag (certificate_id, tag_id) values (8498, 848);
 insert into certificate_tag (certificate_id, tag_id) values (392, 526);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (9183, 458);
 insert into certificate_tag (certificate_id, tag_id) values (9985, 621);
 insert into certificate_tag (certificate_id, tag_id) values (3454, 753);
@@ -15320,6 +15325,8 @@ insert into certificate_tag (certificate_id, tag_id) values (323, 480);
 insert into certificate_tag (certificate_id, tag_id) values (8035, 953);
 insert into certificate_tag (certificate_id, tag_id) values (3767, 684);
 insert into certificate_tag (certificate_id, tag_id) values (8071, 834);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (4641, 979);
 insert into certificate_tag (certificate_id, tag_id) values (1712, 443);
 insert into certificate_tag (certificate_id, tag_id) values (5712, 378);
@@ -15490,6 +15497,9 @@ insert into certificate_tag (certificate_id, tag_id) values (1030, 385);
 insert into certificate_tag (certificate_id, tag_id) values (6698, 128);
 insert into certificate_tag (certificate_id, tag_id) values (3244, 572);
 insert into certificate_tag (certificate_id, tag_id) values (9480, 966);
+
+
+
 insert into certificate_tag (certificate_id, tag_id) values (2092, 492);
 insert into certificate_tag (certificate_id, tag_id) values (5685, 948);
 insert into certificate_tag (certificate_id, tag_id) values (5259, 403);
@@ -15759,6 +15769,8 @@ insert into certificate_tag (certificate_id, tag_id) values (5014, 727);
 insert into certificate_tag (certificate_id, tag_id) values (1281, 84);
 insert into certificate_tag (certificate_id, tag_id) values (7649, 382);
 insert into certificate_tag (certificate_id, tag_id) values (3944, 16);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (2990, 530);
 insert into certificate_tag (certificate_id, tag_id) values (5637, 523);
 insert into certificate_tag (certificate_id, tag_id) values (6761, 481);
@@ -15985,6 +15997,8 @@ insert into certificate_tag (certificate_id, tag_id) values (1407, 174);
 insert into certificate_tag (certificate_id, tag_id) values (962, 78);
 insert into certificate_tag (certificate_id, tag_id) values (1552, 362);
 insert into certificate_tag (certificate_id, tag_id) values (3259, 811);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (78, 226);
 insert into certificate_tag (certificate_id, tag_id) values (4429, 30);
 insert into certificate_tag (certificate_id, tag_id) values (715, 966);
@@ -16103,7 +16117,7 @@ insert into certificate_tag (certificate_id, tag_id) values (6089, 722);
 insert into certificate_tag (certificate_id, tag_id) values (489, 187);
 insert into certificate_tag (certificate_id, tag_id) values (555, 845);
 insert into certificate_tag (certificate_id, tag_id) values (8787, 890);
-insert into certificate_tag (certificate_id, tag_id) values (9296, 631);
+insert into certificate_tag (certificate_id, tag_id) values (9296, 633);
 insert into certificate_tag (certificate_id, tag_id) values (8351, 654);
 insert into certificate_tag (certificate_id, tag_id) values (281, 727);
 insert into certificate_tag (certificate_id, tag_id) values (788, 673);
@@ -16203,6 +16217,8 @@ insert into certificate_tag (certificate_id, tag_id) values (8045, 107);
 insert into certificate_tag (certificate_id, tag_id) values (2977, 359);
 insert into certificate_tag (certificate_id, tag_id) values (9668, 371);
 insert into certificate_tag (certificate_id, tag_id) values (6900, 119);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (712, 785);
 insert into certificate_tag (certificate_id, tag_id) values (4893, 490);
 insert into certificate_tag (certificate_id, tag_id) values (1546, 920);
@@ -16368,6 +16384,8 @@ insert into certificate_tag (certificate_id, tag_id) values (4611, 395);
 insert into certificate_tag (certificate_id, tag_id) values (2812, 78);
 insert into certificate_tag (certificate_id, tag_id) values (2965, 459);
 insert into certificate_tag (certificate_id, tag_id) values (880, 623);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (592, 19);
 insert into certificate_tag (certificate_id, tag_id) values (4285, 175);
 insert into certificate_tag (certificate_id, tag_id) values (7222, 708);
@@ -16478,6 +16496,8 @@ insert into certificate_tag (certificate_id, tag_id) values (2983, 102);
 insert into certificate_tag (certificate_id, tag_id) values (918, 895);
 insert into certificate_tag (certificate_id, tag_id) values (3518, 746);
 insert into certificate_tag (certificate_id, tag_id) values (5765, 48);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (1907, 604);
 insert into certificate_tag (certificate_id, tag_id) values (4603, 725);
 insert into certificate_tag (certificate_id, tag_id) values (931, 472);
@@ -16540,6 +16560,8 @@ insert into certificate_tag (certificate_id, tag_id) values (1904, 359);
 insert into certificate_tag (certificate_id, tag_id) values (5950, 980);
 insert into certificate_tag (certificate_id, tag_id) values (303, 459);
 insert into certificate_tag (certificate_id, tag_id) values (6369, 888);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (8751, 932);
 insert into certificate_tag (certificate_id, tag_id) values (210, 979);
 insert into certificate_tag (certificate_id, tag_id) values (1913, 333);
@@ -16676,6 +16698,8 @@ insert into certificate_tag (certificate_id, tag_id) values (8403, 989);
 insert into certificate_tag (certificate_id, tag_id) values (6585, 67);
 insert into certificate_tag (certificate_id, tag_id) values (1383, 32);
 insert into certificate_tag (certificate_id, tag_id) values (606, 945);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (6890, 975);
 insert into certificate_tag (certificate_id, tag_id) values (8949, 195);
 insert into certificate_tag (certificate_id, tag_id) values (2419, 267);
@@ -16738,6 +16762,8 @@ insert into certificate_tag (certificate_id, tag_id) values (2158, 758);
 insert into certificate_tag (certificate_id, tag_id) values (3472, 902);
 insert into certificate_tag (certificate_id, tag_id) values (7582, 942);
 insert into certificate_tag (certificate_id, tag_id) values (5449, 157);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (8715, 317);
 insert into certificate_tag (certificate_id, tag_id) values (266, 155);
 insert into certificate_tag (certificate_id, tag_id) values (8172, 475);
@@ -16852,6 +16878,8 @@ insert into certificate_tag (certificate_id, tag_id) values (8253, 938);
 insert into certificate_tag (certificate_id, tag_id) values (3340, 573);
 insert into certificate_tag (certificate_id, tag_id) values (5512, 87);
 insert into certificate_tag (certificate_id, tag_id) values (9462, 101);
+
+
 insert into certificate_tag (certificate_id, tag_id) values (9467, 511);
 insert into certificate_tag (certificate_id, tag_id) values (6615, 712);
 insert into certificate_tag (certificate_id, tag_id) values (7007, 950);

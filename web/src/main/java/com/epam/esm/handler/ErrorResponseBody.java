@@ -9,7 +9,7 @@ public class ErrorResponseBody {
   private List<String> errorMessages;
 
   /** The Code. */
-  private String code;
+  private String errorCode;
 
   /**
    * Instantiates a new Error response body.
@@ -19,7 +19,7 @@ public class ErrorResponseBody {
    */
   public ErrorResponseBody(List<String> errorMessages, String code) {
     this.errorMessages = errorMessages;
-    this.code = code;
+    this.errorCode = code;
   }
 
   /**
@@ -46,7 +46,7 @@ public class ErrorResponseBody {
    * @return the code
    */
   public String getCode() {
-    return code;
+    return errorCode;
   }
 
   /**
@@ -55,6 +55,6 @@ public class ErrorResponseBody {
    * @param code the code
    */
   public void setCode(String code) {
-    this.code = code;
+    this.errorCode = code;
   }
 }

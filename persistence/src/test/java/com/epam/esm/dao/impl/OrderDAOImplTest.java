@@ -34,7 +34,7 @@ class OrderDAOImplTest {
 
   @Test
   public void findAllByUserIdTest() {
-    final List<Order> orders = orderDAO.findAllByUserId(USER_ID, new PaginationSetting(10, 1));
+    final List<Order> orders = orderDAO.findAllByUserId(USER_ID, PaginationSetting.getInstance(10, 1));
     assertNotNull(orders);
     assertFalse(orders.isEmpty());
     assertEquals(2, orders.size());

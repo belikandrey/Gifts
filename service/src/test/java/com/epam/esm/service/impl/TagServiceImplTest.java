@@ -44,7 +44,7 @@ class TagServiceImplTest {
   private static final String WRONG_NAME = "A";
   private static final BigInteger CERTIFICATE_ID = BigInteger.TEN;
   private static final Tag TAG = new Tag(FIRST_ID, FIRST_NAME);
-  private static final PaginationSetting PAGINATION_SETTING = new PaginationSetting(10, 15);
+  private static final PaginationSetting PAGINATION_SETTING = PaginationSetting.getInstance(10, 15);
   private static final TagDTO TAG_DTO = new TagDTO(FIRST_ID, FIRST_NAME);
 
   @BeforeEach

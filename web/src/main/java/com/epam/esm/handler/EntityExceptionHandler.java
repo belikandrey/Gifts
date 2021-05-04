@@ -140,12 +140,12 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
    */
   private ErrorResponseBody getResponseBody(Exception exception, Class<?> entityClass, int code) {
     String errorCode = getErrorCode(code, entityClass);
-    return new ErrorResponseBody(List.of(exception.getMessage()), code + errorCode);
+    return new ErrorResponseBody(List.of(exception.getMessage()), errorCode);
   }
 
   private String getErrorCode(int code, Class<?> entityClass) {
     String errorCode = String.valueOf(code);
-    switch (entityClass.getName()) {
+    switch (entityClass.getSimpleName()) {
       case "Tag":
         errorCode += TAG_CODE;
         break;

@@ -61,7 +61,7 @@ public class TagController {
   public CollectionModel<TagDTO> findAll(
       @RequestParam(name = "page", defaultValue = "1", required = false) int page,
       @RequestParam(name = "size", defaultValue = "10", required = false) int size) {
-    PaginationSetting paginationSetting = new PaginationSetting(size, page);
+    PaginationSetting paginationSetting = PaginationSetting.getInstance(size, page);
     Collection<TagDTO> tags = tagService.findAll(paginationSetting);
     final Long count = tagService.count();
     tags.forEach(hateoasResolver::addLinksForTag);
