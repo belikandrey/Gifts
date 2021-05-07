@@ -27,7 +27,7 @@ public class ErrorResponseBody {
    *
    * @return the messages
    */
-  public List<String> getMessages() {
+  public List<String> getErrorMessages() {
     return errorMessages;
   }
 
@@ -36,7 +36,7 @@ public class ErrorResponseBody {
    *
    * @param messages the messages
    */
-  public void setMessages(List<String> messages) {
+  public void setErrorMessages(List<String> messages) {
     this.errorMessages = messages;
   }
 
@@ -45,7 +45,7 @@ public class ErrorResponseBody {
    *
    * @return the code
    */
-  public String getCode() {
+  public String getErrorCode() {
     return errorCode;
   }
 
@@ -54,7 +54,7 @@ public class ErrorResponseBody {
    *
    * @param code the code
    */
-  public void setCode(String code) {
+  public void setErrorCode(String code) {
     this.errorCode = code;
   }
 }

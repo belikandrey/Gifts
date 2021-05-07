@@ -2,7 +2,9 @@ package com.epam.esm.validator.impl;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.messages.Translator;
 import com.epam.esm.validator.Validator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,6 +24,30 @@ public class CertificateValidator implements Validator<Certificate> {
   /** The Max description size. */
   private final int MAX_DESCRIPTION_SIZE = 150;
 
+  private static final String CERTIFICATE_NOT_NULL_KEY = "certificate_validator.not_null";
+  private static final String CERTIFICATE_CHARACTERS_KEY = "validator.characters";
+  private static final String CERTIFICATE_NAME_MIN_KEY = "certificate_validator.min_size_name";
+  private static final String CERTIFICATE_NAME_MAX_KEY = "certificate_validator.max_size_name";
+  private static final String CERTIFICATE_NAME_NOT_EMPTY_KEY =
+      "certificate_validator.name_not_empty";
+  private static final String CERTIFICATE_DESCRIPTION_NOT_EMPTY_KEY =
+      "certificate_validator.description_not_empty";
+  private static final String CERTIFICATE_DESCRIPTION_MAX_SIZE_KEY =
+      "certificate_validator.description_max_size";
+  private static final String CERTIFICATE_DURATION_MORE_THAN_ZERO_KEY =
+      "certificate_validator.duration_more_than_0";
+  private static final String CERTIFICATE_PRICE_NOT_NULL_KEY =
+      "certificate_validator.price_not_null";
+  private static final String CERTIFICATE_PRICE_MORE_THAN_ZERO_KEY =
+      "certificate_validator.price_more_than_0";
+
+  private Translator translator;
+
+  @Autowired
+  public CertificateValidator(Translator translator) {
+    this.translator = translator;
+  }
+
   /**
    * Validate.
    *
@@ -32,7 +58,8 @@ public class CertificateValidator implements Validator<Certificate> {
   public void validate(Certificate certificate) throws ValidatorException {
 
     if (certificate == null) {
-      throw new ValidatorException(List.of("Certificate should be not null"), Certificate.class);
+      throw new ValidatorException(
+          List.of(translator.toLocale(CERTIFICATE_NOT_NULL_KEY)), Certificate.class);
     }
     List<String> messages = new ArrayList<>();
     addToMessages(messages, validateName(certificate.getName()));
@@ -52,15 +79,23 @@ public class CertificateValidator implements Validator<Certificate> {
    */
   private String validateName(String name) {
     if (name == null || name.isEmpty()) {
-      return "Certificate name should be not empty";
+      return translator.toLocale(CERTIFICATE_NAME_NOT_EMPTY_KEY);
     }
     if (name.length() < MIN_NAME_SIZE) {
-      return "Certificate name should be at least " + MIN_NAME_SIZE + " characters";
+      return translator.toLocale(
+          CERTIFICATE_NAME_MIN_KEY
+              + " "
+              + MIN_NAME_SIZE
+              + " "
+              + translator.toLocale(CERTIFICATE_CHARACTERS_KEY));
     }
-    if (name.length() > MAX_NAME_SIZE) {
-      return "Certificate name should be not more than " + MAX_NAME_SIZE + " characters";
-    }
-    return null;
+    return name.length() > MAX_NAME_SIZE
+        ? translator.toLocale(CERTIFICATE_NAME_MAX_KEY)
+            + " "
+            + MAX_NAME_SIZE
+            + " "
+            + translator.toLocale(CERTIFICATE_CHARACTERS_KEY)
+        : null;
   }
 
   /**
@@ -71,14 +106,15 @@ public class CertificateValidator implements Validator<Certificate> {
    */
   private String validateDescription(String description) {
     if (description == null || description.isEmpty()) {
-      return "Certificate description should be not empty";
+      return translator.toLocale(CERTIFICATE_DESCRIPTION_NOT_EMPTY_KEY);
     }
-    if (description.length() > MAX_DESCRIPTION_SIZE) {
-      return "Certificate description should be not more than "
-          + MAX_DESCRIPTION_SIZE
-          + " characters";
-    }
-    return null;
+    return description.length() > MAX_DESCRIPTION_SIZE
+        ? translator.toLocale(CERTIFICATE_DESCRIPTION_MAX_SIZE_KEY)
+            + " "
+            + MAX_DESCRIPTION_SIZE
+            + " "
+            + translator.toLocale(CERTIFICATE_CHARACTERS_KEY)
+        : null;
   }
 
   /**
@@ -88,10 +124,9 @@ public class CertificateValidator implements Validator<Certificate> {
    * @return the string
    */
   private String validateDuration(Integer duration) {
-    if (duration == null || duration <= 0) {
-      return "Certificate duration should be more than 0";
-    }
-    return null;
+    return duration == null || duration <= 0
+        ? translator.toLocale(CERTIFICATE_DURATION_MORE_THAN_ZERO_KEY)
+        : null;
   }
 
   /**
@@ -102,12 +137,11 @@ public class CertificateValidator implements Validator<Certificate> {
    */
   private String validatePrice(BigDecimal price) {
     if (price == null) {
-      return "Certificate price should be not null";
+      return translator.toLocale(CERTIFICATE_PRICE_NOT_NULL_KEY);
     }
-    if (price.compareTo(BigDecimal.ZERO) < 0) {
-      return "Certificate price should be more than or equals 0";
-    }
-    return null;
+    return price.compareTo(BigDecimal.ZERO) < 0
+        ? translator.toLocale(CERTIFICATE_PRICE_MORE_THAN_ZERO_KEY)
+        : null;
   }
 
   /**

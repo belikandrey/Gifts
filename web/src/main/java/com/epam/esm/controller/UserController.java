@@ -121,7 +121,6 @@ public class UserController {
    * @param orderId the order id
    * @return the response entity
    */
-  // TODO
   @GetMapping("/{user_id}/orders/{order_id}")
   public ResponseEntity<?> findUserOrderById(
       @PathVariable("user_id") BigInteger userId, @PathVariable("order_id") BigInteger orderId) {

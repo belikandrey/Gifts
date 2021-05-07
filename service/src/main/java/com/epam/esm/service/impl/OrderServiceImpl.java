@@ -12,6 +12,7 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityDisabledException;
 import com.epam.esm.exception.EntityNotFoundException;
+import com.epam.esm.messages.Translator;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,14 @@ public class OrderServiceImpl implements OrderService {
   /** The Certificate dao. */
   private CertificateDAO certificateDAO;
 
+  private Translator translator;
+
+  private static final String ORDER_WITH_ID_KEY = "order.order_with_id";
+  private static final String USER_WITH_ID_KEY = "user.user_with_id";
+  private static final String NOT_FOUND_KEY = "service.not_found";
+  private static final String ORDER_FOR_USER_KEY = "order.for_user_with_id";
+  private static final String CERTIFICATE_WITH_ID_KEY = "certificate.certificate_with_id";
+  private static final String CERTIFICATE_IS_DISABLED_KEY = "certificate.disabled";
   /**
    * Instantiates a new Order service.
    *
@@ -48,17 +57,20 @@ public class OrderServiceImpl implements OrderService {
    * @param orderConverter the {@link Converter}
    * @param userDAO the {@link UserDAO}
    * @param certificateDAO the {@link CertificateDAO}
+   * @param translator
    */
   @Autowired
   public OrderServiceImpl(
       OrderDAO orderDAO,
       Converter<Order, OrderDTO> orderConverter,
       UserDAO userDAO,
-      CertificateDAO certificateDAO) {
+      CertificateDAO certificateDAO,
+      Translator translator) {
     this.orderDAO = orderDAO;
     this.orderConverter = orderConverter;
     this.userDAO = userDAO;
     this.certificateDAO = certificateDAO;
+    this.translator = translator;
   }
 
   /**
@@ -76,7 +88,12 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "Order with id : " + id + " not found", Order.class));
+                        translator.toLocale(ORDER_WITH_ID_KEY)
+                            + " : "
+                            + id
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        Order.class));
 
     return orderConverter.convertToDto(order);
   }
@@ -110,7 +127,12 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "User with id : " + userId + " not found", User.class));
+                        translator.toLocale(ORDER_WITH_ID_KEY)
+                            + " : "
+                            + userId
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        User.class));
     Order order = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user);
     order = orderDAO.save(order);
     return orderConverter.convertToDto(order);
@@ -131,11 +153,20 @@ public class OrderServiceImpl implements OrderService {
               .orElseThrow(
                   () ->
                       new EntityNotFoundException(
-                          "Certificate with id : " + certificateDTO.getId() + " not found",
+                          translator.toLocale(CERTIFICATE_WITH_ID_KEY)
+                              + " : "
+                              + certificateDTO.getId()
+                              + " "
+                              + translator.toLocale(NOT_FOUND_KEY),
                           Certificate.class));
       if (!certificate.getEnabled()) {
         throw new EntityDisabledException(
-            "Certificate with id : " + certificate.getId() + " is disabled. Please, enter another certificate", Certificate.class);
+            translator.toLocale(CERTIFICATE_WITH_ID_KEY)
+                + " : "
+                + certificate.getId()
+                + " "
+                + translator.toLocale(CERTIFICATE_IS_DISABLED_KEY),
+            Certificate.class);
       }
       certificates.add(certificate);
     }
@@ -158,7 +189,12 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "User with id : " + userId + " not found", User.class));
+                        translator.toLocale(USER_WITH_ID_KEY)
+                            + " : "
+                            + userId
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        User.class));
     return user.getOrders().stream()
         .filter((p) -> p.getId().equals(orderId))
         .map(orderConverter::convertToDto)
@@ -166,7 +202,15 @@ public class OrderServiceImpl implements OrderService {
         .orElseThrow(
             () ->
                 new EntityNotFoundException(
-                    "Order with id : " + orderId + " for user with id : " + userId + " not found",
+                    translator.toLocale(ORDER_WITH_ID_KEY)
+                        + " : "
+                        + orderId
+                        + " "
+                        + translator.toLocale(ORDER_FOR_USER_KEY)
+                        + " : "
+                        + userId
+                        + " "
+                        + translator.toLocale(NOT_FOUND_KEY),
                     Order.class));
   }
 

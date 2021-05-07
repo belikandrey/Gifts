@@ -6,6 +6,7 @@ import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityNotFoundException;
+import com.epam.esm.messages.Translator;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,16 +27,24 @@ public class UserServiceImpl implements UserService {
   /** The Converter. */
   private Converter<User, UserDTO> converter;
 
+  private static final String USER_WITH_ID_KEY = "user.user_with_id";
+  private static final String NOT_FOUND_KEY = "service.not_found";
+
+  private Translator translator;
+
   /**
    * Instantiates a new User service.
    *
    * @param userDAO the {@link UserDAO}
    * @param converter the {@link Converter}
+   * @param translator
    */
   @Autowired
-  public UserServiceImpl(UserDAO userDAO, Converter<User, UserDTO> converter) {
+  public UserServiceImpl(
+      UserDAO userDAO, Converter<User, UserDTO> converter, Translator translator) {
     this.userDAO = userDAO;
     this.converter = converter;
+    this.translator = translator;
   }
 
   /**
@@ -52,7 +61,13 @@ public class UserServiceImpl implements UserService {
             .findById(id)
             .orElseThrow(
                 () ->
-                    new EntityNotFoundException("User with id : " + id + " not found", User.class));
+                    new EntityNotFoundException(
+                        translator.toLocale(USER_WITH_ID_KEY)
+                            + " "
+                            + id
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        User.class));
     return converter.convertToDto(user);
   }
 

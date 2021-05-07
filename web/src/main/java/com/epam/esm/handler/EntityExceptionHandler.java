@@ -5,6 +5,8 @@ import com.epam.esm.exception.EntityDisabledException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.EntityUsedException;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.messages.Translator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,23 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
 
   /** The constant DEFAULT_CODE. */
   private static final String DEFAULT_CODE = "22";
+
+  /** The constant PARAMS_CONVERTABLE_ERROR_MESSAGE_. */
+  private static final String PARAMS_CONVERTABLE_ERROR_MESSAGE_KEY =
+      "handler.param_should_be_convertable";
+
+  /** The Translator. */
+  private Translator translator;
+
+  /**
+   * Instantiates a new Entity exception handler.
+   *
+   * @param translator the translator
+   */
+  @Autowired
+  public EntityExceptionHandler(Translator translator) {
+    this.translator = translator;
+  }
 
   /**
    * Handle validation exception response entity.
@@ -125,9 +144,11 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
   protected ResponseEntity<?> handleBadId(
       MethodArgumentTypeMismatchException exception, WebRequest request) {
-    String message = "Id should be convertible into number";
+    String message = translator.toLocale(PARAMS_CONVERTABLE_ERROR_MESSAGE_KEY);
+    final ErrorResponseBody responseBody =
+        new ErrorResponseBody(List.of(message), HttpStatus.BAD_REQUEST.value() + DEFAULT_CODE);
     return handleExceptionInternal(
-        exception, message, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        exception, responseBody, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
   }
 
   /**
@@ -143,6 +164,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
     return new ErrorResponseBody(List.of(exception.getMessage()), errorCode);
   }
 
+  /**
+   * Gets error code.
+   *
+   * @param code the code
+   * @param entityClass the entity class
+   * @return the error code
+   */
   private String getErrorCode(int code, Class<?> entityClass) {
     String errorCode = String.valueOf(code);
     switch (entityClass.getSimpleName()) {

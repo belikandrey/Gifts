@@ -10,6 +10,7 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.messages.Translator;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
@@ -49,14 +50,22 @@ public class CertificateServiceImpl implements CertificateService {
 
   /** The Tag converter. */
   private final Converter<Tag, TagDTO> tagConverter;
+
+  private final Translator translator;
+
+  private static final String CERTIFICATE_WITH_ID_KEY = "certificate.certificate_with_id";
+  private static final String TAG_WITH_ID_KEY = "tag.tag_with_id";
+  private static final String NOT_FOUND_KEY = "service.not_found";
+
   /**
    * Constructor
    *
-   * @param validator {@link com.epam.esm.validator.Validator}
-   * @param converter {@link com.epam.esm.dto.converter.Converter}
-   * @param tagService {@link TagService}
+   * @param validator {@link Validator}
    * @param certificateDAO the {@link CertificateDAO}
+   * @param converter {@link Converter}
+   * @param tagService {@link TagService}
    * @param tagConverter the tag {@link Converter}
+   * @param translator
    */
   @Autowired
   public CertificateServiceImpl(
@@ -64,12 +73,14 @@ public class CertificateServiceImpl implements CertificateService {
       CertificateDAO certificateDAO,
       Converter<Certificate, CertificateDTO> converter,
       TagService tagService,
-      Converter<Tag, TagDTO> tagConverter) {
+      Converter<Tag, TagDTO> tagConverter,
+      Translator translator) {
     this.validator = validator;
     this.certificateDAO = certificateDAO;
     this.converter = converter;
     this.tagService = tagService;
     this.tagConverter = tagConverter;
+    this.translator = translator;
   }
 
   /**
@@ -108,13 +119,11 @@ public class CertificateServiceImpl implements CertificateService {
       String state) {
     Map<String, Object> params =
         fillMapWithParams(tagsName, name, description, sortName, sortDate, state);
-    final List<CertificateDTO> certificates =
-        certificateDAO
-            .findByCriteria(new CertificateSearchCriteria(params), paginationSetting)
-            .stream()
-            .map(converter::convertToDto)
-            .collect(Collectors.toList());
-    return certificates;
+    return certificateDAO
+        .findByCriteria(new CertificateSearchCriteria(params), paginationSetting)
+        .stream()
+        .map(converter::convertToDto)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -161,7 +170,12 @@ public class CertificateServiceImpl implements CertificateService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "Certificate with id : " + id + " not found", Certificate.class));
+                        translator.toLocale(CERTIFICATE_WITH_ID_KEY)
+                            + " : "
+                            + id
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        Certificate.class));
     return converter.convertToDto(certificate);
   }
 
@@ -226,7 +240,13 @@ public class CertificateServiceImpl implements CertificateService {
       return tagFromDB;
     }
     if ((tag.getName() == null || tag.getName().isEmpty())) {
-      throw new EntityNotFoundException("Tag with id " + tag.getId() + " not found", Tag.class);
+      throw new EntityNotFoundException(
+          translator.toLocale(TAG_WITH_ID_KEY)
+              + " : "
+              + tag.getId()
+              + " "
+              + translator.toLocale(NOT_FOUND_KEY),
+          Tag.class);
     } else {
       tagFromDB = tagService.add(tag);
     }
@@ -253,7 +273,11 @@ public class CertificateServiceImpl implements CertificateService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "Certificate with id : " + certificateId + " not found",
+                        translator.toLocale(CERTIFICATE_WITH_ID_KEY)
+                            + " : "
+                            + certificateId
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
                         Certificate.class));
     if (!isFullUpdate) {
       fillForInsert(certificateForUpdate, certificate);
@@ -269,7 +293,12 @@ public class CertificateServiceImpl implements CertificateService {
     certificateForUpdate.setId(certificateId);
     if (certificateDAO.update(certificateForUpdate) == null) {
       throw new EntityNotFoundException(
-          "Certificate with id : " + certificateId + " not found", Certificate.class);
+          translator.toLocale(CERTIFICATE_WITH_ID_KEY)
+              + " : "
+              + certificateId
+              + " "
+              + translator.toLocale(NOT_FOUND_KEY),
+          Certificate.class);
     }
   }
 
@@ -321,7 +350,12 @@ public class CertificateServiceImpl implements CertificateService {
         .orElseThrow(
             () ->
                 new EntityNotFoundException(
-                    "Certificate with id : " + id + " not found", Certificate.class));
+                    translator.toLocale(CERTIFICATE_WITH_ID_KEY)
+                        + " : "
+                        + id
+                        + " "
+                        + translator.toLocale(NOT_FOUND_KEY),
+                    Certificate.class));
     certificateDAO.deleteById(id);
   }
 }

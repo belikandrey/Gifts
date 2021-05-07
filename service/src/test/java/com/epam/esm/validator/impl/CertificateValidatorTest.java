@@ -42,7 +42,7 @@ class CertificateValidatorTest {
 
   @BeforeAll
   public static void init() {
-    validator = new CertificateValidator();
+    validator = new CertificateValidator(null);
   }
 
   // Given certificate with right fields. Expected work without exception

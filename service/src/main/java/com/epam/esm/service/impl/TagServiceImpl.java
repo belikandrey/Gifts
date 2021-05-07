@@ -9,6 +9,7 @@ import com.epam.esm.exception.EntityAlreadyExistException;
 import com.epam.esm.exception.EntityNotFoundException;
 import com.epam.esm.exception.EntityUsedException;
 import com.epam.esm.exception.ValidatorException;
+import com.epam.esm.messages.Translator;
 import com.epam.esm.service.TagService;
 import com.epam.esm.validator.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +39,34 @@ public class TagServiceImpl implements TagService {
   /** The Tag repository. */
   private TagDAO tagDAO;
 
+  private Translator translator;
+
+  private static final String TAG_WITH_ID_KEY = "tag.tag_with_id";
+  private static final String NOT_FOUND_KEY = "service.not_found";
+  private static final String TAG_WITH_NAME_KEY = "tag.tag_with_name";
+  private static final String TAG_MOST_POPULAR_KEY = "tag.most_popular_not_found";
+  private static final String TAG_ALREADY_EXISTS_KEY = "tag.tag_is_already_exist";
+  private static final String TAG_CANNOT_DELETE_KEY = "tag.cannot_delete";
+  private static final String TAG_IS_USED_KEY = "tag.tag_is_used";
+
   /**
    * Constructor
    *
-   * @param validator {@link com.epam.esm.validator.Validator}
+   * @param validator {@link Validator}
    * @param tagDAO the {@link TagDAO}
-   * @param converter {@link com.epam.esm.dto.converter.Converter}
+   * @param converter {@link Converter}
+   * @param translator
    */
   @Autowired
-  public TagServiceImpl(Validator<Tag> validator, TagDAO tagDAO, Converter<Tag, TagDTO> converter) {
+  public TagServiceImpl(
+      Validator<Tag> validator,
+      TagDAO tagDAO,
+      Converter<Tag, TagDTO> converter,
+      Translator translator) {
     this.validator = validator;
     this.tagDAO = tagDAO;
     this.converter = converter;
+    this.translator = translator;
   }
 
   /** Default constructor */
@@ -85,7 +102,12 @@ public class TagServiceImpl implements TagService {
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
-                        "Tag with name : " + name + " not found", Tag.class));
+                        translator.toLocale(TAG_WITH_NAME_KEY)
+                            + " : "
+                            + name
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        Tag.class));
     return converter.convertToDto(tag);
   }
 
@@ -110,7 +132,9 @@ public class TagServiceImpl implements TagService {
         tagDAO
             .findMostPopularTag()
             .orElseThrow(
-                () -> new EntityNotFoundException("Most popular tag not found", Tag.class));
+                () ->
+                    new EntityNotFoundException(
+                        translator.toLocale(TAG_MOST_POPULAR_KEY), Tag.class));
     return converter.convertToDto(tag);
   }
 
@@ -128,7 +152,14 @@ public class TagServiceImpl implements TagService {
         tagDAO
             .findById(id)
             .orElseThrow(
-                () -> new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class));
+                () ->
+                    new EntityNotFoundException(
+                        translator.toLocale(TAG_WITH_ID_KEY)
+                            + " : "
+                            + id
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        Tag.class));
     return converter.convertToDto(tag);
   }
 
@@ -147,7 +178,12 @@ public class TagServiceImpl implements TagService {
     final Optional<Tag> tagByName = tagDAO.findTagByName(tagDTO.getName());
     if (tagByName.isPresent()) {
       throw new EntityAlreadyExistException(
-          "Tag with name : " + tagDTO.getName() + " is already exist in db", Tag.class);
+          translator.toLocale(TAG_WITH_NAME_KEY)
+              + " : "
+              + tagDTO.getName()
+              + " "
+              + translator.toLocale(TAG_ALREADY_EXISTS_KEY),
+          Tag.class);
     }
     final Tag added = tagDAO.save(tag);
     return converter.convertToDto(added);
@@ -163,11 +199,22 @@ public class TagServiceImpl implements TagService {
   @Override
   public void delete(BigInteger id) {
     if (tagDAO.findById(id).isEmpty()) {
-      throw new EntityNotFoundException("Tag with id : " + id + " not found", Tag.class);
+      throw new EntityNotFoundException(
+          translator.toLocale(TAG_WITH_ID_KEY)
+              + " : "
+              + id
+              + " "
+              + translator.toLocale(NOT_FOUND_KEY),
+          Tag.class);
     }
     if (isTagUsed(id)) {
       throw new EntityUsedException(
-          "Can not delete tag with id : " + id + ". Tag is used in certificates", Tag.class);
+          translator.toLocale(TAG_CANNOT_DELETE_KEY)
+              + " : "
+              + id
+              + ". "
+              + translator.toLocale(TAG_IS_USED_KEY),
+          Tag.class);
     }
     tagDAO.deleteById(id);
   }

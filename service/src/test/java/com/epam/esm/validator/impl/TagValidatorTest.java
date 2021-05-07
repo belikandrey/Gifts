@@ -23,7 +23,7 @@ class TagValidatorTest {
 
   @BeforeAll
   public static void init() {
-    tagValidator = new TagValidator();
+    tagValidator = new TagValidator(null);
   }
 
   // Tag with small size name given. Expected ValidationException with message "Tag name should
