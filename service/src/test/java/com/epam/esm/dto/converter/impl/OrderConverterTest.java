@@ -2,11 +2,9 @@ package com.epam.esm.dto.converter.impl;
 
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.OrderDTO;
-import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,7 +15,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -31,7 +28,7 @@ class OrderConverterTest {
     @InjectMocks
     OrderConverter orderConverter;
 
-    private final static CertificateDTO CERTIFICATE_DTO = new CertificateDTO(BigInteger.ONE, "name", "description", new BigDecimal(0), Integer.valueOf(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3));
+    private final static CertificateDTO CERTIFICATE_DTO = new CertificateDTO(BigInteger.ONE, "name", "description", new BigDecimal(0), Integer.valueOf(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3), true);
     private final static OrderDTO ORDER_DTO = new OrderDTO(BigInteger.TWO, new BigDecimal(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3), List.of(CERTIFICATE_DTO));
     private final static Certificate CERTIFICATE = new Certificate(BigInteger.ONE, "name", "description", new BigDecimal(0), Integer.valueOf(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3));
     private final static Order ORDER = new Order(BigInteger.TWO, new BigDecimal(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 3), List.of(CERTIFICATE));

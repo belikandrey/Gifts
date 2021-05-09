@@ -11,7 +11,6 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.EntityNotFoundException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +22,6 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +64,7 @@ class OrderServiceImplTest {
           new BigDecimal(0),
           0,
           LocalDateTime.of(2021, Month.APRIL, 30, 19, 5, 0),
-          LocalDateTime.of(2021, Month.APRIL, 30, 19, 5, 0));
+          LocalDateTime.of(2021, Month.APRIL, 30, 19, 5, 0), true);
   private static final OrderDTO ORDER_DTO =
       new OrderDTO(
           BigInteger.ONE,

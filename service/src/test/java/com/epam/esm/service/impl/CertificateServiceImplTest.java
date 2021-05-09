@@ -140,6 +140,7 @@ class CertificateServiceImplTest {
         new BigDecimal(0),
         0,
         LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23),
-        LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23));
+        LocalDateTime.of(2021, Month.APRIL, 30, 19, 3, 23),
+        true);
   }
 }

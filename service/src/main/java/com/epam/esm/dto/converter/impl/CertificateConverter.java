@@ -71,7 +71,8 @@ public class CertificateConverter implements Converter<Certificate, CertificateD
             certificate.getPrice(),
             certificate.getDuration(),
             certificate.getCreateDate(),
-            certificate.getLastUpdateDate());
+            certificate.getLastUpdateDate(),
+            certificate.getEnabled());
     final Set<TagDTO> tags =
         certificate.getTags().stream().map(tagConverter::convertToDto).collect(Collectors.toSet());
     certificateDTO.setTags(tags);

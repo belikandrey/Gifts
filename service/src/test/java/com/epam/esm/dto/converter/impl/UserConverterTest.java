@@ -7,7 +7,6 @@ import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,7 +33,7 @@ class UserConverterTest {
     private static final Certificate CERTIFICATE = new Certificate(BigInteger.ONE, "name", "description", new BigDecimal(0), Integer.valueOf(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20));
     private static final Order ORDER = new Order(BigInteger.ONE, new BigDecimal(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20), Arrays.<Certificate>asList(CERTIFICATE));
     private static final User USER = new User(BigInteger.ONE, "login", Arrays.<Order>asList(ORDER));
-    private static final CertificateDTO CERTIFICATE_DTO = new CertificateDTO(BigInteger.ONE, "name", "description", new BigDecimal(0), Integer.valueOf(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20));
+    private static final CertificateDTO CERTIFICATE_DTO = new CertificateDTO(BigInteger.ONE, "name", "description", new BigDecimal(0), Integer.valueOf(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20), true);
     private static final OrderDTO ORDER_DTO = new OrderDTO(BigInteger.ONE, new BigDecimal(0), LocalDateTime.of(2021, Month.APRIL, 30, 19, 1, 20), List.of(CERTIFICATE_DTO));
     private static final UserDTO USER_DTO = new UserDTO(BigInteger.ONE, "login", List.of(ORDER_DTO));
 

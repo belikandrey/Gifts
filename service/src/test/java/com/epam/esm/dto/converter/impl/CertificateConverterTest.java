@@ -35,7 +35,7 @@ class CertificateConverterTest {
               0,
           LocalDateTime.of(2021, Month.APRIL, 30, 19, 0, 37),
           LocalDateTime.of(2021, Month.APRIL, 30, 19, 0, 37),
-          Set.of(TAG_DTO));
+              true, Set.of(TAG_DTO));
   private static final Tag TAG = new Tag(BigInteger.ONE, "tagName");
     private static final Certificate CERTIFICATE =
             new Certificate(

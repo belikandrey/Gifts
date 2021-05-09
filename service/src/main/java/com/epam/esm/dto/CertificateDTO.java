@@ -41,6 +41,8 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime lastUpdateDate;
 
+  private boolean isEnabled;
+
   /** The Tags. */
   private Set<TagDTO> tags = new HashSet<>();
 
@@ -57,6 +59,7 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
    * @param duration duration of the certificate DTO
    * @param creationDate create date of the certificate DTO
    * @param lastUpdateDate last update date of the certificate DTO
+   * @param isEnabled
    */
   public CertificateDTO(
       BigInteger id,
@@ -65,7 +68,8 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
       BigDecimal price,
       Integer duration,
       LocalDateTime creationDate,
-      LocalDateTime lastUpdateDate) {
+      LocalDateTime lastUpdateDate,
+      boolean isEnabled) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -73,6 +77,7 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
     this.duration = duration;
     this.creationDate = creationDate;
     this.lastUpdateDate = lastUpdateDate;
+    this.isEnabled = isEnabled;
   }
 
   /**
@@ -85,6 +90,7 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
    * @param duration the duration
    * @param creationDate the creation date
    * @param lastUpdateDate the last update date
+   * @param isEnabled
    * @param tags the tags
    */
   public CertificateDTO(
@@ -95,6 +101,7 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
       Integer duration,
       LocalDateTime creationDate,
       LocalDateTime lastUpdateDate,
+      boolean isEnabled,
       Set<TagDTO> tags) {
     this.id = id;
     this.name = name;
@@ -103,7 +110,16 @@ public class CertificateDTO extends RepresentationModel<CertificateDTO> {
     this.duration = duration;
     this.creationDate = creationDate;
     this.lastUpdateDate = lastUpdateDate;
+    this.isEnabled = isEnabled;
     this.tags = tags;
+  }
+
+  public boolean isEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
   }
 
   /**
