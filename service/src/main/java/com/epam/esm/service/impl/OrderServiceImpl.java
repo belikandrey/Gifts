@@ -228,4 +228,25 @@ public class OrderServiceImpl implements OrderService {
         .map(orderConverter::convertToDto)
         .collect(Collectors.toList());
   }
+
+  @Override
+  public OrderDTO create(OrderDTO order) {
+    final User user =
+        userDAO
+            .findById(order.getUserId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        translator.toLocale(USER_WITH_ID_KEY)
+                            + " : "
+                            + order.getUserId()
+                            + " "
+                            + translator.toLocale(NOT_FOUND_KEY),
+                        User.class));
+    List<Certificate> certificates = getCertificatesForCreateOrder(order.getCertificates());
+    final double sum = certificates.stream().mapToDouble((p) -> p.getPrice().doubleValue()).sum();
+    Order newOrder = new Order(BigDecimal.valueOf(sum), LocalDateTime.now(), certificates, user);
+    newOrder = orderDAO.save(newOrder);
+    return orderConverter.convertToDto(newOrder);
+  }
 }

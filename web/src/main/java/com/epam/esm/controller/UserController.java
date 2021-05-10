@@ -106,13 +106,13 @@ public class UserController {
    * @param certificates the certificates
    * @return the response entity
    */
-  @PostMapping("/{id}/orders")
-  public ResponseEntity<?> createOrder(
-      @PathVariable BigInteger id, @RequestBody List<CertificateDTO> certificates) {
-    OrderDTO order = orderService.create(id, certificates);
-    hateoasResolver.addLinksForOrder(order, id);
-    return new ResponseEntity<>(order, HttpStatus.OK);
-  }
+//  @PostMapping("/{id}/orders")
+//  public ResponseEntity<?> createOrder(
+//      @PathVariable BigInteger id, @RequestBody List<CertificateDTO> certificates) {
+//    OrderDTO order = orderService.create(id, certificates);
+//    hateoasResolver.addLinksForOrder(order, id);
+//    return new ResponseEntity<>(order, HttpStatus.OK);
+//  }
 
   /**
    * Find user order by id response entity.

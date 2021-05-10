@@ -26,6 +26,9 @@ public class OrderDTO extends RepresentationModel<OrderDTO> {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime createDate;
 
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  private BigInteger userId;
+
   /** The Certificates. */
   private List<CertificateDTO> certificates;
 
@@ -118,6 +121,14 @@ public class OrderDTO extends RepresentationModel<OrderDTO> {
    */
   public void setCertificates(List<CertificateDTO> certificates) {
     this.certificates = certificates;
+  }
+
+  public BigInteger getUserId() {
+    return userId;
+  }
+
+  public void setUserId(BigInteger userId) {
+    this.userId = userId;
   }
 
   /**

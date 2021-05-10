@@ -45,4 +45,6 @@ public interface OrderService extends EntityService<OrderDTO, BigInteger> {
    * @return the list of {@link OrderDTO}
    */
   List<OrderDTO> findAllByUserId(BigInteger id, PaginationSetting paginationSetting);
+
+  OrderDTO create(OrderDTO order);
 }
