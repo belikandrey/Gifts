@@ -1,8 +1,12 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.audit.Auditable;
+import com.epam.esm.audit.AuditableListener;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +30,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "certificate")
-public class Certificate implements Serializable {
+@EntityListeners(AuditableListener.class)
+public class Certificate implements Auditable {
 
   /** The Id. */
   @Id
@@ -62,6 +67,9 @@ public class Certificate implements Serializable {
   @Column(name = "is_enabled")
   private Boolean isEnabled;
 
+  @Column(name = "operation")
+  private String operation;
+
   /** The Tags. */
   @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
   @JoinTable(
@@ -69,6 +77,16 @@ public class Certificate implements Serializable {
       joinColumns = @JoinColumn(name = "certificate_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> tags;
+
+  @Override
+  public String getOperation() {
+    return operation;
+  }
+
+  @Override
+  public void setOperation(String operation) {
+    this.operation = operation;
+  }
 
   /**
    * Constructor

@@ -1,7 +1,11 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.audit.Auditable;
+import com.epam.esm.audit.AuditableListener;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -9,13 +13,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 /** The type User. */
 @Entity
 @Table(name = "user")
-public class User implements Serializable {
+@EntityListeners(AuditableListener.class)
+public class User implements Auditable {
   /** The Id. */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +35,44 @@ public class User implements Serializable {
   /** The Orders. */
   @OneToMany(mappedBy = "user")
   private List<Order> orders;
+
+  @Column(name = "last_update_date")
+  private LocalDateTime lastUpdateDate;
+
+  @Column(name = "create_date")
+  private LocalDateTime createDate;
+
+  private String operation;
+
+  @Override
+  public LocalDateTime getLastUpdateDate() {
+    return lastUpdateDate;
+  }
+
+  @Override
+  public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+    this.lastUpdateDate = lastUpdateDate;
+  }
+
+  @Override
+  public LocalDateTime getCreateDate() {
+    return createDate;
+  }
+
+  @Override
+  public void setCreateDate(LocalDateTime createDate) {
+    this.createDate = createDate;
+  }
+
+  @Override
+  public String getOperation() {
+    return operation;
+  }
+
+  @Override
+  public void setOperation(String operation) {
+    this.operation = operation;
+  }
 
   /**
    * Gets id.

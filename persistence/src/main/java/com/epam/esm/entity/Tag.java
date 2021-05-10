@@ -1,13 +1,17 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.audit.Auditable;
+import com.epam.esm.audit.AuditableListener;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -19,7 +23,8 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "tag")
-public class Tag implements Serializable {
+@EntityListeners(AuditableListener.class)
+public class Tag implements Auditable {
 
   /** The Id. */
   @Id
@@ -30,6 +35,45 @@ public class Tag implements Serializable {
   /** The Name. */
   @Column(name = "name")
   private String name;
+
+  @Column(name = "operation")
+  private String operation;
+
+  @Column(name = "last_update_date")
+  private LocalDateTime lastUpdateDate;
+
+  @Column(name = "create_date")
+  private LocalDateTime createDate;
+
+  @Override
+  public LocalDateTime getCreateDate() {
+    return createDate;
+  }
+
+  @Override
+  public void setCreateDate(LocalDateTime createDate) {
+    this.createDate = createDate;
+  }
+
+  @Override
+  public LocalDateTime getLastUpdateDate() {
+    return lastUpdateDate;
+  }
+
+  @Override
+  public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+    this.lastUpdateDate = lastUpdateDate;
+  }
+
+  @Override
+  public String getOperation() {
+    return operation;
+  }
+
+  @Override
+  public void setOperation(String operation) {
+    this.operation = operation;
+  }
 
   /**
    * Constructor

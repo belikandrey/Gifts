@@ -1,8 +1,12 @@
 package com.epam.esm.entity;
 
+import com.epam.esm.audit.Auditable;
+import com.epam.esm.audit.AuditableListener;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,7 +25,8 @@ import java.util.Objects;
 /** The type Order. */
 @Entity
 @Table(name = "user_order")
-public class Order implements Serializable {
+@EntityListeners(AuditableListener.class)
+public class Order implements Auditable {
 
   /** The Id. */
   @Id
@@ -49,6 +54,10 @@ public class Order implements Serializable {
   @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private User user;
+
+  private LocalDateTime lastUpdateDate;
+
+  private String operation;
 
   /** Instantiates a new Order. */
   public Order() {}
@@ -148,6 +157,16 @@ public class Order implements Serializable {
     this.price = price;
   }
 
+  @Override
+  public LocalDateTime getLastUpdateDate() {
+    return lastUpdateDate;
+  }
+
+  @Override
+  public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+    this.lastUpdateDate = lastUpdateDate;
+  }
+
   /**
    * Gets create date.
    *
@@ -164,6 +183,16 @@ public class Order implements Serializable {
    */
   public void setCreateDate(LocalDateTime createDate) {
     this.createDate = createDate;
+  }
+
+  @Override
+  public String getOperation() {
+    return operation;
+  }
+
+  @Override
+  public void setOperation(String operation) {
+    this.operation = operation;
   }
 
   /**
