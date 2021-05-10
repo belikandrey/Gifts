@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDAO;
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.criteria.impl.CertificateSearchCriteria;
 import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.dto.CertificateDTO;
@@ -52,6 +53,8 @@ public class CertificateServiceImpl implements CertificateService {
   private final Converter<Tag, TagDTO> tagConverter;
 
   private final Translator translator;
+
+  private TagDAO tagDAO;
 
   private static final String CERTIFICATE_WITH_ID_KEY = "certificate.certificate_with_id";
   private static final String TAG_WITH_ID_KEY = "tag.tag_with_id";
@@ -234,7 +237,7 @@ public class CertificateServiceImpl implements CertificateService {
     tagFromDB = tag.getId() != null ? tagService.findById(tag.getId()) : null;
     tagFromDB =
         tagFromDB == null && tag.getName() != null
-            ? tagService.findByName(tag.getName())
+            ? tagService.findByName(tag.getName()).orElse(null)
             : tagFromDB;
     if (tagFromDB != null) {
       return tagFromDB;
@@ -261,12 +264,13 @@ public class CertificateServiceImpl implements CertificateService {
    * @param isFullUpdate the is full update
    * @throws ValidatorException if certificate is invalid
    * @exception EntityNotFoundException if certificate with this id not found
+   * @return
    */
   @Override
   @Transactional(rollbackFor = {ValidatorException.class, EntityNotFoundException.class})
-  public void update(BigInteger certificateId, CertificateDTO giftCertificate, boolean isFullUpdate)
+  public CertificateDTO update(
+      BigInteger certificateId, CertificateDTO giftCertificate, boolean isFullUpdate)
       throws ValidatorException {
-    final Certificate certificateForUpdate = converter.convertToEntity(giftCertificate);
     Certificate certificate =
         certificateDAO
             .findById(certificateId)
@@ -279,27 +283,30 @@ public class CertificateServiceImpl implements CertificateService {
                             + " "
                             + translator.toLocale(NOT_FOUND_KEY),
                         Certificate.class));
+    final Certificate certificateForUpdate = converter.convertToEntity(giftCertificate);
     if (!isFullUpdate) {
       fillForInsert(certificateForUpdate, certificate);
     }
-    final Set<TagDTO> tagsForSetIntoCertificate =
-        getTagsForSetIntoCertificate(giftCertificate.getTags());
+    if (isFullUpdate
+        || (giftCertificate.getTags() != null && !giftCertificate.getTags().isEmpty())) {
+      final Set<TagDTO> tagsForSetIntoCertificate =
+          getTagsForSetIntoCertificate(giftCertificate.getTags());
+      certificateForUpdate.setTags(
+          tagsForSetIntoCertificate.stream()
+              .map(tagConverter::convertToEntity)
+              .collect(Collectors.toSet()));
+    }
     validator.validate(certificateForUpdate);
-    certificateForUpdate.setTags(
-        tagsForSetIntoCertificate.stream()
-            .map(tagConverter::convertToEntity)
-            .collect(Collectors.toSet()));
+    setFieldsBeforeUpdate(certificateForUpdate, certificate, certificateId);
+    return converter.convertToDto(certificateDAO.update(certificateForUpdate));
+  }
+
+  private void setFieldsBeforeUpdate(
+      Certificate certificateForUpdate, Certificate certificateFromDb, BigInteger certificateId) {
+    certificateForUpdate.setCreateDate(certificateFromDb.getCreateDate());
+    certificateForUpdate.setEnabled(certificateFromDb.getEnabled());
     certificateForUpdate.setLastUpdateDate(LocalDateTime.now());
     certificateForUpdate.setId(certificateId);
-    if (certificateDAO.update(certificateForUpdate) == null) {
-      throw new EntityNotFoundException(
-          translator.toLocale(CERTIFICATE_WITH_ID_KEY)
-              + " : "
-              + certificateId
-              + " "
-              + translator.toLocale(NOT_FOUND_KEY),
-          Certificate.class);
-    }
   }
 
   /**
@@ -332,8 +339,7 @@ public class CertificateServiceImpl implements CertificateService {
             ? certificateFromDb.getDuration()
             : certificateForUpdate.getDuration());
 
-    certificateForUpdate.setCreateDate(certificateFromDb.getCreateDate());
-    certificateForUpdate.setEnabled(certificateFromDb.getEnabled());
+    certificateForUpdate.setTags(certificateFromDb.getTags());
     return certificateForUpdate;
   }
 

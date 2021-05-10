@@ -34,7 +34,7 @@ public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
           + "from user "
           + "join user_order uo on user.id = uo.user_id "
           + "group by (user_id) "
-          + "order by MAX(price) desc "
+          + "order by SUM(price) desc "
           + "limit 1) "
           + "group by (tag.id)"
           + "order by count(tag_id) desc limit 1";

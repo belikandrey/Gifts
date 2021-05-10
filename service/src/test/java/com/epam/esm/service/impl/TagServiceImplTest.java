@@ -68,7 +68,7 @@ class TagServiceImplTest {
     when(converter.convertToDto(TAG)).thenReturn(TAG_DTO);
     when(tagDAO.findTagByName(FIRST_NAME)).thenReturn(Optional.of(TAG));
 
-    TagDTO result = tagServiceImpl.findByName(FIRST_NAME);
+    TagDTO result = tagServiceImpl.findByName(FIRST_NAME).get();
     assertNotNull(result);
     assertEquals(TAG.getId(), result.getId());
     assertEquals(TAG.getName(), result.getName());

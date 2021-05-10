@@ -95,20 +95,10 @@ public class TagServiceImpl implements TagService {
    */
   @Override
   @Transactional(readOnly = true)
-  public TagDTO findByName(String name) {
-    Tag tag =
-        tagDAO
-            .findTagByName(name)
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        translator.toLocale(TAG_WITH_NAME_KEY)
-                            + " : "
-                            + name
-                            + " "
-                            + translator.toLocale(NOT_FOUND_KEY),
-                        Tag.class));
-    return converter.convertToDto(tag);
+  public Optional<TagDTO> findByName(String name) {
+    final Optional<Tag> tagByName = tagDAO
+            .findTagByName(name);
+    return tagByName.map(tag -> converter.convertToDto(tag));
   }
 
   /**

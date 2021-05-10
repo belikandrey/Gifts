@@ -138,7 +138,9 @@ public class CertificateController {
       @PathVariable("id") BigInteger id, @RequestBody CertificateDTO newCertificate)
       throws ValidatorException {
     certificateService.update(id, newCertificate, false);
-    return new ResponseEntity<>(HttpStatus.OK);
+    CertificateDTO certificate = certificateService.findById(id);
+    hateoasResolver.addLinksForCertificate(certificate);
+    return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 
   /**
@@ -155,7 +157,7 @@ public class CertificateController {
       throws ValidatorException {
     certificateService.update(id, certificateDTO, true);
     CertificateDTO certificate = certificateService.findById(id);
-    hateoasResolver.addLinksForCertificate(certificateDTO);
+    hateoasResolver.addLinksForCertificate(certificate);
     return new ResponseEntity<>(certificate, HttpStatus.OK);
   }
 }

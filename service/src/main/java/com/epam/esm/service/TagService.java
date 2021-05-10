@@ -5,6 +5,7 @@ import com.epam.esm.dto.TagDTO;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Base interface for Tag service
@@ -28,7 +29,7 @@ public interface TagService extends EntityService<TagDTO, BigInteger> {
    * @param name name of tag
    * @return {@link TagDTO} from database
    */
-  TagDTO findByName(String name);
+  Optional<TagDTO> findByName(String name);
 
   /**
    * Add tag dto.

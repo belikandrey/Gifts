@@ -44,8 +44,9 @@ public interface CertificateService extends EntityService<CertificateDTO, BigInt
    * @param t the t
    * @param isFullUpdate the is full update
    * @throws ValidatorException the validator exception
+ * @return
    */
-  void update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
+  CertificateDTO update(BigInteger id, CertificateDTO t, boolean isFullUpdate) throws ValidatorException;
 
   /**
    * Count long.

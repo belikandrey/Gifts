@@ -65,7 +65,7 @@ public class TagValidator implements Validator<Tag> {
    */
   private void validateName(String name) throws ValidatorException {
     if (name == null || name.isEmpty()) {
-      throw new ValidatorException(List.of(TAG_NAME_NOT_EMPTY_KEY), Tag.class);
+      throw new ValidatorException(List.of(translator.toLocale(TAG_NAME_NOT_EMPTY_KEY)), Tag.class);
     }
     List<String> messages = new ArrayList<>();
     if (name.length() < MIN_NAME_SIZE) {
