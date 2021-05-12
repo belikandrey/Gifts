@@ -3,6 +3,7 @@ package com.epam.esm.dao.criteria.impl;
 import com.epam.esm.dao.criteria.SearchCriteria;
 import com.epam.esm.search.CertificateSearchQueryBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,14 +23,14 @@ public class CertificateSearchCriteria implements SearchCriteria {
   private CertificateSearchQueryBuilder builder;
 
   /** Params for find by */
-  private Map<String, String> params;
+  private final Map<String, Object> params;
 
   /**
    * Constructor
    *
    * @param params params for searching by
    */
-  public CertificateSearchCriteria(Map<String, String> params) {
+  public CertificateSearchCriteria(Map<String, Object> params) {
     this.params = params;
     builder = new CertificateSearchQueryBuilder();
   }
@@ -41,32 +42,38 @@ public class CertificateSearchCriteria implements SearchCriteria {
    */
   @Override
   public String getQuery() {
-    String name = params.get("name");
-    final String tagName = params.get("tagName");
-    final String description = params.get("description");
-    final String sortName = params.get("sortName");
-    final String sortDate = params.get("sortDate");
-    return getQueryFromBuilder(name, tagName, description, sortName, sortDate);
+    String name = (String) params.get("name");
+    final List<String> tagName = (List<String>) params.get("tagsName");
+    final String description = (String) params.get("description");
+    final String sortName = (String) params.get("sortName");
+    final String sortDate = (String) params.get("sortDate");
+    final String state = (String) params.get("state");
+    return getQueryFromBuilder(name, tagName, description, sortName, sortDate, state);
   }
 
   /**
    * Create query by {@link CertificateSearchQueryBuilder} and return query after build
    *
-   * @param name name of certificate
-   * @param tagName name of tag
+   * @param name name of certificate //@param tagName name of tag
    * @param description description of certificate
    * @param sortName sort by name param(asc, desc)
    * @param sortDate sort by date param(asc, desc)
    * @return query for search certificate
    */
   private String getQueryFromBuilder(
-      String name, String tagName, String description, String sortName, String sortDate) {
-    builder = tagName != null && !tagName.isEmpty() ? builder.setTagName(tagName) : builder;
+      String name,
+      List<String> tagsName,
+      String description,
+      String sortName,
+      String sortDate,
+      String state) {
+    builder = tagsName != null && !tagsName.isEmpty() ? builder.setTagName(tagsName) : builder;
     builder = name != null && !name.isEmpty() ? builder.setName(name) : builder;
     builder =
         description != null && !description.isEmpty()
             ? builder.setDescription(description)
             : builder;
+    builder = state != null ? builder.setState(state) : builder;
     builder =
         sortName != null
                 && !sortName.isEmpty()

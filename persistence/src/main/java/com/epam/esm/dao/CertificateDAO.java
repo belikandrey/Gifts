@@ -1,33 +1,70 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.dao.criteria.SearchCriteria;
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.entity.Certificate;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Base Certificate DAO interface
- *
- * @see com.epam.esm.dao.AbstractDAO
- * @version 1.0
- * @author Andrey Belik
- */
-public interface CertificateDAO extends AbstractDAO<Certificate, BigInteger> {
-  /**
-   * Find by {@link SearchCriteria} method
-   *
-   * @param criteria {@link SearchCriteria} for searching by
-   * @return {@link Collection} of certificates
-   */
-  Collection<Certificate> findByCriteria(SearchCriteria criteria);
+/** The interface Certificate dao. */
+public interface CertificateDAO {
 
   /**
-   * Add certificate id and tag id method
+   * Find by id optional.
    *
-   * @param certificateId id of certificate
-   * @param tagId id of tag
-   * @return true if added, false in another way
+   * @param id the id
+   * @return the {@link Optional} of {@link Certificate}
    */
-  boolean addCertificateTag(BigInteger certificateId, BigInteger tagId);
+  Optional<Certificate> findById(BigInteger id);
+
+  /**
+   * Find all list.
+   *
+   * @param paginationSetting the pagination setting {@link PaginationSetting}
+   * @return the list of {@link Certificate}
+   */
+  List<Certificate> findAll(PaginationSetting paginationSetting);
+
+  /**
+   * Save certificate.
+   *
+   * @param entity the {@link Certificate}
+   * @return the {@link Certificate}
+   */
+  Certificate save(Certificate entity);
+
+  /**
+   * Update certificate.
+   *
+   * @param entity the {@link Certificate}
+   * @return the {@link Certificate}
+   */
+  Certificate update(Certificate entity);
+
+  /**
+   * Delete by id.
+   *
+   * @param id the id
+   */
+  void deleteById(BigInteger id);
+
+  /**
+   * Find by criteria collection.
+   *
+   * @param criteria the {@link SearchCriteria}
+   * @param paginationSetting the pagination setting {@link PaginationSetting}
+   * @return the collection of {@link Certificate}
+   */
+  Collection<Certificate> findByCriteria(
+      SearchCriteria criteria, PaginationSetting paginationSetting);
+
+  /**
+   * Count long.
+   *
+   * @return the long
+   */
+  Long count();
 }

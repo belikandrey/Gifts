@@ -20,7 +20,7 @@ public class TagConverter implements Converter<Tag, TagDTO> {
    * @return {@link Tag} after convert
    */
   @Override
-  public Tag convert(TagDTO dto) {
+  public Tag convertToEntity(TagDTO dto) {
     return new Tag(dto.getId(), dto.getName());
   }
 
@@ -31,7 +31,7 @@ public class TagConverter implements Converter<Tag, TagDTO> {
    * @return {@link TagDTO} after convert
    */
   @Override
-  public TagDTO convert(Tag tag) {
+  public TagDTO convertToDto(Tag tag) {
     return new TagDTO(tag.getId(), tag.getName());
   }
 }

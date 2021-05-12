@@ -2,6 +2,9 @@ package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -10,26 +13,37 @@ import java.util.Objects;
 import java.util.Set;
 
 /** Certificate transfer class */
-public class CertificateDTO {
+@Relation(collectionRelation = "certificates")
+public class CertificateDTO extends RepresentationModel<CertificateDTO> {
 
+  /** The Id. */
   private BigInteger id;
 
+  /** The Name. */
   private String name;
 
+  /** The Description. */
   private String description;
 
+  /** The Price. */
   private BigDecimal price;
 
+  /** The Duration. */
   private Integer duration;
 
+  /** The Creation date. */
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime creationDate;
 
+  /** The Last update date. */
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private LocalDateTime lastUpdateDate;
 
+  private boolean isEnabled;
+
+  /** The Tags. */
   private Set<TagDTO> tags = new HashSet<>();
 
   /** Default constructor */
@@ -45,6 +59,7 @@ public class CertificateDTO {
    * @param duration duration of the certificate DTO
    * @param creationDate create date of the certificate DTO
    * @param lastUpdateDate last update date of the certificate DTO
+   * @param isEnabled
    */
   public CertificateDTO(
       BigInteger id,
@@ -53,7 +68,8 @@ public class CertificateDTO {
       BigDecimal price,
       Integer duration,
       LocalDateTime creationDate,
-      LocalDateTime lastUpdateDate) {
+      LocalDateTime lastUpdateDate,
+      boolean isEnabled) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -61,6 +77,49 @@ public class CertificateDTO {
     this.duration = duration;
     this.creationDate = creationDate;
     this.lastUpdateDate = lastUpdateDate;
+    this.isEnabled = isEnabled;
+  }
+
+  /**
+   * Instantiates a new Certificate dto.
+   *
+   * @param id the id
+   * @param name the name
+   * @param description the description
+   * @param price the price
+   * @param duration the duration
+   * @param creationDate the creation date
+   * @param lastUpdateDate the last update date
+   * @param isEnabled
+   * @param tags the tags
+   */
+  public CertificateDTO(
+      BigInteger id,
+      String name,
+      String description,
+      BigDecimal price,
+      Integer duration,
+      LocalDateTime creationDate,
+      LocalDateTime lastUpdateDate,
+      boolean isEnabled,
+      Set<TagDTO> tags) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.duration = duration;
+    this.creationDate = creationDate;
+    this.lastUpdateDate = lastUpdateDate;
+    this.isEnabled = isEnabled;
+    this.tags = tags;
+  }
+
+  public boolean isEnabled() {
+    return isEnabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    isEnabled = enabled;
   }
 
   /**
@@ -207,6 +266,12 @@ public class CertificateDTO {
     this.lastUpdateDate = lastUpdateDate;
   }
 
+  /**
+   * Equals boolean.
+   *
+   * @param o the o
+   * @return the boolean
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -221,11 +286,21 @@ public class CertificateDTO {
         && Objects.equals(lastUpdateDate, that.lastUpdateDate);
   }
 
+  /**
+   * Hash code int.
+   *
+   * @return the int
+   */
   @Override
   public int hashCode() {
     return Objects.hash(id, name, description, price, duration, creationDate, lastUpdateDate);
   }
 
+  /**
+   * To string string.
+   *
+   * @return the string
+   */
   @Override
   public String toString() {
     return "CertificateDTO{"

@@ -1,47 +1,73 @@
 package com.epam.esm.dao;
 
+import com.epam.esm.dao.pagination.PaginationSetting;
 import com.epam.esm.entity.Tag;
+
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-/**
- * Base Tag DAO interface
- *
- * @see com.epam.esm.dao.AbstractDAO
- * @version 1.0
- * @author Andrey Belik
- */
-public interface TagDAO extends AbstractDAO<Tag, BigInteger> {
+/** The interface Tag dao. */
+public interface TagDAO {
+
   /**
-   * Find all tags method
+   * Find by id optional.
    *
-   * @return {@link Collection} of tags
+   * @param id the id
+   * @return the {@link Optional} of {@link Tag}
    */
-  Collection<Tag> findAll();
+  Optional<Tag> findById(BigInteger id);
 
   /**
-   * Find all tags by certificate id method
+   * Find all list.
    *
-   * @param certificateId id of certificate
-   * @return {@link Set} of tags
+   * @param paginationSetting the pagination setting {@link PaginationSetting}
+   * @return the list of {@link Tag}
    */
-  Set<Tag> findTagsByCertificateId(BigInteger certificateId);
+  List<Tag> findAll(PaginationSetting paginationSetting);
 
   /**
-   * Check tag in DB method
+   * Save tag.
    *
-   * @param tag tag for check
-   * @return true if exist, false in another way
+   * @param entity the {@link Tag}
+   * @return the {@link Tag}
    */
-  boolean isAlreadyExist(Tag tag);
+  Tag save(Tag entity);
 
   /**
-   * Find tag by name method
+   * Delete by id.
    *
-   * @param name name of tag
-   * @return {@link Optional} of tag
+   * @param id the id
+   */
+  void deleteById(BigInteger id);
+
+  /**
+   * Find tag by name optional.
+   *
+   * @param name the name
+   * @return the {@link Optional} of {@link Tag}
    */
   Optional<Tag> findTagByName(String name);
+
+  /**
+   * Count long.
+   *
+   * @return the long
+   */
+  Long count();
+
+  /**
+   * Find most popular tag.
+   *
+   * @return the {@link Optional} of {@link Tag}
+   */
+  Optional<Tag> findMostPopularTag();
+
+  /**
+   * Is tag used boolean.
+   *
+   * @param tagId the tag id
+   * @return true if tag is used in certificates, otherwise false
+   */
+  boolean isTagUsed(BigInteger tagId);
 }

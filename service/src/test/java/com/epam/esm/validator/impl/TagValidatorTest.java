@@ -23,7 +23,7 @@ class TagValidatorTest {
 
   @BeforeAll
   public static void init() {
-    tagValidator = new TagValidator();
+    tagValidator = new TagValidator(null);
   }
 
   // Tag with small size name given. Expected ValidationException with message "Tag name should
@@ -33,7 +33,7 @@ class TagValidatorTest {
     Tag tagWithSmallName = new Tag(SMALL_SIZE_NAME);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> tagValidator.validate(tagWithSmallName));
-    assertEquals(exception.getMessage(), SMALL_SIZE_EXCEPTION_MESSAGE);
+    assertEquals(exception.getMessages().get(0), SMALL_SIZE_EXCEPTION_MESSAGE);
   }
 
   // Tag with big size name given. Expected ValidationException with message "Tag name should
@@ -43,7 +43,7 @@ class TagValidatorTest {
     Tag tagWithBigName = new Tag(BIG_SIZE_NAME);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> tagValidator.validate(tagWithBigName));
-    assertEquals(exception.getMessage(), BIG_SIZE_EXCEPTION_MESSAGE);
+    assertEquals(exception.getMessages().get(0), BIG_SIZE_EXCEPTION_MESSAGE);
   }
 
   // Tag with empty name given. Expected ValidationException with message "Tag name should be not
@@ -53,7 +53,7 @@ class TagValidatorTest {
     Tag tagWithEmptyName = new Tag("");
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> tagValidator.validate(tagWithEmptyName));
-    assertEquals(exception.getMessage(), EMPTY_NAME_EXCEPTION_MESSAGE);
+    assertEquals(exception.getMessages().get(0), EMPTY_NAME_EXCEPTION_MESSAGE);
   }
 
   // Tag with right name given. Expected work without exception
@@ -68,6 +68,6 @@ class TagValidatorTest {
   public void nullTagTest() {
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> tagValidator.validate(null));
-    assertEquals(exception.getMessage(), NULL_TAG_EXCEPTION_MESSAGE);
+    assertEquals(exception.getMessages().get(0), NULL_TAG_EXCEPTION_MESSAGE);
   }
 }

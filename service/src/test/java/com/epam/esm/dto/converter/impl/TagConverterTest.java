@@ -2,7 +2,7 @@ package com.epam.esm.dto.converter.impl;
 
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.entity.Tag;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -10,33 +10,28 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
 class TagConverterTest {
+  private static final String TAG_NAME = "#cool";
+  private static final BigInteger TAG_ID = BigInteger.ONE;
+  private static final String TAG_DTO_NAME = "#beautiful";
+  private static final BigInteger TAG_DTO_ID = BigInteger.TEN;
+  TagConverter tagConverter = new TagConverter();
+  private static final Tag TAG = new Tag(TAG_ID, TAG_NAME);
+  private static final TagDTO TAG_DTO = new TagDTO(TAG_DTO_ID, TAG_DTO_NAME);
 
-  private static TagConverter tagConverter;
-  private static final String NAME = "#cool";
-  private static final BigInteger ID = BigInteger.ONE;
-
-  @BeforeAll
-  public static void init() {
-    tagConverter = new TagConverter();
+  @Test
+  void testConvertToEntity() {
+    Tag result = tagConverter.convertToEntity(TAG_DTO);
+    assertNotNull(result);
+    assertEquals(TAG_DTO_NAME, result.getName());
+    assertEquals(TAG_DTO_ID, result.getId());
   }
 
   @Test
-  public void convertToDtoTest() {
-    Tag tag = new Tag(ID, NAME);
-    final TagDTO tagDTO = tagConverter.convert(tag);
-    assertNotNull(tagDTO);
-    assertEquals(tag.getId(), tagDTO.getId());
-    assertEquals(tag.getName(), tagDTO.getName());
-  }
-
-  @Test
-  public void convertToEntityTest() {
-    TagDTO tagDTO = new TagDTO(ID, NAME);
-    final Tag tag = tagConverter.convert(tagDTO);
-    assertNotNull(tag);
-    assertEquals(tag.getId(), tagDTO.getId());
-    assertEquals(tag.getName(), tagDTO.getName());
+  void testConvertToDto() {
+    TagDTO result = tagConverter.convertToDto(TAG);
+    assertNotNull(result);
+    assertEquals(TAG_ID, result.getId());
+    assertEquals(TAG_NAME, result.getName());
   }
 }

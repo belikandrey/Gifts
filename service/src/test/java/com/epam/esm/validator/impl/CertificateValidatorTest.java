@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CertificateValidatorTest {
   private static CertificateValidator validator;
@@ -41,7 +42,7 @@ class CertificateValidatorTest {
 
   @BeforeAll
   public static void init() {
-    validator = new CertificateValidator();
+    validator = new CertificateValidator(null);
   }
 
   // Given certificate with right fields. Expected work without exception
@@ -64,7 +65,7 @@ class CertificateValidatorTest {
   public void nullCertificateTest() {
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(null));
-    assertEquals(exception.getMessage(), NULL_CERTIFICATE_EXCEPTION_MESSAGE);
+    assertEquals(exception.getMessages().get(0), NULL_CERTIFICATE_EXCEPTION_MESSAGE);
   }
 
   // Given certificate with empty name. Expected ValidationException with message "Certificate name
@@ -75,7 +76,7 @@ class CertificateValidatorTest {
     Certificate certificate = new Certificate();
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(certificate));
-    assertEquals(exception.getMessage(), EMPTY_CERTIFICATE_NAME_EXCEPTION_MESSAGE);
+    assertTrue(exception.getMessages().contains(EMPTY_CERTIFICATE_NAME_EXCEPTION_MESSAGE));
   }
 
   // Given certificate with small size name. Expected ValidationException with message "Certificate
@@ -87,7 +88,7 @@ class CertificateValidatorTest {
     certificate.setName(SMALL_CERTIFICATE_NAME);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(certificate));
-    assertEquals(exception.getMessage(), SMALL_CERTIFICATE_NAME_EXCEPTION_MESSAGE);
+    assertTrue(exception.getMessages().contains(SMALL_CERTIFICATE_NAME_EXCEPTION_MESSAGE));
   }
 
   // Given certificate with big size name. Expected ValidationException with message "Certificate
@@ -99,7 +100,7 @@ class CertificateValidatorTest {
     certificate.setName(BIG_CERTIFICATE_NAME);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(certificate));
-    assertEquals(exception.getMessage(), BIG_CERTIFICATE_NAME_EXCEPTION_MESSAGE);
+    assertTrue(exception.getMessages().contains(BIG_CERTIFICATE_NAME_EXCEPTION_MESSAGE));
   }
 
   // Given certificate with empty duration. Expected ValidationException with message "Certificate
@@ -110,7 +111,7 @@ class CertificateValidatorTest {
     certificate.setName(NORMAL_CERTIFICATE_NAME);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(certificate));
-    assertEquals(exception.getMessage(), EMPTY_CERTIFICATE_DESCRIPTION_EXCEPTION_MESSAGE);
+    assertTrue(exception.getMessages().contains(EMPTY_CERTIFICATE_DESCRIPTION_EXCEPTION_MESSAGE));
   }
 
   // Given certificate with negative duration. Expected ValidationException with message
@@ -123,7 +124,7 @@ class CertificateValidatorTest {
     certificate.setDuration(NEGATIVE_CERTIFICATE_DURATION);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(certificate));
-    assertEquals(exception.getMessage(), NEGATIVE_CERTIFICATE_DURATION_EXCEPTION_MESSAGE);
+    assertTrue(exception.getMessages().contains(NEGATIVE_CERTIFICATE_DURATION_EXCEPTION_MESSAGE));
   }
 
   // Given certificate with negative price. Expected ValidationException with message "Certificate
@@ -137,6 +138,6 @@ class CertificateValidatorTest {
     certificate.setPrice(NEGATIVE_CERTIFICATE_PRICE);
     final ValidatorException exception =
         assertThrows(ValidatorException.class, () -> validator.validate(certificate));
-    assertEquals(exception.getMessage(), NEGATIVE_CERTIFICATE_PRICE_EXCEPTION_MESSAGE);
+    assertTrue(exception.getMessages().contains(NEGATIVE_CERTIFICATE_PRICE_EXCEPTION_MESSAGE));
   }
 }

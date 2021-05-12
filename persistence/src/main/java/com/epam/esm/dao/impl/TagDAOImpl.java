@@ -1,158 +1,118 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.AbstractGiftDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Class that interacts with the database
  *
- * @author Andrey Belik
  * @version 1.0
+ * @author Andrey Belik
+ * @see com.epam.esm.dao.AbstractGiftDAO
+ * @see com.epam.esm.dao.TagDAO
  */
 @Repository
-public class TagDAOImpl implements TagDAO {
-  private final JdbcTemplate jdbcTemplate;
-  private final RowMapper<Tag> rowMapper;
+public class TagDAOImpl extends AbstractGiftDAO<Tag> implements TagDAO {
 
-  private static final String SQL_FIND_ALL = "SELECT id, name FROM gifts.tag";
-  private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
-  private static final String SQL_ADD = "INSERT INTO gifts.tag(name) VALUES(?)";
-  private static final String SQL_DELETE = "DELETE FROM gifts.tag WHERE id=?";
-  private static final String SQL_FIND_BY_NAME = "SELECT id, name FROM gifts.tag WHERE name = ?";
-  private static final String SQL_FIND_TAGS_BY_CERTIFICATE_ID =
-      "SELECT id, name FROM gifts.tag JOIN gifts.certificate_tag ON tag.id = certificate_tag.tag_id"
-          + " WHERE certificate_id=?";
+  /** The constant FIND_BY_NAME. */
+  private static final String FIND_BY_NAME = "from Tag where name =:tag_name";
 
-  /**
-   * Constructor
-   *
-   * @param jdbcTemplate {@link org.springframework.jdbc.core.JdbcTemplate}
-   * @param rowMapper {@link RowMapper}
-   */
-  @Autowired
-  public TagDAOImpl(JdbcTemplate jdbcTemplate, RowMapper<Tag> rowMapper) {
-    this.jdbcTemplate = jdbcTemplate;
-    this.rowMapper = rowMapper;
+  /** The constant FIND_MOST_POPULAR_TAG. */
+  private static final String FIND_MOST_POPULAR_TAG =
+      "select tag.id, tag.name "
+          + "from tag "
+          + "join certificate_tag ct on tag.id = ct.tag_id "
+          + "join certificate c on c.id = ct.certificate_id "
+          + "join order_certificate oc on c.id = oc.certificate_id "
+          + "join user_order uo on oc.order_id = uo.id "
+          + "where user_id = (select user.id "
+          + "from user "
+          + "join user_order uo on user.id = uo.user_id "
+          + "group by (user_id) "
+          + "order by SUM(price) desc "
+          + "limit 1) "
+          + "group by (tag.id)"
+          + "order by count(tag_id) desc limit 1";
+
+  /** The constant FIND_COUNT_OF_TAG_USAGES. */
+  private static final String FIND_COUNT_OF_TAG_USAGES =
+      "select count(certificate_id) from certificate_tag where tag_id=:tag_id group by (tag_id)";
+
+  /** Instantiates a new Tag dao. */
+  public TagDAOImpl() {
+    setClazz(Tag.class);
   }
 
   /**
-   * Find tag by id method
+   * Save tag.
    *
-   * @param id id of the tag
-   * @return {@link Optional} of tag
-   */
-  @Override
-  public Optional<Tag> findById(BigInteger id) {
-    return jdbcTemplate.query(SQL_FIND_BY_ID, rowMapper, id.longValue()).stream().findAny();
-  }
-
-  /**
-   * Add tag in database method
-   *
-   * @param tag tag for add
-   * @return null if tag exists, tag in another way
+   * @param entity the {@link Tag}
+   * @return the {@link Tag}
    */
   @Override
-  public Tag add(Tag tag) {
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-    if (isAlreadyExist(tag)) {
-      return null;
-    }
-    jdbcTemplate.update(
-        connection -> {
-          PreparedStatement statement =
-              connection.prepareStatement(SQL_ADD, Statement.RETURN_GENERATED_KEYS);
-          statement.setString(1, tag.getName());
-          return statement;
-        },
-        keyHolder);
-    final BigInteger id = BigInteger.valueOf(keyHolder.getKey().longValue());
-    tag.setId(id);
-    return tag;
+  public Tag save(Tag entity) {
+    getEntityManager().persist(entity);
+    return entity;
   }
 
   /**
-   * Update tag by id method
+   * Delete by id.
    *
-   * <p>Unsupported
-   *
-   * @throws UnsupportedOperationException in any way
+   * @param id the id {@link BigInteger}
    */
   @Override
-  public boolean update(BigInteger id, Tag tag) {
-    throw new UnsupportedOperationException();
+  public void deleteById(BigInteger id) {
+    final Tag entity = getEntityManager().find(Tag.class, id);
+    getEntityManager().remove(entity);
   }
 
   /**
-   * Delete tag by id method
+   * Find tag by name optional.
    *
-   * @param id id of the tag to delete
-   * @return true if deleted, false in another way
-   */
-  @Override
-  public boolean delete(BigInteger id) {
-    return jdbcTemplate.update(SQL_DELETE, id.longValue()) > 0;
-  }
-
-  /**
-   * Check is tag already exist method
-   *
-   * @param tag tag for check
-   * @return true if exist, false in another way
-   */
-  @Override
-  public boolean isAlreadyExist(Tag tag) {
-    Optional<Tag> tagOptional = Optional.empty();
-    tagOptional = tag.getId() != null ? findById(tag.getId()) : tagOptional;
-    tagOptional =
-        tagOptional.isEmpty() && tag.getName() != null ? findTagByName(tag.getName()) : tagOptional;
-    return tagOptional.isPresent();
-  }
-
-  /**
-   * Find tag by name method
-   *
-   * @param name name of tag
-   * @return {@link Optional} of tag
+   * @param name the name
+   * @return the {@link Optional} of {@link Tag}
    */
   @Override
   public Optional<Tag> findTagByName(String name) {
-    return jdbcTemplate.query(SQL_FIND_BY_NAME, rowMapper, name).stream().findAny();
+    return getEntityManager()
+        .createQuery(FIND_BY_NAME)
+        .setParameter("tag_name", name)
+        .getResultStream()
+        .findAny();
   }
 
   /**
-   * Find all tags method
+   * Find most popular tag optional.
    *
-   * @return {@link Collection} of tags
+   * @return the {@link Optional} of {@link Tag}
    */
   @Override
-  public Collection<Tag> findAll() {
-    return jdbcTemplate.query(SQL_FIND_ALL, rowMapper);
+  public Optional<Tag> findMostPopularTag() {
+    return getEntityManager()
+        .createNativeQuery(FIND_MOST_POPULAR_TAG, Tag.class)
+        .getResultStream()
+        .findAny();
   }
 
   /**
-   * Find tags by certificate id method
+   * Is tag used boolean.
    *
-   * @param certificateId id of certificate
-   * @return {@link Set} of tags
+   * @param tagId the tag id
+   * @return true if tag is used in certificates, otherwise false
    */
   @Override
-  public Set<Tag> findTagsByCertificateId(BigInteger certificateId) {
-    return new HashSet<>(
-        jdbcTemplate.query(SQL_FIND_TAGS_BY_CERTIFICATE_ID, rowMapper, certificateId));
+  public boolean isTagUsed(BigInteger tagId) {
+    final Optional<Object> countOfTags =
+        getEntityManager()
+            .createNativeQuery(FIND_COUNT_OF_TAG_USAGES)
+            .setParameter("tag_id", tagId)
+            .getResultStream()
+            .findAny();
+    return countOfTags.isPresent();
   }
 }

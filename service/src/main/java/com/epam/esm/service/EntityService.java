@@ -1,7 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.ValidatorException;
-
 /**
  * Base service interface
  *
@@ -14,32 +12,7 @@ public interface EntityService<T, K> {
    * Find entity by id method
    *
    * @param id id of entity
-   * @return entity
+   * @return entity t
    */
   T findById(K id);
-
-  /**
-   * Add entity method
-   *
-   * @param t entity for add
-   * @return added entity
-   * @throws ValidatorException if entity is invalid
-   */
-  T add(T t) throws ValidatorException;
-
-  /**
-   * Update entity method
-   *
-   * @param id id of entity for update
-   * @param t entity for update
-   * @throws ValidatorException if entity is invalid
-   */
-  void update(K id, T t) throws ValidatorException;
-
-  /**
-   * Delete entity by id method
-   *
-   * @param id id of entity for delete
-   */
-  void delete(K id);
 }
